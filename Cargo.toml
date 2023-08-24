@@ -1,0 +1,15 @@
+[package]
+name = "submarine"
+version = "0.1.0"
+edition = "2021"
+resolver = "2"
+
+[dependencies]
+log = "0.4.17"
+serde = { version = "1.0.152", features = ["derive"] }
+serde_json = "1.0.93"
+reqwest = { version = "0.11.14", default-features = false, features = ["json", "rustls-tls", "multipart", "stream"] }
+md5 = "0.7.0"
+chrono = { version = "0.4.23", features = ["std", "serde"] }
+rand = "0.8.5"
+thiserror = "1.0.38"
