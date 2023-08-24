@@ -27,20 +27,11 @@ use thiserror::Error;
 use std::collections::HashMap;
 
 #[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Client {
     server_url: String,
     auth: auth::Auth,
     client: reqwest::Client,
-}
-
-impl Clone for Client {
-    fn clone(&self) -> Self {
-        Self {
-            server_url: self.server_url.clone(),
-            auth: self.auth.clone(),
-            client: self.client.clone(),
-        }
-    }
 }
 
 #[derive(Error, Debug)]
