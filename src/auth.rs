@@ -1,14 +1,13 @@
 use std::collections::HashMap;
 
-#[derive(Clone, Debug)]
-pub struct Auth {
-    pub user: String,
-    pub version: String,
-    pub client_name: String,
-    pub hash: String,
-    pub salt: String,
-}
-
+/// Builder for [Auth]<br>
+/// Example:
+/// ```
+/// use submarine::auth::AuthBuilder;
+/// let auth = AuthBuilder::new("peter", "v0.16.1")
+///     .client_name("my_music_app")
+///     .hashed("change_me_password");
+/// ```
 #[derive(Default)]
 pub struct AuthBuilder {
     user: String,
@@ -26,37 +25,37 @@ impl AuthBuilder {
         }
     }
 
+    /// give the client a name; defaults to "submarine-lib"
     pub fn client_name(mut self, name: &str) -> AuthBuilder {
         self.client_name = Some(String::from(name));
         self
     }
 
+    /// hash plain password for storing and subsequently uses
+    /// ; consumes self
     pub fn hashed(self, password: &str) -> Auth {
         let (salt, hash) = Auth::hash(password);
         Auth {
             user: self.user,
             version: self.version,
-            client_name: self.client_name.unwrap_or(String::from("submarine")),
+            client_name: self.client_name.unwrap_or(String::from("submarine-lib")),
             hash,
             salt,
         }
     }
 }
 
-impl Auth {
-    /// create a new auth object
-    pub fn with_hash(user: &str, hash: String, salt: String) -> Self {
-        Self {
-            user: String::from(user),
-            version: String::from("0.16.0"),
-            client_name: String::from("audio-ui"), //TODO change
-            hash,
-            salt,
-        }
-    }
+#[derive(Clone, Debug)]
+pub struct Auth {
+    pub user: String,
+    pub version: String,
+    pub client_name: String,
+    pub hash: String,
+    pub salt: String,
+}
 
-    /// hash plain password for storing and subsequently uses
-    pub fn hash(password: &str) -> (String, String) {
+impl Auth {
+    fn hash(password: &str) -> (String, String) {
         let salt = Self::create_salt(24);
         let hash = md5::compute(password.to_owned() + &salt);
         (format!("{:x}", hash), salt)

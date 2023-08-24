@@ -1,5 +1,9 @@
-/// api description of subsonic: http://www.subsonic.org/pages/api.jsp
-/// xsd schema: http://www.subsonic.org/pages/inc/api/schema/subsonic-rest-api-1.16.1.xsd
+//! This is a pure rust implementation for the subsonic API
+//!
+//! API description of subsonic: <http://www.subsonic.org/pages/api.jsp><br>
+//! xsd schema: <http://www.subsonic.org/pages/inc/api/schema/subsonic-rest-api-1.16.1.xsd><br>
+//! This implements everything up to version v1.16.1.
+
 pub mod auth;
 pub mod create_playlist;
 pub mod data;
@@ -26,7 +30,20 @@ use thiserror::Error;
 
 use std::collections::HashMap;
 
-#[derive(Debug)]
+/// A client which all requests are send through.<br>
+/// Example
+/// ```no_run
+/// #[tokio::main]
+/// async fn main() {
+///     use submarine::{auth::AuthBuilder, Client};
+///
+///     let auth = AuthBuilder::new("peter", "v0.16.1")
+///         .client_name("my_music_app")
+///         .hashed("change_me_password");
+///     let client = Client::new("https://target.com", auth);
+///     client.ping().await.unwrap();
+/// }
+/// ```
 #[derive(Debug, Clone)]
 pub struct Client {
     server_url: String,
