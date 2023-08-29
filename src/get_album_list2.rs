@@ -28,9 +28,10 @@ impl Client {
             let mut paras = paras.clone();
             paras.insert("offset", format!("{}", i));
 
-            let body = self.request("getAlbumList2", Some(paras.clone()), None).await?;
-            let response =
-                serde_json::from_str::<Response>(&body)?;
+            let body = self
+                .request("getAlbumList2", Some(paras.clone()), None)
+                .await?;
+            let response = serde_json::from_str::<Response>(&body)?;
             if response.album_list2.album.is_none() {
                 break;
             }

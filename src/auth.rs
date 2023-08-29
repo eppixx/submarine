@@ -11,14 +11,14 @@ use std::collections::HashMap;
 #[derive(Default)]
 pub struct AuthBuilder {
     user: String,
-    version : String,
+    version: String,
     client_name: Option<String>,
 }
 
 impl AuthBuilder {
     /// version should match the one closely matching at feature level
-    pub fn new(user: &str, version: &str) -> AuthBuilder {
-        AuthBuilder {
+    pub fn new(user: &str, version: &str) -> Self {
+        Self {
             user: String::from(user),
             version: String::from(version),
             ..Default::default()
@@ -26,7 +26,7 @@ impl AuthBuilder {
     }
 
     /// give the client a name; defaults to "submarine-lib"
-    pub fn client_name(mut self, name: &str) -> AuthBuilder {
+    pub fn client_name(mut self, name: &str) -> Self {
         self.client_name = Some(String::from(name));
         self
     }

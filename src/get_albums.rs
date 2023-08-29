@@ -16,7 +16,7 @@ struct Response {
 
 //TODO may remove
 impl Client {
-    pub async  fn _get_albums(&self) -> Result<Vec<Album>, SubsonicError> {
+    pub async fn _get_albums(&self) -> Result<Vec<Album>, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("type", String::from("alphabeticalByName"));
         paras.insert("size", String::from("500")); //500 is maximum
@@ -28,9 +28,10 @@ impl Client {
             let mut paras = paras.clone();
             paras.insert("offset", format!("{}", i));
 
-            let body = self.request("getAlbumList", Some(paras.clone()), None).await?;
-            let response =
-                serde_json::from_str::<Response>(&body)?;
+            let body = self
+                .request("getAlbumList", Some(paras.clone()), None)
+                .await?;
+            let response = serde_json::from_str::<Response>(&body)?;
             if response._album_list._album.is_none() {
                 break;
             }
