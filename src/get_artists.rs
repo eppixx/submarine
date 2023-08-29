@@ -1,40 +1,68 @@
-use serde::Deserialize;
-
-use super::data::Artist;
-use super::{Client, SubsonicError};
-
-#[derive(Deserialize, Debug)]
-struct Category {
-    // _name: String,
-    artist: Vec<Artist>,
-}
-
-#[derive(Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-struct MetaArtists {
-    index: Vec<Category>,
-    // last_modified: i64,
-    // ignored_articles: String,
-}
-
-#[derive(Deserialize, Debug)]
-struct Response {
-    artists: MetaArtists,
-}
+use crate::data::{Artists, ResponseType};
+use crate::{Client, SubsonicError};
 
 impl Client {
-    pub async fn get_artists(&self) -> Result<Vec<Artist>, SubsonicError> {
+    pub async fn get_artists(&self) -> Result<Artists, SubsonicError> {
         let body = self.request("getArtists", None, None).await?;
-        let json = serde_json::from_str::<Response>(&body)?;
+        if let ResponseType::Artists { artists } = body.data {
+            Ok(artists)
+        } else {
+            Err(SubsonicError::Submarine(String::from(
+                "got send wrong type; submarine fault?",
+            )))
+        }
+    }
+}
 
-        //flatten response to Vec<Artist>
-        let artists: Vec<Artist> = json
-            .artists
-            .index
-            .iter()
-            .flat_map(|i| i.artist.clone())
-            .collect();
+#[cfg(test)]
+mod tests {
+    use crate::data::{OuterResponse, ResponseType};
 
-        Ok(artists)
+    #[test]
+    fn conversion_get_artists() {
+        let response_body = r##"
+            {
+              "subsonic-response": {
+                "status": "ok",
+                "version": "1.16.1",
+                "type": "navidrome",
+                "serverVersion": "0.49.3 (8b93962f)",
+                "artists": {
+                  "index": [
+                    {
+                      "name": "#",
+                      "artist": [
+                        {
+                          "id": "5338af695f89024e8a57c08ccfe1b814",
+                          "name": "+44",
+                          "albumCount": 1,
+                          "coverArt": "ar-5338af695f89024e8a57c08ccfe1b814_0"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "A",
+                      "artist": [
+                        {
+                          "id": "0cc175b9c0f1b6a831c399e269772661",
+                          "name": "A",
+                          "albumCount": 1,
+                          "coverArt": "ar-0cc175b9c0f1b6a831c399e269772661_0"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }"##;
+        let response = serde_json::from_str::<OuterResponse>(response_body)
+            .unwrap()
+            .inner;
+        println!("{response:?}");
+        if let ResponseType::Artists { artists } = response.data {
+            assert_eq!(artists.index.len(), 2);
+        } else {
+            panic!("wrong type: {response:?}");
+        }
     }
 }

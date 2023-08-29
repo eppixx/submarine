@@ -9,8 +9,8 @@ pub mod create_playlist;
 pub mod data;
 pub mod delete_playlist;
 pub mod get_album;
+pub mod get_album_list;
 pub mod get_album_list2;
-pub mod get_albums;
 pub mod get_artist;
 pub mod get_artist_albums;
 pub mod get_artists;
@@ -29,7 +29,6 @@ use log::{info, trace, warn};
 use thiserror::Error;
 
 use std::collections::HashMap;
-
 
 /// A client which all requests are send through.<br>
 /// Example
@@ -54,14 +53,18 @@ pub struct Client {
 
 #[derive(Error, Debug)]
 pub enum SubsonicError {
-    #[error("Verbindugsfehler")]
+    #[error("Connection error")]
     Connection(#[from] reqwest::Error),
-    #[error("Konvertierungsfehler")]
+    #[error("Conversion error")]
     Conversion(#[from] serde_json::Error),
-    #[error("Kein Server gefunden")]
+    #[error("No server found")]
     NoServerFound,
-    #[error("Server sendet den Fehler: {0}")]
+    #[error("Server sends error: {0}")]
     Server(String),
+    #[error("Submarine error: {0}")]
+    Submarine(String),
+    #[error("Submarine invalid arguments: {0}")]
+    InvalidArgs(String),
 }
 
 impl Client {
@@ -80,12 +83,14 @@ impl Client {
         path: &str,
         parameter: Option<HashMap<&str, String>>,
         headers: Option<reqwest::header::HeaderMap>,
-    ) -> Result<String, SubsonicError> {
+    ) -> Result<data::Response, SubsonicError> {
         let parameter = parameter.unwrap_or_default();
         let headers = headers.unwrap_or_default();
 
         let mut paras: HashMap<&str, String> = self.auth.clone().into();
-        parameter.iter().for_each(|p| _ = paras.insert(p.0, p.1.into()));
+        parameter
+            .iter()
+            .for_each(|p| _ = paras.insert(p.0, p.1.into()));
 
         let request = self
             .client
@@ -94,7 +99,7 @@ impl Client {
             .form(&paras);
 
         trace!("request from server: {}, para: {:?}", path, paras);
-        let body = match request.send().await {
+        let body: String = match request.send().await {
             Ok(body) => {
                 if body.status() != 200 {
                     warn!("Could not fetch previous request to {}", path);
@@ -105,24 +110,14 @@ impl Client {
             Err(e) => return Err(SubsonicError::Connection(e)),
         };
 
-        //remove subsonic-response
-        //TODO find better solution than string -> json -> string -> json
-        let json: serde_json::Value = match serde_json::from_str(&body) {
-            Ok(k) => k,
-            Err(e) => return Err(SubsonicError::Conversion(e)),
-        };
-
-        let ser = serde_json::to_string(&json["subsonic-response"])?;
-
-        Ok(ser)
+        let response: data::OuterResponse = serde_json::from_str(&body)?;
+        Ok(response.inner)
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        data::{Error, ResponseType, OuterResponse},
-    };
+    use crate::data::{Error, OuterResponse, ResponseType};
 
     #[test]
     fn basic_conversion() {

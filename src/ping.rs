@@ -1,66 +1,68 @@
 use log::info;
-use serde::Deserialize;
 
-use super::{Client, SubsonicError};
+use crate::{data::Info, Client, SubsonicError};
 
 impl Client {
-    ///on success sends server_name, username, hash and salt back
-    pub async fn ping(&self) -> Result<(String, String, String, String), SubsonicError> {
+    /// pings server and sends its [Info]
+    pub async fn ping(&self) -> Result<Info, SubsonicError> {
         info!(
             "ping {}, {}, {}, {}",
             self.server_url, self.auth.user, self.auth.hash, self.auth.salt
         );
         let body = self.request("ping", None, None).await?;
-
-        #[derive(Deserialize, Debug)]
-        struct Response {
-            status: String,
-            error: Option<crate::data::Error>,
-        }
-
-        let json = serde_json::from_str::<Response>(&body)?;
-        if json.status != "ok" {
-            match json.error {
-                None => unreachable!(),
-                Some(e) => return Err(SubsonicError::Server(format!("{}, {}", e.code, e.message))),
-            }
-        }
-
-        Ok((
-            self.server_url.clone(),
-            self.auth.user.clone(),
-            self.auth.hash.clone(),
-            self.auth.salt.clone(),
-        ))
+        Ok(body.info)
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use serde::Deserialize;
-
-    #[derive(Deserialize, Debug)]
-    struct Response {
-        status: String,
-        error: Option<crate::data::Error>,
-    }
+    use crate::data::{OuterResponse, ResponseType};
 
     #[test]
     fn ping_convert() {
-        let response_txt = r##"{"status":"ok","version":"1.16.1","type":"navidrome","serverVersion":"0.49.3 (8b93962f)"}"##;
-        let response = serde_json::from_str::<Response>(response_txt).unwrap();
-        println!("{response:?}");
-        assert_eq!(response.status, String::from("ok"));
+        let response_txt = r##"
+            {
+              "subsonic-response": {
+                "status": "ok",
+                "version": "1.16.1",
+                "type": "navidrome",
+                "serverVersion": "0.49.3 (8b93962f)"
+              }
+            }"##;
+        let info = serde_json::from_str::<OuterResponse>(response_txt)
+            .unwrap()
+            .inner
+            .info;
+        assert_eq!(info.status, String::from("ok"));
+        assert_eq!(info.version, String::from("1.16.1"));
+        assert_eq!(info.r#type, Some(String::from("navidrome")));
     }
 
     #[test]
     fn convert_error() {
-        let response_txt = r##"{"status":"failed","version":"1.16.1","type":"navidrome","serverVersion":"0.49.3 (8b93962f)","error":{"code":40,"message":"Wrong username or password"}}"##;
-        let response = serde_json::from_str::<Response>(response_txt).unwrap();
-        println!("{response:?}");
-        assert_eq!(response.status, String::from("failed"));
-        let error = response.error.unwrap();
-        assert_eq!(error.code, 40);
-        assert_eq!(error.message, String::from("Wrong username or password"));
+        let response_txt = r##"
+            {
+              "subsonic-response": {
+                "status": "failed",
+                "version": "1.16.1",
+                "type": "navidrome",
+                "serverVersion": "0.49.3 (8b93962f)",
+                "error": {
+                  "code": 40,
+                  "message": "Wrong username or password"
+                }
+              }
+            }"##;
+        let response = serde_json::from_str::<OuterResponse>(response_txt)
+            .unwrap()
+            .inner;
+        assert_eq!(response.info.status, String::from("failed"));
+        assert_eq!(response.info.version, String::from("1.16.1"));
+        if let ResponseType::Error { error } = response.data {
+            assert_eq!(error.code, 40);
+            assert_eq!(error.message, String::from("Wrong username or password"));
+        } else {
+            panic!("wrong type");
+        }
     }
 }

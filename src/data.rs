@@ -12,7 +12,7 @@ pub(crate) struct OuterResponse {
 pub(crate) struct Response {
     /// will be send with every response
     #[serde(flatten)]
-    pub info: MetaInfo,
+    pub info: Info,
 
     /// the type is dependent on the request
     #[serde(flatten)]
@@ -21,7 +21,7 @@ pub(crate) struct Response {
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct MetaInfo {
+pub struct Info {
     /// either "ok" or "failed"
     pub status: String,
 
@@ -39,12 +39,64 @@ pub struct MetaInfo {
 #[derive(Debug, Deserialize, PartialEq, Eq)]
 #[serde(untagged)]
 pub enum ResponseType {
-    Error { error: Error },
+    Error {
+        error: Error,
+    },
+    Playlists {
+        playlists: Playlists,
+    },
+    PlaylistWithSongs {
+        playlist: PlaylistWithSongs,
+    },
+    ScanStatus {
+        status: ScanStatus,
+    },
+    Song {
+        song: Box<Child>,
+    },
+    Artists {
+        artists: Artists,
+    },
+    Artist {
+        artist: Artist,
+    },
+    Album {
+        album: Album,
+    },
+    #[serde(rename_all = "camelCase")]
+    AlbumList {
+        album_list: AlbumList,
+    },
+    #[serde(rename_all = "camelCase")]
+    AlbumList2 {
+        album_list2: AlbumList2,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
 
-#[derive(Deserialize, Debug, Clone)]
+/// scan status of the server
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+pub enum ScanStatus {
+    /// server is currently scanning the library
+    Scanning,
+    /// current number of scan routines of the server; increments after scanning
+    Count(usize),
+}
+
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct Artists {
+    pub index: Vec<ArtistIndex>,
+}
+
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct ArtistIndex {
+    pub name: String,
+    #[serde(default, rename = "artist")]
+    pub artists: Vec<Artist>,
+}
+
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Artist {
     pub id: String,
@@ -54,10 +106,12 @@ pub struct Artist {
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     #[serde(default, with = "option_user_rating")]
     pub user_rating: Option<UserRating>,
-    pub average_rating: Option<f64>,
+    // pub average_rating: Option<f64>,
+    #[serde(default, rename = "album")]
+    pub albums: Vec<Album>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum UserRating {
     One,
     Two,
@@ -66,7 +120,23 @@ pub enum UserRating {
     Five,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct AlbumList {
+    #[serde(default, rename = "album")]
+    pub albums: Vec<Album>,
+}
+
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct AlbumList2 {
+    #[serde(default, rename = "album")]
+    pub albums: Vec<Album>,
+}
+
+/// some responses don't send the song list<br>
+///to combat this compare song_count with songs and use get_album if necessary
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Album {
     pub id: String,
@@ -82,9 +152,10 @@ pub struct Album {
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     pub year: Option<i32>,
     pub genre: Option<String>,
+    #[serde(default, rename = "song")]
+    pub songs: Vec<Child>,
 }
-
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Child {
     pub id: String,
@@ -107,7 +178,7 @@ pub struct Child {
     pub path: Option<String>,
     pub is_video: Option<bool>,
     pub user_rating: Option<i32>,
-    pub average_rating: Option<f32>,
+    // pub average_rating: Option<f32>,
     pub play_count: Option<i64>,
     pub disc_number: Option<i32>,
     #[serde(default, with = "option_date_serde")]
@@ -122,7 +193,7 @@ pub struct Child {
     pub original_height: Option<i32>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum MediaType {
     Music,
     Podcast,
@@ -130,7 +201,13 @@ pub enum MediaType {
     Video,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct Playlists {
+    #[serde(default, rename = "playlist")]
+    pub playlists: Vec<Playlist>,
+}
+
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Playlist {
     pub allowed_user: Option<Vec<String>>,
@@ -146,13 +223,13 @@ pub struct Playlist {
     pub cover_art: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct PlaylistWithSongs {
     #[serde(flatten)]
     pub info: Playlist,
     #[serde(default)]
-    pub entry: Vec<Child>,
+    pub songs: Vec<Child>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq)]
