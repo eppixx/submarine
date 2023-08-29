@@ -12,7 +12,6 @@ pub mod get_album;
 pub mod get_album_list;
 pub mod get_album_list2;
 pub mod get_artist;
-pub mod get_artist_albums;
 pub mod get_artists;
 pub mod get_cover_art;
 pub mod get_playlist;
