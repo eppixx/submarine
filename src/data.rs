@@ -1,5 +1,49 @@
 use serde::Deserialize;
 
+/// returned by the server
+#[derive(Debug, Deserialize)]
+pub(crate) struct OuterResponse {
+    #[serde(rename = "subsonic-response")]
+    pub(crate) inner: Response,
+}
+
+/// contains every possible response from a subsonic server
+#[derive(Debug, Deserialize)]
+pub(crate) struct Response {
+    /// will be send with every response
+    #[serde(flatten)]
+    pub info: MetaInfo,
+
+    /// the type is dependent on the request
+    #[serde(flatten)]
+    pub data: ResponseType,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MetaInfo {
+    /// either "ok" or "failed"
+    pub status: String,
+
+    /// protocol version
+    pub version: String,
+
+    /// identifier of server; returned by navidrome and maybe other servers
+    pub r#type: Option<String>,
+
+    /// version of server
+    pub server_version: Option<String>,
+}
+
+/// every data that is dependent on the request
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(untagged)]
+pub enum ResponseType {
+    Error { error: Error },
+    // order is important or it will allways be matched to ping
+    Ping {},
+}
+
 #[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Artist {
@@ -8,9 +52,18 @@ pub struct Artist {
     pub image_url: Option<String>,
     #[serde(default, with = "option_date_serde")]
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
-    //TODO implement rating
-    // _userRating: Option<Rating>,
-    // _averageRating: Option<AverageRating>,
+    #[serde(default, with = "option_user_rating")]
+    pub user_rating: Option<UserRating>,
+    pub average_rating: Option<f64>,
+}
+
+#[derive(Debug, Clone)]
+pub enum UserRating {
+    One,
+    Two,
+    Three,
+    Four,
+    Five,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -102,6 +155,12 @@ pub struct PlaylistWithSongs {
     pub entry: Vec<Child>,
 }
 
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+pub struct Error {
+    pub code: i32,
+    pub message: String,
+}
+
 mod date_serde {
     use chrono::{offset::FixedOffset, DateTime};
     use serde::{self, Deserialize, Deserializer};
@@ -129,6 +188,26 @@ mod option_date_serde {
                 DateTime::parse_from_rfc3339(&s).map_err(serde::de::Error::custom)?,
             )),
             None => Ok(None),
+        }
+    }
+}
+
+mod option_user_rating {
+    use crate::data::UserRating;
+    use serde::{self, Deserialize, Deserializer};
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<UserRating>, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s: Option<i32> = Option::deserialize(deserializer)?;
+        match s {
+            Some(s) if s == 1 => Ok(Some(UserRating::One)),
+            Some(s) if s == 2 => Ok(Some(UserRating::Two)),
+            Some(s) if s == 3 => Ok(Some(UserRating::Three)),
+            Some(s) if s == 4 => Ok(Some(UserRating::Four)),
+            Some(s) if s == 5 => Ok(Some(UserRating::Five)),
+            _ => Ok(None),
         }
     }
 }

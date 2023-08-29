@@ -19,16 +19,17 @@ pub mod get_playlist;
 pub mod get_playlists;
 pub mod get_scan_status;
 pub mod get_song;
+pub mod ping;
 pub mod star;
 pub mod stream;
 pub mod unstar;
 pub mod update_playlist;
 
 use log::{info, trace, warn};
-use serde::Deserialize;
 use thiserror::Error;
 
 use std::collections::HashMap;
+
 
 /// A client which all requests are send through.<br>
 /// Example
@@ -74,7 +75,7 @@ impl Client {
         client
     }
 
-    pub async fn request(
+    pub(crate) async fn request(
         &self,
         path: &str,
         parameter: Option<HashMap<&str, String>>,
@@ -117,40 +118,57 @@ impl Client {
 
         Ok(ser)
     }
+}
 
-    ///on success sends server_name, username, hash and salt back
-    pub async fn ping(&self) -> Result<(String, String, String, String), SubsonicError> {
-        info!(
-            "ping {}, {}, {}, {}",
-            self.server_url, self.auth.user, self.auth.hash, self.auth.salt
-        );
-        let body = self.request("ping", None, None).await?;
+#[cfg(test)]
+mod tests {
+    use crate::{
+        data::{Error, ResponseType, OuterResponse},
+    };
 
-        #[derive(Deserialize, Debug)]
-        struct Error {
-            code: i32,
-            message: String,
+    #[test]
+    fn basic_conversion() {
+        let oracle = vec![
+            (
+                ResponseType::Ping {},
+                r##"
+                {
+                    "subsonic-response":{
+                         "status":"ok",
+                         "version":"1.16.1",
+                         "type":"navidrome",
+                         "serverVersion":"0.49.3 (8b93962f)"
+                    }
+                }"##,
+            ),
+            (
+                ResponseType::Error {
+                    error: Error {
+                        code: 40,
+                        message: String::from("Wrong username or password"),
+                    },
+                },
+                r##"
+                {
+                    "subsonic-response":{
+                        "status":"failed",
+                        "version":"1.16.1",
+                        "type":"navidrome",
+                        "serverVersion":"0.49.3 (8b93962f)",
+                        "error":{
+                            "code":40,
+                            "message":"Wrong username or password"
+                        }
+                    }
+                }"##,
+            ),
+        ];
+
+        for (target, response_body) in oracle {
+            let response = serde_json::from_str::<OuterResponse>(response_body)
+                .unwrap()
+                .inner;
+            assert_eq!(target, response.data);
         }
-
-        #[derive(Deserialize, Debug)]
-        struct Response {
-            status: String,
-            error: Option<Error>,
-        }
-
-        let json = serde_json::from_str::<Response>(&body)?;
-        if json.status != "ok" {
-            match json.error {
-                None => unreachable!(),
-                Some(e) => return Err(SubsonicError::Server(format!("{}, {}", e.code, e.message))),
-            }
-        }
-
-        Ok((
-            self.server_url.clone(),
-            self.auth.user.clone(),
-            self.auth.hash.clone(),
-            self.auth.salt.clone(),
-        ))
     }
 }
