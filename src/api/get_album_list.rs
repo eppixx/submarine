@@ -142,9 +142,9 @@ mod tests {
     use std::str::FromStr;
 
     use crate::{
+        api::get_album_list::YearSpan,
         auth::AuthBuilder,
         data::{OuterResponse, ResponseType},
-        get_album_list::YearSpan,
         Client,
     };
 
