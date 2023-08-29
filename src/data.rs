@@ -156,6 +156,7 @@ pub struct Album {
     #[serde(default, rename = "song")]
     pub songs: Vec<Child>,
 }
+
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Child {

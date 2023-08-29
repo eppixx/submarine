@@ -1,6 +1,6 @@
 use std::fmt::Write;
 
-use super::{Client, SubsonicError};
+use crate::{Client, SubsonicError};
 
 impl Client {
     pub fn get_cover_art_url(&self, id: &str) -> String {

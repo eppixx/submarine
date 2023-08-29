@@ -1,4 +1,4 @@
-use super::{Client, SubsonicError};
+use crate::{Client, SubsonicError};
 
 impl Client {
     pub async fn delete_playlist(&self, id: &str) -> Result<(), SubsonicError> {

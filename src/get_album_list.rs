@@ -76,7 +76,7 @@ impl Client {
         if order != Order::ByYear && year_span.is_some() {
             return Err(SubsonicError::InvalidArgs(String::from(
                 "YearSpan only possible with Order::ByYear",
-            )))
+            )));
         }
 
         if order == Order::ByGenre && genre.is_none() {
@@ -144,7 +144,8 @@ mod tests {
     use crate::{
         auth::AuthBuilder,
         data::{OuterResponse, ResponseType},
-        Client, get_album_list::YearSpan,
+        get_album_list::YearSpan,
+        Client,
     };
 
     use super::Order;
