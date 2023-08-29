@@ -19,7 +19,11 @@ impl Client {
         Ok(())
     }
 
-    pub async fn update_playlist_remove(&self, id: &str, index: usize) -> Result<(), SubsonicError> {
+    pub async fn update_playlist_remove(
+        &self,
+        id: &str,
+        index: usize,
+    ) -> Result<(), SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("playlistId", String::from(id));
         paras.insert("songIndexToRemove", index.to_string());
