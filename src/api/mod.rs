@@ -1,0 +1,17 @@
+pub mod update_playlist;
+pub mod create_playlist;
+pub mod delete_playlist;
+pub mod get_album;
+pub mod get_album_list;
+pub mod get_album_list2;
+pub mod get_artists;
+pub mod get_cover_art;
+pub mod get_playlist;
+pub mod get_playlists;
+pub mod get_scan_status;
+pub mod get_song;
+pub mod ping;
+pub mod stream;
+pub mod star;
+pub mod unstar;
+pub mod get_artist;

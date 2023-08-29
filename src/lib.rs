@@ -5,24 +5,8 @@
 //! This implements everything up to version v1.16.1.
 
 pub mod auth;
-pub mod create_playlist;
 pub mod data;
-pub mod delete_playlist;
-pub mod get_album;
-pub mod get_album_list;
-pub mod get_album_list2;
-pub mod get_artist;
-pub mod get_artists;
-pub mod get_cover_art;
-pub mod get_playlist;
-pub mod get_playlists;
-pub mod get_scan_status;
-pub mod get_song;
-pub mod ping;
-pub mod star;
-pub mod stream;
-pub mod unstar;
-pub mod update_playlist;
+pub mod api;
 
 use log::{info, trace, warn};
 use thiserror::Error;

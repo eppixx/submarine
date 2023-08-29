@@ -1,4 +1,4 @@
-use crate::star::StarTarget;
+use crate::api::star::StarTarget;
 use crate::{Client, SubsonicError};
 
 impl Client {

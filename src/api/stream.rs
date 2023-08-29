@@ -1,4 +1,4 @@
-use super::Client;
+use crate::Client;
 
 impl Client {
     pub fn get_stream_url(&self, id: &str) -> String {

@@ -1,5 +1,5 @@
 use crate::data::ResponseType;
-use crate::get_album_list::{Order, YearSpan};
+use crate::api::get_album_list::{Order, YearSpan};
 
 use crate::data::Album;
 use crate::{Client, SubsonicError};

@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use super::{Client, SubsonicError};
+use crate::{Client, SubsonicError};
 
 /// parameter for the star method
 pub enum StarTarget {
