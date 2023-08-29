@@ -56,41 +56,29 @@ impl Display for Order {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct YearSpan {
+    from_year: usize,
+    to_year: usize,
+}
+
 impl Client {
     pub(crate) fn check_album_list_parameter(
         &self,
         order: Order,
         size: Option<usize>,
         offset: Option<usize>,
-        from_year: Option<usize>,
-        to_year: Option<usize>,
+        year_span: Option<YearSpan>,
         genre: Option<&str>,
         music_folder_id: Option<&str>,
     ) -> Result<HashMap<&str, String>, SubsonicError> {
         // check for wrong combination of arguments
-        match (&order, &from_year, &to_year) {
-            (order, Some(_), _) if order != &Order::ByYear => {
-                return Err(SubsonicError::InvalidArgs(String::from(
-                    "fromYear and toYear only possible with Order::ByYear",
-                )))
-            }
-            (order, _, Some(_)) if order != &Order::ByYear => {
-                return Err(SubsonicError::InvalidArgs(String::from(
-                    "fromYear and toYear only possible with Order::ByYear",
-                )))
-            }
-            (_, None, Some(_)) => {
-                return Err(SubsonicError::InvalidArgs(String::from(
-                    "missing arg fromYear",
-                )))
-            }
-            (_, Some(_), None) => {
-                return Err(SubsonicError::InvalidArgs(String::from(
-                    "missing arg toYear",
-                )))
-            }
-            _ => {}
+        if order != Order::ByYear && year_span.is_some() {
+            return Err(SubsonicError::InvalidArgs(String::from(
+                "YearSpan only possible with Order::ByYear",
+            )))
         }
+
         if order == Order::ByGenre && genre.is_none() {
             return Err(SubsonicError::InvalidArgs(String::from(
                 "missing arg genre",
@@ -105,11 +93,9 @@ impl Client {
         if let Some(offset) = offset {
             paras.insert("offset", offset.to_string());
         }
-        if let Some(from) = from_year {
-            paras.insert("fromYear", from.to_string());
-        }
-        if let Some(to) = to_year {
-            paras.insert("toYear", to.to_string());
+        if let Some(span) = year_span {
+            paras.insert("fromYear", span.from_year.to_string());
+            paras.insert("toYear", span.to_year.to_string());
         }
         if let Some(genre) = genre {
             paras.insert("genre", genre.to_string());
@@ -127,8 +113,7 @@ impl Client {
         order: Order,
         size: Option<usize>,
         offset: Option<usize>,
-        from_year: Option<usize>,
-        to_year: Option<usize>,
+        year_span: Option<YearSpan>,
         genre: Option<&str>,
         music_folder_id: Option<&str>,
     ) -> Result<Vec<Album>, SubsonicError> {
@@ -136,8 +121,7 @@ impl Client {
             order,
             size,
             offset,
-            from_year,
-            to_year,
+            year_span,
             genre,
             music_folder_id,
         )?;
@@ -160,7 +144,7 @@ mod tests {
     use crate::{
         auth::AuthBuilder,
         data::{OuterResponse, ResponseType},
-        Client,
+        Client, get_album_list::YearSpan,
     };
 
     use super::Order;
@@ -257,13 +241,16 @@ mod tests {
 
     #[tokio::test]
     async fn test_error_args() {
+        let span = YearSpan {
+            from_year: 2000,
+            to_year: 2010,
+        };
+
         let oracle = vec![
-            (Order::ByGenre, Some(2000), None, None),
-            (Order::ByGenre, None, Some(2000), None),
-            (Order::ByYear, Some(2000), Some(2000), None),
-            (Order::ByYear, Some(2000), Some(2010), None),
-            (Order::ByGenre, Some(2000), Some(2010), None),
-            (Order::ByGenre, None, None, None),
+            (Order::ByGenre, Some(span.clone()), None),
+            (Order::ByYear, Some(span.clone()), Some("Rock")),
+            (Order::ByGenre, Some(span), None),
+            (Order::ByGenre, None, None),
         ];
 
         let auth = AuthBuilder::new("peter", "v0.16.1")
@@ -273,7 +260,7 @@ mod tests {
 
         for test in oracle {
             assert!(client
-                .get_album_list(test.0, None, None, test.1, test.2, test.3, None)
+                .get_album_list(test.0, None, None, test.1, test.2, None)
                 .await
                 .is_err());
         }

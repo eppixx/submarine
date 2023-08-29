@@ -1,5 +1,5 @@
 use crate::data::ResponseType;
-use crate::get_album_list::Order;
+use crate::get_album_list::{Order, YearSpan};
 
 use crate::data::Album;
 use crate::{Client, SubsonicError};
@@ -11,8 +11,7 @@ impl Client {
         order: Order,
         size: Option<usize>,
         offset: Option<usize>,
-        from_year: Option<usize>,
-        to_year: Option<usize>,
+        year_span: Option<YearSpan>,
         genre: Option<&str>,
         music_folder_id: Option<&str>,
     ) -> Result<Vec<Album>, SubsonicError> {
@@ -20,8 +19,7 @@ impl Client {
             order,
             size,
             offset,
-            from_year,
-            to_year,
+            year_span,
             genre,
             music_folder_id,
         )?;
