@@ -48,8 +48,9 @@ pub enum ResponseType {
     PlaylistWithSongs {
         playlist: PlaylistWithSongs,
     },
+    #[serde(rename_all = "camelCase")]
     ScanStatus {
-        status: ScanStatus,
+        scan_status: ScanStatus,
     },
     Song {
         song: Box<Child>,
@@ -75,13 +76,13 @@ pub enum ResponseType {
     Ping {},
 }
 
-/// scan status of the server
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
-pub enum ScanStatus {
-    /// server is currently scanning the library
-    Scanning,
-    /// current number of scan routines of the server; increments after scanning
-    Count(usize),
+pub struct ScanStatus {
+    pub scanning: bool,
+    pub count: usize,
+    pub folder_count: Option<usize>,
+    #[serde(default, with = "option_date_serde")]
+    pub last_scan: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
 }
 
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
