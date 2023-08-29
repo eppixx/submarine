@@ -85,9 +85,7 @@ impl Client {
         let headers = headers.unwrap_or_default();
 
         let mut paras: HashMap<&str, String> = self.auth.clone().into();
-        for p in parameter {
-            paras.insert(p.0, p.1);
-        }
+        parameter.iter().for_each(|p| _ = paras.insert(p.0, p.1.into()));
 
         let request = self
             .client
