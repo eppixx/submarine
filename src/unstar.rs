@@ -1,30 +1,14 @@
-use super::{Client, SubsonicError};
+use crate::star::StarTarget;
+use crate::{Client, SubsonicError};
 
 impl Client {
-    pub async fn unstar_track(&self, id: &str) -> Result<(), SubsonicError> {
+    /// Quelle: http://www.subsonic.org/pages/api.jsp#unstar
+    pub async fn unstar(&self, id: &str, target: StarTarget) -> Result<(), SubsonicError> {
         let mut paras = std::collections::HashMap::new();
-        paras.insert("id", String::from(id));
+        let key = target.to_string();
+        paras.insert(key.as_str(), String::from(id));
 
         let _ = self.request("unstar", Some(paras), None).await?;
-
-        Ok(())
-    }
-
-    pub async fn unstar_album(&self, id: &str) -> Result<(), SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("albumId", String::from(id));
-
-        let _ = self.request("unstar", Some(paras), None).await?;
-
-        Ok(())
-    }
-
-    pub async fn unstar_artist(&self, id: &str) -> Result<(), SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("artistId", String::from(id));
-
-        let _ = self.request("unstar", Some(paras), None).await?;
-
         Ok(())
     }
 }

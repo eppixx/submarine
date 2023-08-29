@@ -1,30 +1,32 @@
+use std::fmt::Display;
+
 use super::{Client, SubsonicError};
 
+/// parameter for the star method
+pub enum StarTarget {
+    SongOrFolder,
+    Album,
+    Artist,
+}
+
+impl Display for StarTarget {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::SongOrFolder => write!(f, "id"),
+            Self::Album => write!(f, "albumId"),
+            Self::Artist => write!(f, "artistId"),
+        }
+    }
+}
+
 impl Client {
-    pub async fn star_track(&self, id: &str) -> Result<(), SubsonicError> {
+    /// Quelle: http://www.subsonic.org/pages/api.jsp#star
+    pub async fn star(&self, id: &str, target: StarTarget) -> Result<(), SubsonicError> {
         let mut paras = std::collections::HashMap::new();
-        paras.insert("id", String::from(id));
+        let key = target.to_string();
+        paras.insert(key.as_str(), String::from(id));
 
         let _ = self.request("star", Some(paras), None).await?;
-
-        Ok(())
-    }
-
-    pub async fn star_album(&self, id: &str) -> Result<(), SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("albumId", String::from(id));
-
-        let _ = self.request("star", Some(paras), None).await?;
-
-        Ok(())
-    }
-
-    pub async fn star_artist(&self, id: &str) -> Result<(), SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("artistId", String::from(id));
-
-        let _ = self.request("star", Some(paras), None).await?;
-
         Ok(())
     }
 }
