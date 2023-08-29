@@ -116,7 +116,11 @@ impl Client {
     }
 
     /// Quelle: http://www.subsonic.org/pages/api.jsp#updatePlaylist
-    pub async fn update_playlist_comment(&self, id: &str, comment: &str) -> Result<(), SubsonicError> {
+    pub async fn update_playlist_comment(
+        &self,
+        id: &str,
+        comment: &str,
+    ) -> Result<(), SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         let key = Keys::PlaylistId.to_string();
         paras.insert(key.as_str(), String::from(id));
@@ -129,7 +133,11 @@ impl Client {
     }
 
     /// Quelle: http://www.subsonic.org/pages/api.jsp#updatePlaylist
-    pub async fn update_playlist_public(&self, id: &str, public: bool) -> Result<(), SubsonicError> {
+    pub async fn update_playlist_public(
+        &self,
+        id: &str,
+        public: bool,
+    ) -> Result<(), SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         let key = Keys::PlaylistId.to_string();
         paras.insert(key.as_str(), String::from(id));
