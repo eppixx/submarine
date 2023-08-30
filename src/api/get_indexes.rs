@@ -4,8 +4,18 @@ use crate::{
 };
 
 impl Client {
-    pub async fn get_indexes(&self) -> Result<Indexes, SubsonicError> {
-        let paras = std::collections::HashMap::new();
+    pub async fn get_indexes(
+        &self,
+        music_folder_id: Option<String>,
+        if_modified_since: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+    ) -> Result<Indexes, SubsonicError> {
+        let mut paras = std::collections::HashMap::new();
+        if let Some(folder) = music_folder_id {
+            paras.insert("musicFolderId", folder);
+        }
+        if let Some(modified_date) = if_modified_since {
+            paras.insert("ifModifiedSince", modified_date.to_string());
+        }
 
         let body = self.request("getIndexes", Some(paras), None).await?;
         if let ResponseType::Indexes { indexes } = body.data {
