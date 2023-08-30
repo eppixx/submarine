@@ -72,6 +72,9 @@ pub enum ResponseType {
     AlbumList2 {
         album_list2: AlbumList2,
     },
+    License {
+        license: License,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -238,6 +241,15 @@ pub struct PlaylistWithSongs {
 pub struct Error {
     pub code: i32,
     pub message: String,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct License {
+    pub valid: bool,
+    pub email: Option<String>,
+    pub license_expires: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+    pub trial_expires: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
 }
 
 mod date_serde {
