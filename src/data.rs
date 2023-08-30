@@ -72,6 +72,10 @@ pub enum ResponseType {
     AlbumList2 {
         album_list2: AlbumList2,
     },
+    #[serde(rename_all = "camelCase")]
+    MusicFolders {
+        music_folders: MusicFolders,
+    },
     License {
         license: License,
     },
@@ -250,6 +254,19 @@ pub struct License {
     pub email: Option<String>,
     pub license_expires: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     pub trial_expires: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct MusicFolders {
+    pub music_folder: Vec<MusicFolder>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct MusicFolder {
+    pub id: i32,
+    pub name: Option<String>,
 }
 
 mod date_serde {

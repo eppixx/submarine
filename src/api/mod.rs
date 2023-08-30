@@ -2,6 +2,7 @@ pub mod create_playlist;
 pub mod delete_playlist;
 pub mod get_album;
 pub mod get_album_list;
+pub mod get_music_folders;
 pub mod get_album_list2;
 pub mod get_artist;
 pub mod get_artists;
