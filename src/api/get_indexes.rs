@@ -33,7 +33,7 @@ mod tests {
     #[test]
     fn conversion_get_indexes() {
         let response_body = r##"
-                        {
+            {
                 "subsonic-response": {
                     "status": "ok",
                     "version": "1.16.1",
