@@ -79,6 +79,9 @@ pub enum ResponseType {
     License {
         license: License,
     },
+    Indexes {
+        indexes: Indexes,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -285,6 +288,27 @@ mod date_serde {
 mod option_date_serde {
     use chrono::{offset::FixedOffset, DateTime};
     use serde::{self, Deserialize, Deserializer};
+cfg_if::cfg_if! {
+    if #[cfg(feature = "navidrome")] {
+        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[serde(rename_all = "camelCase")]
+        pub struct Indexes {
+            #[serde(default)]
+            pub index: Vec<ArtistIndex>,
+        }
+    } else {
+        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[serde(rename_all = "camelCase")]
+        pub struct Indexes {
+            #[serde(default)]
+            pub shortcut: Vec<Artist>,
+            #[serde(default)]
+            pub index: Vec<Index>,
+            #[serde(default)]
+            pub child: Vec<Child>,
+            pub last_modified: chrono::DateTime<chrono::offset::FixedOffset>,
+            pub ignore_articles: String,
+        }
 
     pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<DateTime<FixedOffset>>, D::Error>
     where
@@ -296,6 +320,11 @@ mod option_date_serde {
                 DateTime::parse_from_rfc3339(&s).map_err(serde::de::Error::custom)?,
             )),
             None => Ok(None),
+        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[serde(rename_all = "camelCase")]
+        pub struct Index {
+            pub name: String,
+            pub artist: Vec<Artist>,
         }
     }
 }

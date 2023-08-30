@@ -1,5 +1,7 @@
-use crate::{Client, data::{MusicFolders, ResponseType}, SubsonicError};
-
+use crate::{
+    data::{MusicFolders, ResponseType},
+    Client, SubsonicError,
+};
 
 impl Client {
     pub async fn get_music_folders(&self) -> Result<MusicFolders, SubsonicError> {
