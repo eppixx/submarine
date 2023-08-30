@@ -91,7 +91,6 @@ pub struct ScanStatus {
     pub scanning: bool,
     pub count: usize,
     pub folder_count: Option<usize>,
-    #[serde(default, with = "option_date_serde")]
     pub last_scan: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
 }
 
@@ -113,7 +112,6 @@ pub struct Artist {
     pub id: String,
     pub name: String,
     pub image_url: Option<String>,
-    #[serde(default, with = "option_date_serde")]
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     #[serde(default, with = "option_user_rating")]
     pub user_rating: Option<UserRating>,
@@ -157,9 +155,7 @@ pub struct Album {
     pub song_count: i32,
     pub duration: i32,
     pub play_count: Option<i64>,
-    #[serde(with = "date_serde")]
     pub created: chrono::DateTime<chrono::offset::FixedOffset>,
-    #[serde(default, with = "option_date_serde")]
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     pub year: Option<i32>,
     pub genre: Option<String>,
@@ -193,9 +189,7 @@ pub struct Child {
     // pub average_rating: Option<f32>,
     pub play_count: Option<i64>,
     pub disc_number: Option<i32>,
-    #[serde(default, with = "option_date_serde")]
     pub created: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
-    #[serde(default, with = "option_date_serde")]
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     pub album_id: Option<String>,
     pub artist_id: Option<String>,
@@ -272,22 +266,6 @@ pub struct MusicFolder {
     pub name: Option<String>,
 }
 
-mod date_serde {
-    use chrono::{offset::FixedOffset, DateTime};
-    use serde::{self, Deserialize, Deserializer};
-
-    pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<FixedOffset>, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        DateTime::parse_from_rfc3339(&s).map_err(serde::de::Error::custom)
-    }
-}
-
-mod option_date_serde {
-    use chrono::{offset::FixedOffset, DateTime};
-    use serde::{self, Deserialize, Deserializer};
 cfg_if::cfg_if! {
     if #[cfg(feature = "navidrome")] {
         #[derive(Debug, Deserialize, PartialEq, Eq)]
@@ -310,16 +288,6 @@ cfg_if::cfg_if! {
             pub ignore_articles: String,
         }
 
-    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<DateTime<FixedOffset>>, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let s: Option<String> = Option::deserialize(deserializer)?;
-        match s {
-            Some(s) => Ok(Some(
-                DateTime::parse_from_rfc3339(&s).map_err(serde::de::Error::custom)?,
-            )),
-            None => Ok(None),
         #[derive(Debug, Deserialize, PartialEq, Eq)]
         #[serde(rename_all = "camelCase")]
         pub struct Index {
