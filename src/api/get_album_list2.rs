@@ -1,32 +1,49 @@
-use crate::api::get_album_list::{Order, YearSpan};
-use crate::data::ResponseType;
-
-use crate::data::Album;
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, data::{Album, ResponseType}};
+use crate::api::get_album_list::Order;
 
 impl Client {
-    /// size is the number of albums to return; maximum of 500
-    pub async fn get_album_list2(
-        &self,
-        order: Order,
-        size: Option<usize>,
-        offset: Option<usize>,
-        year_span: Option<YearSpan>,
-        genre: Option<&str>,
-        music_folder_id: Option<&str>,
-    ) -> Result<Vec<Album>, SubsonicError> {
-        let paras = self.check_album_list_parameter(
-            order,
-            size,
-            offset,
-            year_span,
-            genre,
-            music_folder_id,
-        )?;
+    pub async fn get_album_list2(&self, order: Order, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+        let mut paras = Self::create_paras(size, offset, music_folder_id);
+        paras.insert("type", order.to_string());
 
-        let body = self.request("getAlbumList2", Some(paras), None).await?;
-        if let ResponseType::AlbumList2 { album_list2 } = body.data {
-            Ok(album_list2.albums)
+        let body = self.request("getAlbumList", Some(paras), None).await?;
+        if let ResponseType::AlbumList { album_list } = body.data {
+            Ok(album_list.albums)
+        } else {
+            Err(SubsonicError::Submarine(String::from(
+                "got send wrong type; submarine fault?",
+            )))
+        }
+    }
+
+    pub async fn get_album_list2_by_year(&self, from_year: Option<usize>, to_year: Option<usize>, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+        let mut paras = Self::create_paras(size, offset, music_folder_id);
+        paras.insert("type", String::from("byYear"));
+        if let Some(from) = from_year {
+            paras.insert("fromYear", from.to_string());
+        }
+        if let Some(to) = to_year {
+            paras.insert("toYear", to.to_string());
+        }
+
+        let body = self.request("getAlbumList", Some(paras), None).await?;
+        if let ResponseType::AlbumList { album_list } = body.data {
+            Ok(album_list.albums)
+        } else {
+            Err(SubsonicError::Submarine(String::from(
+                "got send wrong type; submarine fault?",
+            )))
+        }
+    }
+
+    pub async fn get_album_list2_by_genre(&self, genre: impl Into<String>, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+        let mut paras = Self::create_paras(size, offset, music_folder_id);
+        paras.insert("type", String::from("byGenre"));
+        paras.insert("genre", genre.into());
+
+        let body = self.request("getAlbumList", Some(paras), None).await?;
+        if let ResponseType::AlbumList { album_list } = body.data {
+            Ok(album_list.albums)
         } else {
             Err(SubsonicError::Submarine(String::from(
                 "got send wrong type; submarine fault?",
@@ -34,6 +51,7 @@ impl Client {
         }
     }
 }
+
 #[cfg(test)]
 mod tests {
     use crate::data::{OuterResponse, ResponseType};

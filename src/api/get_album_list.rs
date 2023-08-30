@@ -15,8 +15,6 @@ pub enum Order {
     AlphabeticalByName,
     AlphabeticalByArtist,
     Starred,
-    ByYear,
-    ByGenre,
 }
 
 impl FromStr for Order {
@@ -32,8 +30,6 @@ impl FromStr for Order {
             "alphabeticalByName" => Ok(Self::AlphabeticalByName),
             "alphabeticalByArtist" => Ok(Self::AlphabeticalByArtist),
             "starred" => Ok(Self::Starred),
-            "byYear" => Ok(Self::ByYear),
-            "byGenre" => Ok(Self::ByGenre),
             _ => Err(()),
         }
     }
@@ -50,81 +46,63 @@ impl Display for Order {
             Self::AlphabeticalByName => write!(f, "alphabeticalByName"),
             Self::AlphabeticalByArtist => write!(f, "alphabeticalByArtist"),
             Self::Starred => write!(f, "starred"),
-            Self::ByYear => write!(f, "byYear"),
-            Self::ByGenre => write!(f, "byGenre"),
         }
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct YearSpan {
-    from_year: usize,
-    to_year: usize,
-}
-
 impl Client {
-    pub(crate) fn check_album_list_parameter(
-        &self,
-        order: Order,
-        size: Option<usize>,
-        offset: Option<usize>,
-        year_span: Option<YearSpan>,
-        genre: Option<&str>,
-        music_folder_id: Option<&str>,
-    ) -> Result<HashMap<&str, String>, SubsonicError> {
-        // check for wrong combination of arguments
-        if order != Order::ByYear && year_span.is_some() {
-            return Err(SubsonicError::InvalidArgs(String::from(
-                "YearSpan only possible with Order::ByYear",
-            )));
-        }
-
-        if order == Order::ByGenre && genre.is_none() {
-            return Err(SubsonicError::InvalidArgs(String::from(
-                "missing arg genre",
-            )));
-        }
-
+    pub(crate) fn create_paras(size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> HashMap<&'static str, String> {
         let mut paras = std::collections::HashMap::new();
         if let Some(size) = size {
             paras.insert("size", size.to_string()); //500 is maximum
         }
-        paras.insert("type", order.to_string());
         if let Some(offset) = offset {
             paras.insert("offset", offset.to_string());
         }
-        if let Some(span) = year_span {
-            paras.insert("fromYear", span.from_year.to_string());
-            paras.insert("toYear", span.to_year.to_string());
-        }
-        if let Some(genre) = genre {
-            paras.insert("genre", genre.to_string());
-        }
         if let Some(folder_id) = music_folder_id {
-            paras.insert("music_folder_id", folder_id.to_string());
+            paras.insert("musicFolderId", folder_id.into());
         }
-
-        Ok(paras)
+        paras
     }
 
-    /// size is the number of albums to return; maximum of 500
-    pub async fn get_album_list(
-        &self,
-        order: Order,
-        size: Option<usize>,
-        offset: Option<usize>,
-        year_span: Option<YearSpan>,
-        genre: Option<&str>,
-        music_folder_id: Option<&str>,
-    ) -> Result<Vec<Album>, SubsonicError> {
-        let paras = self.check_album_list_parameter(
-            order,
-            size,
-            offset,
-            year_span,
-            genre,
-            music_folder_id,
-        )?;
+    pub async fn get_album_list(&self, order: Order, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+        let mut paras = Self::create_paras(size, offset, music_folder_id);
+        paras.insert("type", order.to_string());
+
+        let body = self.request("getAlbumList", Some(paras), None).await?;
+        if let ResponseType::AlbumList { album_list } = body.data {
+            Ok(album_list.albums)
+        } else {
+            Err(SubsonicError::Submarine(String::from(
+                "got send wrong type; submarine fault?",
+            )))
+        }
+    }
+
+    pub async fn get_album_list_by_year(&self, from_year: Option<usize>, to_year: Option<usize>, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+        let mut paras = Self::create_paras(size, offset, music_folder_id);
+        paras.insert("type", String::from("byYear"));
+        if let Some(from) = from_year {
+            paras.insert("fromYear", from.to_string());
+        }
+        if let Some(to) = to_year {
+            paras.insert("toYear", to.to_string());
+        }
+
+        let body = self.request("getAlbumList", Some(paras), None).await?;
+        if let ResponseType::AlbumList { album_list } = body.data {
+            Ok(album_list.albums)
+        } else {
+            Err(SubsonicError::Submarine(String::from(
+                "got send wrong type; submarine fault?",
+            )))
+        }
+    }
+
+    pub async fn get_album_list_by_genre(&self, genre: impl Into<String>, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+        let mut paras = Self::create_paras(size, offset, music_folder_id);
+        paras.insert("type", String::from("byGenre"));
+        paras.insert("genre", genre.into());
 
         let body = self.request("getAlbumList", Some(paras), None).await?;
         if let ResponseType::AlbumList { album_list } = body.data {
@@ -142,10 +120,7 @@ mod tests {
     use std::str::FromStr;
 
     use crate::{
-        api::get_album_list::YearSpan,
-        auth::AuthBuilder,
         data::{OuterResponse, ResponseType},
-        Client,
     };
 
     use super::Order;
@@ -161,8 +136,6 @@ mod tests {
             Order::AlphabeticalByName,
             Order::AlphabeticalByArtist,
             Order::Starred,
-            Order::ByYear,
-            Order::ByGenre,
         ];
         for test in oracle {
             println!("testing: {test:?}");
@@ -237,33 +210,6 @@ mod tests {
             assert_eq!(album_list.albums.len(), 2);
         } else {
             panic!("wrong type: {response:?}");
-        }
-    }
-
-    #[tokio::test]
-    async fn test_error_args() {
-        let span = YearSpan {
-            from_year: 2000,
-            to_year: 2010,
-        };
-
-        let oracle = vec![
-            (Order::ByGenre, Some(span.clone()), None),
-            (Order::ByYear, Some(span.clone()), Some("Rock")),
-            (Order::ByGenre, Some(span), None),
-            (Order::ByGenre, None, None),
-        ];
-
-        let auth = AuthBuilder::new("peter", "v0.16.1")
-            .client_name("my_music_app")
-            .hashed("change_me_password");
-        let client = Client::new("https://target.com", auth);
-
-        for test in oracle {
-            assert!(client
-                .get_album_list(test.0, None, None, test.1, test.2, None)
-                .await
-                .is_err());
         }
     }
 }
