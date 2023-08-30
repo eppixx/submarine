@@ -51,7 +51,11 @@ impl Display for Order {
 }
 
 impl Client {
-    pub(crate) fn create_paras(size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> HashMap<&'static str, String> {
+    pub(crate) fn create_paras(
+        size: Option<usize>,
+        offset: Option<usize>,
+        music_folder_id: Option<impl Into<String>>,
+    ) -> HashMap<&'static str, String> {
         let mut paras = std::collections::HashMap::new();
         if let Some(size) = size {
             paras.insert("size", size.to_string()); //500 is maximum
@@ -65,7 +69,13 @@ impl Client {
         paras
     }
 
-    pub async fn get_album_list(&self, order: Order, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+    pub async fn get_album_list(
+        &self,
+        order: Order,
+        size: Option<usize>,
+        offset: Option<usize>,
+        music_folder_id: Option<impl Into<String>>,
+    ) -> Result<Vec<Album>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
         paras.insert("type", order.to_string());
 
@@ -79,7 +89,14 @@ impl Client {
         }
     }
 
-    pub async fn get_album_list_by_year(&self, from_year: Option<usize>, to_year: Option<usize>, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+    pub async fn get_album_list_by_year(
+        &self,
+        from_year: Option<usize>,
+        to_year: Option<usize>,
+        size: Option<usize>,
+        offset: Option<usize>,
+        music_folder_id: Option<impl Into<String>>,
+    ) -> Result<Vec<Album>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
         paras.insert("type", String::from("byYear"));
         if let Some(from) = from_year {
@@ -99,7 +116,13 @@ impl Client {
         }
     }
 
-    pub async fn get_album_list_by_genre(&self, genre: impl Into<String>, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+    pub async fn get_album_list_by_genre(
+        &self,
+        genre: impl Into<String>,
+        size: Option<usize>,
+        offset: Option<usize>,
+        music_folder_id: Option<impl Into<String>>,
+    ) -> Result<Vec<Album>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
         paras.insert("type", String::from("byGenre"));
         paras.insert("genre", genre.into());
@@ -119,9 +142,7 @@ impl Client {
 mod tests {
     use std::str::FromStr;
 
-    use crate::{
-        data::{OuterResponse, ResponseType},
-    };
+    use crate::data::{OuterResponse, ResponseType};
 
     use super::Order;
 

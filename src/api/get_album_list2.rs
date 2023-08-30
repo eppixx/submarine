@@ -1,8 +1,17 @@
-use crate::{Client, SubsonicError, data::{Album, ResponseType}};
 use crate::api::get_album_list::Order;
+use crate::{
+    data::{Album, ResponseType},
+    Client, SubsonicError,
+};
 
 impl Client {
-    pub async fn get_album_list2(&self, order: Order, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+    pub async fn get_album_list2(
+        &self,
+        order: Order,
+        size: Option<usize>,
+        offset: Option<usize>,
+        music_folder_id: Option<impl Into<String>>,
+    ) -> Result<Vec<Album>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
         paras.insert("type", order.to_string());
 
@@ -16,7 +25,14 @@ impl Client {
         }
     }
 
-    pub async fn get_album_list2_by_year(&self, from_year: Option<usize>, to_year: Option<usize>, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+    pub async fn get_album_list2_by_year(
+        &self,
+        from_year: Option<usize>,
+        to_year: Option<usize>,
+        size: Option<usize>,
+        offset: Option<usize>,
+        music_folder_id: Option<impl Into<String>>,
+    ) -> Result<Vec<Album>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
         paras.insert("type", String::from("byYear"));
         if let Some(from) = from_year {
@@ -36,7 +52,13 @@ impl Client {
         }
     }
 
-    pub async fn get_album_list2_by_genre(&self, genre: impl Into<String>, size: Option<usize>, offset: Option<usize>, music_folder_id: Option<impl Into<String>>) -> Result<Vec<Album>, SubsonicError> {
+    pub async fn get_album_list2_by_genre(
+        &self,
+        genre: impl Into<String>,
+        size: Option<usize>,
+        offset: Option<usize>,
+        music_folder_id: Option<impl Into<String>>,
+    ) -> Result<Vec<Album>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
         paras.insert("type", String::from("byGenre"));
         paras.insert("genre", genre.into());
