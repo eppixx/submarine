@@ -96,6 +96,10 @@ pub enum ResponseType {
     VideoInfo {
         video_info: VideoInfo,
     },
+    #[serde(rename_all = "camelCase")]
+    ArtistInfo {
+        artist_info: ArtistInfo,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -384,6 +388,59 @@ pub struct VideoConversion {
     pub id: String,
     pub bit_rate: Option<i32>, // in kbs
     pub audio_track_id: Option<i32>,
+}
+
+cfg_if::cfg_if! {
+    if #[cfg(feature = "navidrome")] {
+        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[serde(rename_all = "camelCase")]
+        pub struct ArtistInfoBase {
+            pub biography: Option<String>,
+            pub music_brainz_id: Option<String>,
+            pub last_fm_rrl: Option<String>,
+            pub small_image_url: Option<String>,
+            pub medium_image_url: Option<String>,
+            pub large_image_url: Option<String>,
+        }
+    } else {
+        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[serde(rename_all = "camelCase")]
+        pub struct ArtistInfoBase {
+            #[serde(default)]
+            pub biography: Vec<String>,
+            #[serde(default)]
+            pub music_brainz_id: Vec<String>,
+            #[serde(default)]
+            pub last_fm_rrl: Vec<String>,
+            #[serde(default)]
+            pub small_image_url: Vec<String>,
+            #[serde(default)]
+            pub medium_image_url: Vec<String>,
+            #[serde(default)]
+            pub large_image_url: Vec<String>,
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct ArtistInfo {
+    #[serde(flatten)]
+    pub base: ArtistInfoBase,
+    #[serde(default)]
+    pub similar_artist: Vec<Artist>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Artist {
+    pub id: String,
+    pub name: String,
+    pub artist_image_url: Option<String>,
+    pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+    #[serde(default, with = "option_user_rating")]
+    pub user_rating: Option<UserRating>,
+    // pub average_rating: Option<AverageRating>,
 }
 
 mod option_user_rating {
