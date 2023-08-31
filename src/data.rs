@@ -293,7 +293,7 @@ cfg_if::cfg_if! {
         #[serde(rename_all = "camelCase")]
         pub struct Indexes {
             #[serde(default)]
-            pub index: Vec<ArtistIndex>,
+            pub index: Vec<IndexId3>,
         }
     } else {
         #[derive(Debug, Deserialize, PartialEq, Eq)]
