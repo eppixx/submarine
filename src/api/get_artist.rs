@@ -1,9 +1,12 @@
-use crate::data::{ResponseType, ArtistWithAlbumsId3};
+use crate::data::{ArtistWithAlbumsId3, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getArtist
-    pub async fn get_artist(&self, id: impl Into<String>) -> Result<ArtistWithAlbumsId3, SubsonicError> {
+    pub async fn get_artist(
+        &self,
+        id: impl Into<String>,
+    ) -> Result<ArtistWithAlbumsId3, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
 

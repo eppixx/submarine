@@ -2,16 +2,17 @@ use crate::data::{Child, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    pub async fn get_track(&self, id: &str) -> Result<Child, SubsonicError> {
+    /// reference: http://www.subsonic.org/pages/api.jsp#getSong
+    pub async fn get_song(&self, id: impl Into<String>) -> Result<Child, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
-        paras.insert("id", String::from(id));
+        paras.insert("id", id.into());
 
         let body = self.request("getSong", Some(paras), None).await?;
         if let ResponseType::Song { song } = body.data {
             Ok(*song)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type Album but found wrong type",
             )))
         }
     }
