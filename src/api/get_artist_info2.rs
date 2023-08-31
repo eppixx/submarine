@@ -2,7 +2,7 @@ use crate::data::{ArtistInfo, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getArtistInfo
+    /// reference: http://www.subsonic.org/pages/api.jsp#getArtistInfo2
     pub async fn get_artist_info2(
         &self,
         id: impl Into<String>,
