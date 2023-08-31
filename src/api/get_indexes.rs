@@ -32,7 +32,7 @@ impl Client {
 mod tests {
     #[test]
     fn conversion_get_indexes() {
-        panic!("implement conversion with data that is not form navidrome");
+        todo!("implement conversion with data that is not form navidrome");
     }
 }
 
