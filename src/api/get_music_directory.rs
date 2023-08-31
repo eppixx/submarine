@@ -16,7 +16,7 @@ impl Client {
             Ok(directory)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "expected type Indexes but found wrong type",
+                "expected type MusicDirectory but found wrong type",
             )))
         }
     }
