@@ -3,10 +3,8 @@ use crate::{Client, SubsonicError};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getNowPlaying
-    pub async fn get_now_playing(
-        &self,
-    ) -> Result<NowPlaying, SubsonicError> {
-        let body = self.request("getNowPlaying",None, None).await?;
+    pub async fn get_now_playing(&self) -> Result<NowPlaying, SubsonicError> {
+        let body = self.request("getNowPlaying", None, None).await?;
         if let ResponseType::NowPlaying { now_playing } = body.data {
             Ok(now_playing)
         } else {
@@ -65,7 +63,10 @@ mod tests {
             .unwrap()
             .inner;
         if let crate::data::ResponseType::NowPlaying { now_playing } = response.data {
-            assert_eq!(now_playing.entry.first().unwrap().child.album.as_deref(), Some("Showdown"));
+            assert_eq!(
+                now_playing.entry.first().unwrap().child.album.as_deref(),
+                Some("Showdown")
+            );
             assert_eq!(now_playing.entry.first().unwrap().username, "eppixx");
         } else {
             panic!("wrong type {:?}", response.data);

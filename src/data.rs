@@ -132,6 +132,9 @@ pub enum ResponseType {
     NowPlaying {
         now_playing: NowPlaying,
     },
+    Starred {
+        starred: Starred,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -537,6 +540,15 @@ pub struct NowPlayingEntry {
     pub minutes_ago: i32,
     pub player_id: i32,
     pub player_name: Option<String>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Starred {
+    #[serde(default)]
+    pub artist: Vec<Artist>,
+    pub album: Vec<Child>,
+    pub song: Vec<Child>,
 }
 
 mod option_user_rating {
