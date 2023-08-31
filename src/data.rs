@@ -128,6 +128,10 @@ pub enum ResponseType {
     SongsByGenre {
         songs_by_genre: Songs,
     },
+    #[serde(rename_all = "camelCase")]
+    NowPlaying {
+        now_playing: NowPlaying,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -515,6 +519,24 @@ pub struct TopSongs {
 pub struct Songs {
     #[serde(default)]
     pub song: Vec<Child>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct NowPlaying {
+    #[serde(default)]
+    pub entry: Vec<NowPlayingEntry>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct NowPlayingEntry {
+    #[serde(flatten)]
+    pub child: Child,
+    pub username: String, // this is not a typo
+    pub minutes_ago: i32,
+    pub player_id: i32,
+    pub player_name: Option<String>,
 }
 
 mod option_user_rating {
