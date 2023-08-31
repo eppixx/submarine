@@ -104,6 +104,10 @@ pub enum ResponseType {
     ArtistInfo2 {
         artist_info2: ArtistInfo,
     },
+    #[serde(rename_all = "camelCase")]
+    AlbumInfo {
+        album_info: AlbumInfo,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -438,6 +442,38 @@ pub struct Artist {
     #[serde(default, with = "option_user_rating")]
     pub user_rating: Option<UserRating>,
     // pub average_rating: Option<AverageRating>,
+}
+
+cfg_if::cfg_if! {
+    if #[cfg(feature = "navidrome")] {
+        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[serde(rename_all = "camelCase")]
+        pub struct AlbumInfo {
+            pub notes: Option<String>,
+            pub music_brainz_id: Option<String>,
+            pub last_fm_rrl: Option<String>,
+            pub small_image_url: Option<String>,
+            pub medium_image_url: Option<String>,
+            pub large_image_url: Option<String>,
+        }
+    } else {
+        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[serde(rename_all = "camelCase")]
+        pub struct AlbumInfo {
+            #[serde(default)]
+            pub notes: Vec<String>,
+            #[serde(default)]
+            pub music_brainz_id: Vec<String>,
+            #[serde(default)]
+            pub last_fm_rrl: Vec<String>,
+            #[serde(default)]
+            pub small_image_url: Vec<String>,
+            #[serde(default)]
+            pub medium_image_url: Vec<String>,
+            #[serde(default)]
+            pub large_image_url: Vec<String>,
+        }
+    }
 }
 
 mod option_user_rating {
