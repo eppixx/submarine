@@ -39,7 +39,7 @@ mod tests {
     use crate::data::{OuterResponse, ResponseType};
 
     #[test]
-    fn conversion_get_artist_info() {
+    fn conversion_get_artist_info2() {
         let response_body = r##"
 {
   "subsonic-response": {

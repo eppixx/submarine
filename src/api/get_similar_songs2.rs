@@ -27,7 +27,7 @@ impl Client {
 
 mod tests {
     #[test]
-    fn conversion_get_artist_info() {
+    fn conversion_get_similar_songs2() {
         let response_body = r##"
 {
   "subsonic-response": {
