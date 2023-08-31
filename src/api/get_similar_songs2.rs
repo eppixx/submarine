@@ -1,4 +1,4 @@
-use crate::data::{ResponseType, SimilarSongs};
+use crate::data::{Child, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
@@ -7,7 +7,7 @@ impl Client {
         &self,
         id: impl Into<String>,
         count: Option<i32>, //defaults to 50
-    ) -> Result<SimilarSongs, SubsonicError> {
+    ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
         if let Some(count) = count {
@@ -16,7 +16,7 @@ impl Client {
 
         let body = self.request("getSimilarSongs2", Some(paras), None).await?;
         if let ResponseType::SimilarSongs2 { similar_songs2 } = body.data {
-            Ok(similar_songs2)
+            Ok(similar_songs2.song)
         } else {
             Err(SubsonicError::Submarine(String::from(
                 "expected type SimilarSongs2 but found wrong type",
