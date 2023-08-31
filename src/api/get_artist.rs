@@ -1,8 +1,9 @@
-use crate::data::{ArtistId3, ResponseType};
+use crate::data::{ResponseType, ArtistWithAlbumsId3};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    pub async fn get_artist(&self, id: &str) -> Result<ArtistId3, SubsonicError> {
+    /// reference: http://www.subsonic.org/pages/api.jsp#getArtist
+    pub async fn get_artist(&self, id: &str) -> Result<ArtistWithAlbumsId3, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("id", String::from(id));
 
@@ -62,7 +63,7 @@ mod tests {
             .inner;
         println!("{response:?}");
         if let ResponseType::Artist { artist } = response.data {
-            assert_eq!(artist.albums.len(), 1);
+            assert_eq!(artist.album.len(), 1);
         } else {
             panic!("wrong type: {response:?}");
         }

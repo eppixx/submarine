@@ -59,7 +59,7 @@ pub enum ResponseType {
         artists: ArtistsId3,
     },
     Artist {
-        artist: ArtistId3,
+        artist: ArtistWithAlbumsId3,
     },
     Album {
         album: Album,
@@ -123,8 +123,15 @@ pub struct ArtistId3 {
     #[serde(default, with = "option_user_rating")]
     pub user_rating: Option<UserRating>,
     // pub average_rating: Option<f64>,
-    #[serde(default, rename = "album")]
-    pub albums: Vec<Album>,
+}
+
+#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct ArtistWithAlbumsId3 {
+    #[serde(flatten)]
+    pub info: ArtistId3,
+    #[serde(default)]
+    pub album: Vec<Album>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
