@@ -82,6 +82,10 @@ pub enum ResponseType {
     Indexes {
         indexes: Indexes,
     },
+    #[serde(rename_all = "camelCase")]
+    MusicDirectory {
+        directory: Directory,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -295,6 +299,21 @@ cfg_if::cfg_if! {
             pub artist: Vec<Artist>,
         }
     }
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Directory {
+    #[serde(default)]
+    pub child: Vec<Child>,
+    pub id: String,
+    pub parent: Option<String>,
+    pub name: String,
+    pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+    #[serde(default, with = "option_user_rating")]
+    pub user_rating: Option<UserRating>,
+    // pub average_rating: Option<AverageRating>,
+    pub play_count: Option<i64>,
 }
 
 mod option_user_rating {

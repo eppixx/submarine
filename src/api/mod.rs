@@ -8,6 +8,7 @@ pub mod get_artists;
 pub mod get_cover_art;
 pub mod get_indexes;
 pub mod get_license;
+pub mod get_music_directory;
 pub mod get_music_folders;
 pub mod get_playlist;
 pub mod get_playlists;
