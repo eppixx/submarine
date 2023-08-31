@@ -2,16 +2,17 @@ use crate::data::{Album, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    pub async fn get_album(&self, id: &str) -> Result<Album, SubsonicError> {
+    /// reference: http://www.subsonic.org/pages/api.jsp#getAlbum
+    pub async fn get_album(&self, id: impl Into<String>) -> Result<Album, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
-        paras.insert("id", String::from(id));
+        paras.insert("id", id.into());
 
         let body = self.request("getAlbum", Some(paras), None).await?;
         if let ResponseType::Album { album } = body.data {
             Ok(album)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type Album but found wrong type",
             )))
         }
     }

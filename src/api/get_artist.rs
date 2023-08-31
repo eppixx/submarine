@@ -3,16 +3,16 @@ use crate::{Client, SubsonicError};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getArtist
-    pub async fn get_artist(&self, id: &str) -> Result<ArtistWithAlbumsId3, SubsonicError> {
+    pub async fn get_artist(&self, id: impl Into<String>) -> Result<ArtistWithAlbumsId3, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
-        paras.insert("id", String::from(id));
+        paras.insert("id", id.into());
 
         let body = self.request("getArtist", Some(paras), None).await?;
         if let ResponseType::Artist { artist } = body.data {
             Ok(artist)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type Artist but found wrong type",
             )))
         }
     }
