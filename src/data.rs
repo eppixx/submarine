@@ -100,6 +100,10 @@ pub enum ResponseType {
     ArtistInfo {
         artist_info: ArtistInfo,
     },
+    #[serde(rename_all = "camelCase")]
+    ArtistInfo2 {
+        artist_info2: ArtistInfo,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
