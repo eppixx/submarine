@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// http://www.subsonic.org/pages/api.jsp#getIndexes
+    /// http://www.subsonic.org/pages/api.jsp#getGenres
     pub async fn get_genres(&self) -> Result<Vec<Genre>, SubsonicError> {
         let paras = std::collections::HashMap::new();
 
