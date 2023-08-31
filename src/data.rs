@@ -122,7 +122,7 @@ pub enum ResponseType {
     },
     #[serde(rename_all = "camelCase")]
     RandomSongs {
-        random_songs: RandomSongs,
+        random_songs: Songs,
     },
     // order is important or it will allways be matched to ping
     Ping {},
@@ -508,7 +508,7 @@ pub struct TopSongs {
 
 #[derive(Debug, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
-pub struct RandomSongs {
+pub struct Songs {
     #[serde(default)]
     pub song: Vec<Child>,
 }
