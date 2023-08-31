@@ -108,6 +108,10 @@ pub enum ResponseType {
     AlbumInfo {
         album_info: AlbumInfo,
     },
+    #[serde(rename_all = "camelCase")]
+    SimilarSongs {
+        similar_songs: SimilarSongs,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -474,6 +478,13 @@ cfg_if::cfg_if! {
             pub large_image_url: Vec<String>,
         }
     }
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct SimilarSongs {
+    #[serde(default)]
+    pub song: Vec<Child>,
 }
 
 mod option_user_rating {
