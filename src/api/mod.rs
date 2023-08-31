@@ -17,6 +17,7 @@ pub mod get_music_directory;
 pub mod get_music_folders;
 pub mod get_playlist;
 pub mod get_playlists;
+pub mod get_random_songs;
 pub mod get_scan_status;
 pub mod get_similar_songs;
 pub mod get_similar_songs2;
