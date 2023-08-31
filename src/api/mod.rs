@@ -19,6 +19,7 @@ pub mod get_playlist;
 pub mod get_playlists;
 pub mod get_scan_status;
 pub mod get_similar_songs;
+pub mod get_similar_songs2;
 pub mod get_song;
 pub mod get_video;
 pub mod get_video_info;

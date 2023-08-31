@@ -112,6 +112,10 @@ pub enum ResponseType {
     SimilarSongs {
         similar_songs: SimilarSongs,
     },
+    #[serde(rename_all = "camelCase")]
+    SimilarSongs2 {
+        similar_songs2: SimilarSongs,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
