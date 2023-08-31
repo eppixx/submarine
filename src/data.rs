@@ -92,6 +92,10 @@ pub enum ResponseType {
     Videos {
         videos: Videos,
     },
+    #[serde(rename_all = "camelCase")]
+    VideoInfo {
+        video_info: VideoInfo,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -346,6 +350,40 @@ pub struct Genre {
 #[derive(Debug, Deserialize, PartialEq, Eq)]
 pub struct Videos {
     pub video: Vec<Child>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct VideoInfo {
+    pub id: String,
+    #[serde(default)]
+    pub captions: Vec<Captions>,
+    #[serde(default)]
+    pub audio_track: Vec<AudioTrack>,
+    #[serde(default)]
+    pub conversion: Vec<VideoConversion>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+pub struct Captions {
+    pub id: String,
+    pub name: Option<String>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct AudioTrack {
+    pub id: String,
+    pub name: Option<String>,
+    pub language_code: Option<String>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct VideoConversion {
+    pub id: String,
+    pub bit_rate: Option<i32>, // in kbs
+    pub audio_track_id: Option<i32>,
 }
 
 mod option_user_rating {

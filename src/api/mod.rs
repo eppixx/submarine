@@ -16,6 +16,7 @@ pub mod get_playlists;
 pub mod get_scan_status;
 pub mod get_song;
 pub mod get_video;
+pub mod get_video_info;
 pub mod ping;
 pub mod star;
 pub mod stream;
