@@ -1,14 +1,23 @@
-use crate::data::{Artists, ResponseType};
+use crate::data::{IndexId3, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    pub async fn get_artists(&self) -> Result<Artists, SubsonicError> {
-        let body = self.request("getArtists", None, None).await?;
+    /// reference: http://www.subsonic.org/pages/api.jsp#getArtists
+    pub async fn get_artists(
+        &self,
+        music_folder_id: Option<String>,
+    ) -> Result<Vec<IndexId3>, SubsonicError> {
+        let mut paras = std::collections::HashMap::new();
+        if let Some(folder) = music_folder_id {
+            paras.insert("musicFolderId", folder);
+        }
+
+        let body = self.request("getArtists", Some(paras), None).await?;
         if let ResponseType::Artists { artists } = body.data {
-            Ok(artists)
+            Ok(artists.index)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type Artists but found wrong type",
             )))
         }
     }

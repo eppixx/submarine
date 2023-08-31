@@ -56,10 +56,10 @@ pub enum ResponseType {
         song: Box<Child>,
     },
     Artists {
-        artists: Artists,
+        artists: ArtistsId3,
     },
     Artist {
-        artist: Artist,
+        artist: ArtistId3,
     },
     Album {
         album: Album,
@@ -102,20 +102,20 @@ pub struct ScanStatus {
 }
 
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
-pub struct Artists {
-    pub index: Vec<ArtistIndex>,
+pub struct ArtistsId3 {
+    pub index: Vec<IndexId3>,
 }
 
+/// Indexes artists
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
-pub struct ArtistIndex {
+pub struct IndexId3 {
     pub name: String,
-    #[serde(default, rename = "artist")]
-    pub artists: Vec<Artist>,
+    pub artist: Vec<ArtistId3>,
 }
 
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
-pub struct Artist {
+pub struct ArtistId3 {
     pub id: String,
     pub name: String,
     pub image_url: Option<String>,
@@ -286,7 +286,7 @@ cfg_if::cfg_if! {
         #[serde(rename_all = "camelCase")]
         pub struct Indexes {
             #[serde(default)]
-            pub shortcut: Vec<Artist>,
+            pub shortcut: Vec<ArtistId3>,
             #[serde(default)]
             pub index: Vec<Index>,
             #[serde(default)]
@@ -299,7 +299,7 @@ cfg_if::cfg_if! {
         #[serde(rename_all = "camelCase")]
         pub struct Index {
             pub name: String,
-            pub artist: Vec<Artist>,
+            pub artist: Vec<ArtistId3>,
         }
     }
 }

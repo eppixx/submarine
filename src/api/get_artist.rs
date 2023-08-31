@@ -1,8 +1,8 @@
-use crate::data::{Artist, ResponseType};
+use crate::data::{ArtistId3, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    pub async fn get_artist(&self, id: &str) -> Result<Artist, SubsonicError> {
+    pub async fn get_artist(&self, id: &str) -> Result<ArtistId3, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("id", String::from(id));
 
