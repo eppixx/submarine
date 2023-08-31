@@ -62,7 +62,7 @@ pub enum ResponseType {
         artist: ArtistWithAlbumsId3,
     },
     Album {
-        album: Album,
+        album: AlbumWithSongsId3,
     },
     #[serde(rename_all = "camelCase")]
     AlbumList {
@@ -171,13 +171,13 @@ pub struct ArtistId3 {
     // pub average_rating: Option<f64>,
 }
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Deserialize, Debug, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ArtistWithAlbumsId3 {
     #[serde(flatten)]
-    pub info: ArtistId3,
+    pub base: ArtistId3,
     #[serde(default)]
-    pub album: Vec<Album>,
+    pub album: Vec<AlbumId3>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -192,29 +192,37 @@ pub enum UserRating {
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct AlbumList {
-    #[serde(default, rename = "album")]
-    pub albums: Vec<Album>,
+    pub album: Vec<Child>,
+}
+
+#[derive(Deserialize, Debug, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct AlbumWithSongsId3 {
+    #[serde(flatten)]
+    pub base: AlbumId3,
+    #[serde(default)]
+    pub song: Vec<Child>,
 }
 
 /// some responses don't send the song list<br>
 ///to combat this compare song_count with songs and use get_album if necessary
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-pub struct Album {
-    pub id: String,
-    pub name: String,
-    pub artist_id: Option<String>,
-    pub cover_art: Option<String>,
-    pub song_count: i32,
-    pub duration: i32,
-    pub play_count: Option<i64>,
-    pub created: chrono::DateTime<chrono::offset::FixedOffset>,
-    pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
-    pub year: Option<i32>,
-    pub genre: Option<String>,
-    #[serde(default, rename = "song")]
-    pub songs: Vec<Child>,
-}
+// #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+// #[serde(rename_all = "camelCase")]
+// pub struct Album {
+//     pub id: String,
+//     pub name: String,
+//     pub artist_id: Option<String>,
+//     pub cover_art: Option<String>,
+//     pub song_count: i32,
+//     pub duration: i32,
+//     pub play_count: Option<i64>,
+//     pub created: chrono::DateTime<chrono::offset::FixedOffset>,
+//     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+//     pub year: Option<i32>,
+//     pub genre: Option<String>,
+//     #[serde(default, rename = "song")]
+//     pub songs: Vec<Child>,
+// }
 
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
@@ -547,8 +555,38 @@ pub struct NowPlayingEntry {
 pub struct Starred {
     #[serde(default)]
     pub artist: Vec<Artist>,
+    #[serde(default)]
     pub album: Vec<Child>,
+    #[serde(default)]
     pub song: Vec<Child>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Starred2 {
+    #[serde(default)]
+    pub artist: Vec<ArtistId3>,
+    #[serde(default)]
+    pub album: Vec<AlbumId3>,
+    #[serde(default)]
+    pub song: Vec<Child>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct AlbumId3 {
+    pub id: String,
+    pub name: String,
+    pub artist: Option<String>,
+    pub artist_id: Option<String>,
+    pub cover_art: Option<String>,
+    pub song_count: i32,
+    pub duration: i32,
+    pub play_count: Option<i64>,
+    pub created: chrono::DateTime<chrono::offset::FixedOffset>,
+    pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+    pub year: Option<i32>,
+    pub genre: Option<String>,
 }
 
 mod option_user_rating {

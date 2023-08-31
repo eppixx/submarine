@@ -1,9 +1,12 @@
-use crate::data::{Album, ResponseType};
+use crate::data::{AlbumWithSongsId3, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getAlbum
-    pub async fn get_album(&self, id: impl Into<String>) -> Result<Album, SubsonicError> {
+    pub async fn get_album(
+        &self,
+        id: impl Into<String>,
+    ) -> Result<AlbumWithSongsId3, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
 
@@ -327,7 +330,7 @@ mod tests {
             .inner;
         println!("{response:?}");
         if let ResponseType::Album { album } = response.data {
-            assert_eq!(album.songs.len(), 12);
+            assert_eq!(album.song.len(), 12);
         } else {
             panic!("wrong type: {response:?}");
         }

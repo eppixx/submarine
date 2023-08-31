@@ -1,6 +1,6 @@
 use crate::api::get_album_list::Order;
 use crate::{
-    data::{Album, ResponseType},
+    data::{Child, ResponseType},
     Client, SubsonicError,
 };
 
@@ -11,13 +11,13 @@ impl Client {
         size: Option<usize>,
         offset: Option<usize>,
         music_folder_id: Option<impl Into<String>>,
-    ) -> Result<Vec<Album>, SubsonicError> {
+    ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
         paras.insert("type", order.to_string());
 
-        let body = self.request("getAlbumList", Some(paras), None).await?;
+        let body = self.request("getAlbumList2", Some(paras), None).await?;
         if let ResponseType::AlbumList { album_list } = body.data {
-            Ok(album_list.albums)
+            Ok(album_list.album)
         } else {
             Err(SubsonicError::Submarine(String::from(
                 "got send wrong type; submarine fault?",
@@ -32,7 +32,7 @@ impl Client {
         size: Option<usize>,
         offset: Option<usize>,
         music_folder_id: Option<impl Into<String>>,
-    ) -> Result<Vec<Album>, SubsonicError> {
+    ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
         paras.insert("type", String::from("byYear"));
         if let Some(from) = from_year {
@@ -42,9 +42,9 @@ impl Client {
             paras.insert("toYear", to.to_string());
         }
 
-        let body = self.request("getAlbumList", Some(paras), None).await?;
+        let body = self.request("getAlbumList2", Some(paras), None).await?;
         if let ResponseType::AlbumList { album_list } = body.data {
-            Ok(album_list.albums)
+            Ok(album_list.album)
         } else {
             Err(SubsonicError::Submarine(String::from(
                 "got send wrong type; submarine fault?",
@@ -58,14 +58,14 @@ impl Client {
         size: Option<usize>,
         offset: Option<usize>,
         music_folder_id: Option<impl Into<String>>,
-    ) -> Result<Vec<Album>, SubsonicError> {
+    ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
         paras.insert("type", String::from("byGenre"));
         paras.insert("genre", genre.into());
 
-        let body = self.request("getAlbumList", Some(paras), None).await?;
+        let body = self.request("getAlbumList2", Some(paras), None).await?;
         if let ResponseType::AlbumList { album_list } = body.data {
-            Ok(album_list.albums)
+            Ok(album_list.album)
         } else {
             Err(SubsonicError::Submarine(String::from(
                 "got send wrong type; submarine fault?",
@@ -136,7 +136,8 @@ mod tests {
             .unwrap()
             .inner;
         if let ResponseType::AlbumList2 { album_list2 } = response.data {
-            assert_eq!(album_list2.albums.len(), 2);
+            assert_eq!(album_list2.album.len(), 2);
+            assert_eq!(album_list2.album.first().unwrap().year, Some(2014));
         } else {
             panic!("wrong type: {response:?}");
         }
