@@ -30,10 +30,7 @@ impl Client {
 
 #[cfg(all(test, not(feature = "navidrome")))]
 mod tests {
-    #[test]
-    fn conversion_get_indexes() {
-        todo!("implement conversion with data that is not form navidrome");
-    }
+    //TODO add test
 }
 
 #[cfg(all(test, feature = "navidrome"))]
