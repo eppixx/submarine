@@ -116,6 +116,10 @@ pub enum ResponseType {
     SimilarSongs2 {
         similar_songs2: SimilarSongs,
     },
+    #[serde(rename_all = "camelCase")]
+    TopSongs {
+        top_songs: TopSongs,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -487,6 +491,13 @@ cfg_if::cfg_if! {
 #[derive(Debug, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct SimilarSongs {
+    #[serde(default)]
+    pub song: Vec<Child>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct TopSongs {
     #[serde(default)]
     pub song: Vec<Child>,
 }
