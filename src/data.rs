@@ -70,7 +70,7 @@ pub enum ResponseType {
     },
     #[serde(rename_all = "camelCase")]
     AlbumList2 {
-        album_list2: AlbumList2,
+        album_list2: AlbumList,
     },
     #[serde(rename_all = "camelCase")]
     MusicFolders {
@@ -161,13 +161,6 @@ pub enum UserRating {
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct AlbumList {
-    #[serde(default, rename = "album")]
-    pub albums: Vec<Album>,
-}
-
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
-#[serde(rename_all = "camelCase")]
-pub struct AlbumList2 {
     #[serde(default, rename = "album")]
     pub albums: Vec<Album>,
 }
