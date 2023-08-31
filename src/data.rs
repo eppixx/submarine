@@ -86,6 +86,9 @@ pub enum ResponseType {
     MusicDirectory {
         directory: Directory,
     },
+    Genres {
+        genres: Genres,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -314,6 +317,20 @@ pub struct Directory {
     pub user_rating: Option<UserRating>,
     // pub average_rating: Option<AverageRating>,
     pub play_count: Option<i64>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Genres {
+    pub genre: Vec<Genre>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Genre {
+    pub value: String, // TODO check other implementations if it exists there as well
+    pub song_count: Option<i32>,
+    pub album_count: Option<i32>,
 }
 
 mod option_user_rating {
