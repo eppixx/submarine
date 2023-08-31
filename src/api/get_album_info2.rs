@@ -2,12 +2,12 @@ use crate::data::{AlbumInfo, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getAlbumInfo
-    pub async fn get_album_info(&self, id: impl Into<String>) -> Result<AlbumInfo, SubsonicError> {
+    /// reference: http://www.subsonic.org/pages/api.jsp#getAlbumInfo2
+    pub async fn get_album_info2(&self, id: impl Into<String>) -> Result<AlbumInfo, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
 
-        let body = self.request("getAlbumInfo", Some(paras), None).await?;
+        let body = self.request("getAlbumInfo2", Some(paras), None).await?;
         if let ResponseType::AlbumInfo { album_info } = body.data {
             Ok(album_info)
         } else {
