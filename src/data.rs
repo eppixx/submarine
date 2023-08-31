@@ -124,6 +124,10 @@ pub enum ResponseType {
     RandomSongs {
         random_songs: Songs,
     },
+    #[serde(rename_all = "camelCase")]
+    SongsByGenre {
+        songs_by_genre: Songs,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }

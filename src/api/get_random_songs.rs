@@ -40,7 +40,6 @@ impl Client {
 }
 
 mod tests {
-    //TODO better test
     #[test]
     fn conversion_get_random_songs() {
         let response_body = r##"
