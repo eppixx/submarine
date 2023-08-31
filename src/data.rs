@@ -89,6 +89,9 @@ pub enum ResponseType {
     Genres {
         genres: Genres,
     },
+    Videos {
+        videos: Videos,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -338,6 +341,11 @@ pub struct Genre {
     pub value: String, // TODO check other implementations if it exists there as well
     pub song_count: Option<i32>,
     pub album_count: Option<i32>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+pub struct Videos {
+    pub video: Vec<Child>,
 }
 
 mod option_user_rating {
