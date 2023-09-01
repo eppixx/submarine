@@ -6,11 +6,11 @@ impl Client {
     pub async fn create_playlist(
         &self,
         name: impl Into<String>,
-        tracks: Vec<impl Into<String>>,
+        song_id: Vec<impl Into<String>>,
     ) -> Result<PlaylistWithSongs, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("name", name.into());
-        for id in tracks {
+        for id in song_id {
             paras.insert("songId", id.into());
         }
 
@@ -28,11 +28,11 @@ impl Client {
     pub async fn overwrite_playlist(
         &self,
         playlist_id: impl Into<String>,
-        tracks: Vec<impl Into<String>>,
+        song_id: Vec<impl Into<String>>,
     ) -> Result<PlaylistWithSongs, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("playlistId", playlist_id.into());
-        for id in tracks {
+        for id in song_id {
             paras.insert("songId", id.into());
         }
 
