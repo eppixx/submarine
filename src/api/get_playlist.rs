@@ -3,7 +3,10 @@ use crate::{Client, SubsonicError};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getPlaylist
-    pub async fn get_playlist(&self, id: impl Into<String>) -> Result<PlaylistWithSongs, SubsonicError> {
+    pub async fn get_playlist(
+        &self,
+        id: impl Into<String>,
+    ) -> Result<PlaylistWithSongs, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
 
