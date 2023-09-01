@@ -1,6 +1,7 @@
 pub mod create_playlist;
 pub mod delete_playlist;
 pub mod download;
+pub mod hls;
 pub mod get_album;
 pub mod get_album_info;
 pub mod get_album_info2;
