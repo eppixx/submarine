@@ -2,13 +2,22 @@ use crate::data::{Playlist, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    pub async fn get_playlists(&self) -> Result<Vec<Playlist>, SubsonicError> {
+    /// reference: http://www.subsonic.org/pages/api.jsp#getPlaylists
+    pub async fn get_playlists(
+        &self,
+        user_name: Option<impl Into<String>>,
+    ) -> Result<Vec<Playlist>, SubsonicError> {
+        let mut paras = std::collections::HashMap::new();
+        if let Some(name) = user_name {
+            paras.insert("userName", name.into());
+        }
+
         let body = self.request("getPlaylists", None, None).await?;
         if let ResponseType::Playlists { playlists } = body.data {
-            Ok(playlists.playlists)
+            Ok(playlists.playlist)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type Playlists but found wrong type",
             )))
         }
     }
@@ -60,7 +69,7 @@ mod tests {
             .unwrap()
             .inner;
         if let ResponseType::Playlists { playlists } = response.data {
-            assert_eq!(playlists.playlists.len(), 2);
+            assert_eq!(playlists.playlist.len(), 2);
         } else {
             panic!("wrong type: {response:?}");
         }

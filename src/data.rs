@@ -278,8 +278,8 @@ pub enum MediaType {
 
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Playlists {
-    #[serde(default, rename = "playlist")]
-    pub playlists: Vec<Playlist>,
+    #[serde(default)]
+    pub playlist: Vec<Playlist>,
 }
 
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
@@ -292,9 +292,9 @@ pub struct Playlist {
     pub owner: Option<String>,
     pub public: Option<bool>,
     pub song_count: i32,
-    // pub duration: i32,
-    // pub created: String,
-    pub changed: String,
+    pub duration: i32,
+    pub created: chrono::DateTime<chrono::offset::FixedOffset>,
+    pub changed: chrono::DateTime<chrono::offset::FixedOffset>,
     pub cover_art: Option<String>,
 }
 
