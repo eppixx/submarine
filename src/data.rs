@@ -135,6 +135,10 @@ pub enum ResponseType {
     Starred {
         starred: Starred,
     },
+    #[serde(rename_all = "camelCase")]
+    SearchResult2 {
+        search_result2: SearchResult2,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -587,6 +591,17 @@ pub struct AlbumId3 {
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     pub year: Option<i32>,
     pub genre: Option<String>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct SearchResult2 {
+    #[serde(default)]
+    pub artist: Vec<Artist>,
+    #[serde(default)]
+    pub album: Vec<Child>,
+    #[serde(default)]
+    pub song: Vec<Child>,
 }
 
 mod option_user_rating {
