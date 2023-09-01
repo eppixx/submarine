@@ -2,9 +2,10 @@ use crate::data::{PlaylistWithSongs, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    pub async fn get_playlist(&self, id: &str) -> Result<PlaylistWithSongs, SubsonicError> {
+    /// reference: http://www.subsonic.org/pages/api.jsp#getPlaylist
+    pub async fn get_playlist(&self, id: impl Into<String>) -> Result<PlaylistWithSongs, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
-        paras.insert("id", String::from(id));
+        paras.insert("id", id.into());
 
         // send request
         let body = self.request("getPlaylist", Some(paras), None).await?;
@@ -101,7 +102,7 @@ mod tests {
             .inner;
         println!("{response:?}");
         if let ResponseType::PlaylistWithSongs { playlist } = response.data {
-            assert_eq!(playlist.info.song_count, 2);
+            assert_eq!(playlist.base.song_count, 2);
         } else {
             panic!("wrong type");
         }

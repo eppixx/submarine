@@ -302,7 +302,7 @@ pub struct Playlist {
 #[serde(rename_all = "camelCase")]
 pub struct PlaylistWithSongs {
     #[serde(flatten)]
-    pub info: Playlist,
+    pub base: Playlist,
     #[serde(default)]
     pub songs: Vec<Child>,
 }
