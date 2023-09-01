@@ -4,15 +4,16 @@ use crate::{
 };
 
 impl Client {
+    /// reference: http://www.subsonic.org/pages/api.jsp#search2
     pub async fn search2(
         &self,
         query: impl Into<String>,
-        artist_count: Option<i32>,  //defaults to 20
-        artist_offset: Option<i32>, //defaults to 0
+        artist_count: Option<i32>,  // defaults to 20
+        artist_offset: Option<i32>, // defaults to 0
         album_count: Option<i32>,   // defaults to 20
-        album_offset: Option<i32>,  //defaults to 0
+        album_offset: Option<i32>,  // defaults to 0
         song_count: Option<i32>,    // defaults to 20
-        song_offset: Option<i32>,   //defaults to 0
+        song_offset: Option<i32>,   // defaults to 0
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<SearchResult2, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
