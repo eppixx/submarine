@@ -30,6 +30,7 @@ pub mod get_video;
 pub mod get_video_info;
 pub mod ping;
 pub mod search2;
+pub mod search3;
 pub mod star;
 pub mod stream;
 pub mod unstar;

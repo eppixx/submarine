@@ -139,6 +139,10 @@ pub enum ResponseType {
     SearchResult2 {
         search_result2: SearchResult2,
     },
+    #[serde(rename_all = "camelCase")]
+    SearchResult3 {
+        search_result3: SearchResult3,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -600,6 +604,17 @@ pub struct SearchResult2 {
     pub artist: Vec<Artist>,
     #[serde(default)]
     pub album: Vec<Child>,
+    #[serde(default)]
+    pub song: Vec<Child>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct SearchResult3 {
+    #[serde(default)]
+    pub artist: Vec<ArtistId3>,
+    #[serde(default)]
+    pub album: Vec<AlbumId3>,
     #[serde(default)]
     pub song: Vec<Child>,
 }
