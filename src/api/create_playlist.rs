@@ -2,15 +2,16 @@ use crate::data::{PlaylistWithSongs, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
+    /// reference: http://www.subsonic.org/pages/api.jsp#createPlaylist
     pub async fn create_playlist(
         &self,
-        name: &str,
-        tracks: Vec<String>,
+        name: impl Into<String>,
+        tracks: Vec<impl Into<String>>,
     ) -> Result<PlaylistWithSongs, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
-        paras.insert("name", String::from(name));
+        paras.insert("name", name.into());
         for id in tracks {
-            paras.insert("songId", id);
+            paras.insert("songId", id.into());
         }
 
         let body = self.request("createPlaylist", Some(paras), None).await?;
@@ -18,7 +19,29 @@ impl Client {
             Ok(playlist)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type PlaylistWithSongs but found wrong type",
+            )))
+        }
+    }
+
+    //TODO test
+    pub async fn overwrite_playlist(
+        &self,
+        playlist_id: impl Into<String>,
+        tracks: Vec<impl Into<String>>,
+    ) -> Result<PlaylistWithSongs, SubsonicError> {
+        let mut paras = std::collections::HashMap::new();
+        paras.insert("playlistId", playlist_id.into());
+        for id in tracks {
+            paras.insert("songId", id.into());
+        }
+
+        let body = self.request("createPlaylist", Some(paras), None).await?;
+        if let ResponseType::PlaylistWithSongs { playlist } = body.data {
+            Ok(playlist)
+        } else {
+            Err(SubsonicError::Submarine(String::from(
+                "expected type PlaylistWithSongs but found wrong type",
             )))
         }
     }

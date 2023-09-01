@@ -13,7 +13,7 @@ impl Client {
             Ok(playlist)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type PlaylistWithSongs but found wrong type",
             )))
         }
     }
