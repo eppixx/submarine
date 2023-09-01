@@ -1,151 +1,70 @@
-use std::fmt::Display;
-
-use crate::{Client, SubsonicError};
-
-enum Keys {
-    PlaylistId,
-    Name,
-    Comment,
-    Public,
-    SongIdToAdd,
-    SongIndexToRemove,
-}
-
-impl Display for Keys {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::PlaylistId => write!(f, "playlistId"),
-            Self::Name => write!(f, "name"),
-            Self::Comment => write!(f, "comment"),
-            Self::Public => write!(f, "public"),
-            Self::SongIdToAdd => write!(f, "songIdToAdd"),
-            Self::SongIndexToRemove => write!(f, "songIndexToRemove"),
-        }
-    }
-}
+use crate::{
+    data::{Info, ResponseType},
+    Client, SubsonicError,
+};
 
 impl Client {
-    /// Quelle: http://www.subsonic.org/pages/api.jsp#updatePlaylist
-    pub async fn update_playlist_remove_multiple(
+    /// reference: http://www.subsonic.org/pages/api.jsp#updatePlaylist
+    pub async fn update_playlist(
         &self,
-        id: &str,
-        range: std::ops::Range<usize>,
-    ) -> Result<(), SubsonicError> {
-        if range.is_empty() {
-            return Ok(());
+        playlist_id: impl Into<String>,
+        name: Option<impl Into<String>>,
+        comment: Option<impl Into<String>>,
+        public: Option<bool>,
+        songs_id_to_add: Vec<impl Into<String>>,
+        songs_index_to_remove: Vec<i64>,
+    ) -> Result<Info, SubsonicError> {
+        let mut paras = std::collections::HashMap::new();
+        paras.insert("playlistId", playlist_id.into());
+        if let Some(name) = name {
+            paras.insert("name", name.into());
         }
-        let mut paras = std::collections::HashMap::new();
-        let key = Keys::PlaylistId.to_string();
-        paras.insert(key.as_str(), String::from(id));
-        let key = Keys::SongIndexToRemove.to_string();
-        for i in range {
-            paras.insert(key.as_str(), i.to_string());
+        if let Some(comment) = comment {
+            paras.insert("comment", comment.into());
         }
-
-        let _ = self.request("updatePlaylist", Some(paras), None).await?;
-        Ok(())
-    }
-
-    /// Quelle: http://www.subsonic.org/pages/api.jsp#updatePlaylist
-    pub async fn update_playlist_remove(
-        &self,
-        id: &str,
-        index: usize,
-    ) -> Result<(), SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        let key = Keys::PlaylistId.to_string();
-        paras.insert(key.as_str(), String::from(id));
-        let key = Keys::SongIndexToRemove.to_string();
-        paras.insert(key.as_str(), index.to_string());
-
-        let _ = self.request("updatePlaylist", Some(paras), None).await?;
-
-        Ok(())
-    }
-
-    /// Quelle: http://www.subsonic.org/pages/api.jsp#updatePlaylist
-    pub async fn update_playlist_append(
-        &self,
-        playlist_id: &str,
-        track_id: &str,
-    ) -> Result<(), SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        let key = Keys::PlaylistId.to_string();
-        paras.insert(key.as_str(), String::from(playlist_id));
-        let key = Keys::SongIdToAdd.to_string();
-        paras.insert(key.as_str(), String::from(track_id));
-
-        let _ = self.request("updatePlaylist", Some(paras), None).await?;
-
-        Ok(())
-    }
-
-    /// Quelle: http://www.subsonic.org/pages/api.jsp#updatePlaylist
-    pub async fn update_playlist_append_multiple(
-        &self,
-        playlist_id: &str,
-        track_ids: &[&str],
-    ) -> Result<(), SubsonicError> {
-        if track_ids.is_empty() {
-            return Ok(());
+        if let Some(public) = public {
+            paras.insert("public", public.to_string());
         }
-        let mut paras = std::collections::HashMap::new();
-        let key = Keys::PlaylistId.to_string();
-        paras.insert(key.as_str(), String::from(playlist_id));
-        let key = Keys::SongIdToAdd.to_string();
-        for id in track_ids {
-            paras.insert(key.as_str(), id.to_string());
+        for id in songs_id_to_add {
+            paras.insert("songIdToAdd", id.into());
+        }
+        for id in songs_index_to_remove {
+            paras.insert("songIndexToRemove", id.to_string());
         }
 
-        let _ = self.request("updatePlaylist", Some(paras), None).await?;
-
-        Ok(())
+        let body = self.request("createPlaylist", Some(paras), None).await?;
+        if let ResponseType::Ping {} = body.data {
+            Ok(body.info)
+        } else {
+            Err(SubsonicError::Submarine(String::from(
+                "expected type Ping but found wrong type",
+            )))
+        }
     }
+}
 
-    /// Quelle: http://www.subsonic.org/pages/api.jsp#updatePlaylist
-    pub async fn update_playlist_rename(&self, id: &str, name: &str) -> Result<(), SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        let key = Keys::PlaylistId.to_string();
-        paras.insert(key.as_str(), String::from(id));
-        let key = Keys::Name.to_string();
-        paras.insert(key.as_str(), String::from(name));
+#[cfg(test)]
+mod tests {
+    use crate::data::{OuterResponse, ResponseType};
 
-        let _ = self.request("updatePlaylist", Some(paras), None).await?;
-
-        Ok(())
-    }
-
-    /// Quelle: http://www.subsonic.org/pages/api.jsp#updatePlaylist
-    pub async fn update_playlist_comment(
-        &self,
-        id: &str,
-        comment: &str,
-    ) -> Result<(), SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        let key = Keys::PlaylistId.to_string();
-        paras.insert(key.as_str(), String::from(id));
-        let key = Keys::Comment.to_string();
-        paras.insert(key.as_str(), String::from(comment));
-
-        let _ = self.request("updatePlaylist", Some(paras), None).await?;
-
-        Ok(())
-    }
-
-    /// Quelle: http://www.subsonic.org/pages/api.jsp#updatePlaylist
-    pub async fn update_playlist_public(
-        &self,
-        id: &str,
-        public: bool,
-    ) -> Result<(), SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        let key = Keys::PlaylistId.to_string();
-        paras.insert(key.as_str(), String::from(id));
-        let key = Keys::Public.to_string();
-        paras.insert(key.as_str(), public.to_string());
-
-        let _ = self.request("updatePlaylist", Some(paras), None).await?;
-
-        Ok(())
+    #[test]
+    fn ping_convert() {
+        let response_txt = r##"
+{
+  "subsonic-response": {
+    "status": "ok",
+    "version": "1.16.1",
+    "type": "navidrome",
+    "serverVersion": "0.49.3 (8b93962f)"
+  }
+}"##;
+        let response = serde_json::from_str::<OuterResponse>(response_txt)
+            .unwrap()
+            .inner;
+        if let ResponseType::Ping {} = response.data {
+            assert_eq!(&response.info.status, "ok");
+        } else {
+            panic!("wrong type");
+        }
     }
 }
