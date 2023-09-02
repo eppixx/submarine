@@ -37,6 +37,7 @@ pub mod hls;
 pub mod ping;
 pub mod search2;
 pub mod search3;
+pub mod set_rating;
 pub mod star;
 pub mod stream;
 pub mod unstar;
