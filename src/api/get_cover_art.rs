@@ -1,22 +1,25 @@
-use std::fmt::Write;
-
 use crate::{Client, SubsonicError};
 
 impl Client {
-    pub fn get_cover_art_url(&self, id: &str) -> String {
+    /// reference: http://www.subsonic.org/pages/api.jsp#getCoverArt
+    pub fn get_cover_art_url(&self, id: impl Into<String>, size: Option<i32>) -> String {
         let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
-        paras.insert("id", String::from(id));
+        paras.insert("id", id.into());
+        if let Some(size) = size {
+            paras.insert("size", size.to_string());
+        }
 
         let mut url: String = self.server_url.clone() + "/rest/getCoverArt?";
         for p in paras {
-            let _ = write!(&mut url, "&{}={}", p.0, p.1);
+            url += &("&".to_owned() + p.0 + "=" + &p.1);
         }
 
         url
     }
 
-    pub async fn get_cover_art(&self, id: &str) -> Result<Vec<u8>, SubsonicError> {
-        let result = match reqwest::get(self.get_cover_art_url(id)).await {
+    /// reference: http://www.subsonic.org/pages/api.jsp#getCoverArt
+    pub async fn get_cover_art(&self, id: impl Into<String>, size: Option<i32>) -> Result<Vec<u8>, SubsonicError> {
+        let result = match reqwest::get(self.get_cover_art_url(id, size)).await {
             Ok(result) => result,
             Err(e) => return Err(SubsonicError::Connection(e)),
         };
