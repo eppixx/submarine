@@ -10,6 +10,7 @@ pub mod get_artist;
 pub mod get_artist_info;
 pub mod get_artist_info2;
 pub mod get_artists;
+pub mod get_avatar;
 pub mod get_captions;
 pub mod get_cover_art;
 pub mod get_genres;
