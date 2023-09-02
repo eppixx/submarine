@@ -18,7 +18,11 @@ impl Client {
     }
 
     /// reference: http://www.subsonic.org/pages/api.jsp#getCoverArt
-    pub async fn get_cover_art(&self, id: impl Into<String>, size: Option<i32>) -> Result<Vec<u8>, SubsonicError> {
+    pub async fn get_cover_art(
+        &self,
+        id: impl Into<String>,
+        size: Option<i32>,
+    ) -> Result<Vec<u8>, SubsonicError> {
         let result = match reqwest::get(self.get_cover_art_url(id, size)).await {
             Ok(result) => result,
             Err(e) => return Err(SubsonicError::Connection(e)),
