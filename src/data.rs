@@ -143,6 +143,9 @@ pub enum ResponseType {
     SearchResult3 {
         search_result3: SearchResult3,
     },
+    Lyrics {
+        lyrics: Lyrics,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -617,6 +620,14 @@ pub struct SearchResult3 {
     pub album: Vec<AlbumId3>,
     #[serde(default)]
     pub song: Vec<Child>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Lyrics {
+    pub artist: Option<String>,
+    pub title: Option<String>,
+    pub value: Option<String>, // maybe navidrome only?
 }
 
 mod option_user_rating {

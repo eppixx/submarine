@@ -16,6 +16,7 @@ pub mod get_cover_art;
 pub mod get_genres;
 pub mod get_indexes;
 pub mod get_license;
+pub mod get_lyrics;
 pub mod get_music_directory;
 pub mod get_music_folders;
 pub mod get_now_playing;
