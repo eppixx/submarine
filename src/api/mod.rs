@@ -28,6 +28,7 @@ pub mod get_similar_songs2;
 pub mod get_song;
 pub mod get_songs_by_genre;
 pub mod get_starred;
+pub mod get_starred2;
 pub mod get_top_songs;
 pub mod get_video;
 pub mod get_video_info;
