@@ -1,4 +1,5 @@
 pub mod create_playlist;
+pub mod create_share;
 pub mod delete_playlist;
 pub mod download;
 pub mod get_album;
