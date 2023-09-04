@@ -21,6 +21,7 @@ pub mod get_license;
 pub mod get_lyrics;
 pub mod get_music_directory;
 pub mod get_music_folders;
+pub mod get_newest_podcasts;
 pub mod get_now_playing;
 pub mod get_playlist;
 pub mod get_playlists;

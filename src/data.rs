@@ -152,6 +152,9 @@ pub enum ResponseType {
     Podcasts {
         podcasts: Podcasts,
     },
+    NewestPodcasts {
+        newest_podcasts: NewestPodcasts,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
