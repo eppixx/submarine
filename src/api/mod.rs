@@ -45,3 +45,4 @@ pub mod star;
 pub mod stream;
 pub mod unstar;
 pub mod update_playlist;
+pub mod update_share;
