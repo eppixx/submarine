@@ -149,6 +149,9 @@ pub enum ResponseType {
     Shares {
         shares: Shares,
     },
+    Podcasts {
+        podcasts: Podcasts,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -653,6 +656,58 @@ pub struct Share {
     pub expires: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     pub last_visited: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     pub visit_count: i32,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Podcasts {
+    #[serde(default)]
+    pub channel: Vec<PodcastChannel>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct PodcastChannel {
+    #[serde(default)]
+    pub episode: Vec<PodcastEpisode>,
+    pub id: String,
+    pub url: String,
+    pub title: Option<String>,
+    pub description: Option<String>,
+    pub cover_art: Option<String>,
+    pub original_image_url: Option<String>,
+    pub status: PodcastStatus,
+    pub error_message: Option<String>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct NewestPodcasts {
+    #[serde(default)]
+    pub episode: Vec<PodcastEpisode>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct PodcastEpisode {
+    #[serde(flatten)]
+    pub child: Child,
+    pub stream_id: Option<String>,
+    pub channel_id: String,
+    pub description: Option<String>,
+    pub status: PodcastStatus,
+    pub publish_date: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub enum PodcastStatus {
+    New,
+    Downloading,
+    Completed,
+    Error,
+    Deleted,
+    Skipped,
 }
 
 mod option_user_rating {
