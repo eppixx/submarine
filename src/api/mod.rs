@@ -6,6 +6,7 @@ pub mod delete_podcast_channel;
 pub mod delete_podcast_episode;
 pub mod delete_share;
 pub mod download;
+pub mod download_podcast_episode;
 pub mod get_album;
 pub mod get_album_info;
 pub mod get_album_info2;
