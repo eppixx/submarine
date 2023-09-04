@@ -40,6 +40,7 @@ pub mod get_video;
 pub mod get_video_info;
 pub mod hls;
 pub mod ping;
+pub mod refresh_podcasts;
 pub mod scrobble;
 pub mod search2;
 pub mod search3;
