@@ -146,6 +146,9 @@ pub enum ResponseType {
     Lyrics {
         lyrics: Lyrics,
     },
+    Shares {
+        shares: Shares,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -628,6 +631,28 @@ pub struct Lyrics {
     pub artist: Option<String>,
     pub title: Option<String>,
     pub value: Option<String>, // maybe navidrome only?
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Shares {
+    #[serde(default)]
+    pub share: Vec<Share>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Share {
+    #[serde(default)]
+    pub entry: Vec<Child>,
+    pub id: String,
+    pub url: String,
+    pub description: Option<String>,
+    pub username: String,
+    pub created: chrono::DateTime<chrono::offset::FixedOffset>,
+    pub expires: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+    pub last_visited: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+    pub visit_count: i32,
 }
 
 mod option_user_rating {
