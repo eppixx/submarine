@@ -1,4 +1,5 @@
 pub mod create_playlist;
+pub mod create_podcast_channel;
 pub mod create_share;
 pub mod delete_playlist;
 pub mod delete_share;
