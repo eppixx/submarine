@@ -164,6 +164,10 @@ pub enum ResponseType {
     JukeboxPlaylist {
         jukebox_playlist: JukeboxPlaylist,
     },
+    #[serde(rename_all = "camelCase")]
+    InternetRadionStations {
+        internet_radio_stations: InternetRadioStations,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -738,6 +742,22 @@ pub enum PodcastStatus {
     Error,
     Deleted,
     Skipped,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct InternetRadioStations {
+    #[serde(default)]
+    pub internet_radio_station: Vec<InternetRadioStation>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct InternetRadioStation {
+    pub id: String,
+    pub name: String,
+    pub stream_url: String,
+    pub home_page_url: Option<String>,
 }
 
 mod option_user_rating {
