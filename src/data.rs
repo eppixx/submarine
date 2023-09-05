@@ -828,8 +828,7 @@ pub struct Bookmarks {
 #[derive(Debug, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Bookmark {
-    #[serde(default)]
-    pub entry: Vec<Child>,
+    pub entry: Child,
     pub position: i64,
     pub username: String,
     pub comment: Option<String>,
