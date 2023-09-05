@@ -175,6 +175,9 @@ pub enum ResponseType {
     User {
         user: User,
     },
+    Users {
+        users: Users,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -780,6 +783,13 @@ pub struct ChatMessage {
     pub username: String,
     pub time: i64,
     pub message: String,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Users {
+    #[serde(default)]
+    pub user: Vec<User>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq)]
