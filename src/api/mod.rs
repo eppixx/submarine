@@ -45,6 +45,7 @@ pub mod get_songs_by_genre;
 pub mod get_starred;
 pub mod get_starred2;
 pub mod get_top_songs;
+pub mod get_user;
 pub mod get_video;
 pub mod get_video_info;
 pub mod hls;
