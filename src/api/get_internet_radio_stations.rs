@@ -1,5 +1,5 @@
 use crate::{
-    data::{ResponseType, InternetRadioStation},
+    data::{InternetRadioStation, ResponseType},
     Client, SubsonicError,
 };
 
@@ -10,8 +10,13 @@ impl Client {
     ) -> Result<Vec<InternetRadioStation>, SubsonicError> {
         let paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
 
-        let body = self.request("getInternetRadioStations", Some(paras), None).await?;
-        if let ResponseType::InternetRadionStations { internet_radio_stations } = body.data {
+        let body = self
+            .request("getInternetRadioStations", Some(paras), None)
+            .await?;
+        if let ResponseType::InternetRadionStations {
+            internet_radio_stations,
+        } = body.data
+        {
             Ok(internet_radio_stations.internet_radio_station)
         } else {
             Err(SubsonicError::Submarine(String::from(
@@ -27,7 +32,7 @@ mod tests {
     use crate::data::{OuterResponse, ResponseType};
 
     #[test]
-    fn conversion_get_song() {
+    fn conversion_empty_get_internet_radio_stations() {
         let response_body = r##"
 {
     "subsonic-response": {
@@ -41,7 +46,10 @@ mod tests {
         let response = serde_json::from_str::<OuterResponse>(response_body)
             .unwrap()
             .inner;
-        if let ResponseType::InternetRadionStations { internet_radio_stations } = response.data {
+        if let ResponseType::InternetRadionStations {
+            internet_radio_stations,
+        } = response.data
+        {
             assert_eq!(internet_radio_stations.internet_radio_station, vec![]);
         } else {
             panic!("wrong type");
