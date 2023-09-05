@@ -4,7 +4,8 @@ use crate::{
 };
 
 impl Client {
-    /// pings server and sends its [Info]
+    /// pings server and sends its [Info]<br>
+    /// reference: http://www.subsonic.org/pages/api.jsp#ping
     pub async fn ping(&self) -> Result<Info, SubsonicError> {
         let body = self.request("ping", None, None).await?;
         if let ResponseType::Ping {} = body.data {
