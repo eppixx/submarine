@@ -9,7 +9,7 @@ impl Client {
         current: Option<impl Into<String>>,
         position: Option<i64>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
         for id in id {
             paras.insert("id", id.into());
         }
