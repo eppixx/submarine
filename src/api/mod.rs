@@ -23,6 +23,7 @@ pub mod get_artist_info;
 pub mod get_artist_info2;
 pub mod get_artists;
 pub mod get_avatar;
+pub mod get_bookmarks;
 pub mod get_captions;
 pub mod get_chat_messages;
 pub mod get_cover_art;

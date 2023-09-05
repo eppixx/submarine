@@ -178,6 +178,9 @@ pub enum ResponseType {
     Users {
         users: Users,
     },
+    Bookmarks {
+        bookmarks: Bookmarks,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -813,6 +816,25 @@ pub struct User {
     pub jukebox_role: bool,
     pub video_conversion_role: bool,
     pub avatar_last_changed: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Bookmarks {
+    #[serde(default)]
+    pub bookmark: Vec<Bookmark>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct Bookmark {
+    #[serde(default)]
+    pub entry: Vec<Child>,
+    pub position: i64,
+    pub username: String,
+    pub comment: Option<String>,
+    pub created: chrono::DateTime<chrono::offset::FixedOffset>,
+    pub changed: chrono::DateTime<chrono::offset::FixedOffset>,
 }
 
 mod option_user_rating {
