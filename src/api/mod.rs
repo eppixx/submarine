@@ -1,9 +1,9 @@
 pub mod add_chat_message;
-pub mod get_users;
 pub mod create_internet_radio_station;
 pub mod create_playlist;
 pub mod create_podcast_channel;
 pub mod create_share;
+pub mod create_user;
 pub mod delete_internet_radio_station;
 pub mod delete_playlist;
 pub mod delete_podcast_channel;
@@ -47,6 +47,7 @@ pub mod get_starred;
 pub mod get_starred2;
 pub mod get_top_songs;
 pub mod get_user;
+pub mod get_users;
 pub mod get_video;
 pub mod get_video_info;
 pub mod hls;
