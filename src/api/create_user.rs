@@ -19,6 +19,8 @@ impl Client {
         upload_role: Option<bool>,           // defults to false
         playlist_role: Option<bool>,         // /defaults to false
         cover_art_role: Option<bool>,        // /defaults to false
+        comment_role: Option<bool>,          // /defaults to false
+        podcast_role: Option<bool>,          // /defaults to false
         share_role: Option<bool>,            // /defaults to false
         video_conversion_role: Option<bool>, // /defaults to false
         music_folder_id: Option<impl Into<String>>,
@@ -53,6 +55,12 @@ impl Client {
         }
         if let Some(cover_art) = cover_art_role {
             paras.insert("coverArtRole", cover_art.to_string());
+        }
+        if let Some(comment) = comment_role {
+            paras.insert("commentRole", comment.to_string());
+        }
+        if let Some(podcast) = podcast_role {
+            paras.insert("podcastRole", podcast.to_string());
         }
         if let Some(share) = share_role {
             paras.insert("shareRole", share.to_string());
