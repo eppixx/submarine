@@ -13,6 +13,8 @@ use thiserror::Error;
 
 use std::collections::HashMap;
 
+use crate::data::ResponseType;
+
 /// A client which all requests are send through.<br>
 /// Example
 /// ```no_run
@@ -90,7 +92,10 @@ impl Client {
         };
 
         let response: data::OuterResponse = serde_json::from_str(&body)?;
-        Ok(response.inner)
+        match response.inner.data {
+            ResponseType::Error { error } => Err(SubsonicError::Server(error.to_string())),
+            _ => Ok(response.inner),
+        }
     }
 }
 

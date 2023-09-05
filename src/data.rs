@@ -336,6 +336,12 @@ pub struct Error {
     pub message: String,
 }
 
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}: {}", self.code, self.message)
+    }
+}
+
 #[derive(Debug, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct License {
