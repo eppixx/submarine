@@ -2,13 +2,14 @@ use crate::Client;
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#stream
-    pub fn hls(
+    pub fn hls_url(
         &self,
         id: impl Into<String>,
         bit_rate: Vec<i32>,
         audio_rate: Option<impl Into<String>>,
     ) -> String {
         let mut paras = std::collections::HashMap::new();
+        self.auth.add_parameter(&mut paras);
         paras.insert("id", id.into());
         for bit_rate in bit_rate {
             paras.insert("bitRate", bit_rate.to_string());
@@ -25,3 +26,6 @@ impl Client {
         url
     }
 }
+
+//TODO add function that downloads m3u8 playlist
+//TODO add test
