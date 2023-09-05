@@ -250,26 +250,6 @@ pub struct AlbumWithSongsId3 {
     pub song: Vec<Child>,
 }
 
-/// some responses don't send the song list<br>
-///to combat this compare song_count with songs and use get_album if necessary
-// #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
-// #[serde(rename_all = "camelCase")]
-// pub struct Album {
-//     pub id: String,
-//     pub name: String,
-//     pub artist_id: Option<String>,
-//     pub cover_art: Option<String>,
-//     pub song_count: i32,
-//     pub duration: i32,
-//     pub play_count: Option<i64>,
-//     pub created: chrono::DateTime<chrono::offset::FixedOffset>,
-//     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
-//     pub year: Option<i32>,
-//     pub genre: Option<String>,
-//     #[serde(default, rename = "song")]
-//     pub songs: Vec<Child>,
-// }
-
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Child {
