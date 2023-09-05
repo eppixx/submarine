@@ -152,8 +152,17 @@ pub enum ResponseType {
     Podcasts {
         podcasts: Podcasts,
     },
+    #[serde(rename_all = "camelCase")]
     NewestPodcasts {
         newest_podcasts: NewestPodcasts,
+    },
+    #[serde(rename_all = "camelCase")]
+    JukeboxStatus {
+        jukebox_status: JukeboxStatus,
+    },
+    #[serde(rename_all = "camelCase")]
+    JukeboxPlaylist {
+        jukebox_playlist: JukeboxPlaylist,
     },
     // order is important or it will allways be matched to ping
     Ping {},
@@ -700,6 +709,24 @@ pub struct PodcastEpisode {
     pub description: Option<String>,
     pub status: PodcastStatus,
     pub publish_date: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct JukeboxStatus {
+    pub current_index: i32,
+    pub playing: bool,
+    // gain: f32,
+    pub position: Option<i32>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct JukeboxPlaylist {
+    #[serde(flatten)]
+    pub status: JukeboxStatus,
+    #[serde(default)]
+    pub entry: Vec<Child>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq)]

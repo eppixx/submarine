@@ -43,6 +43,7 @@ pub mod get_top_songs;
 pub mod get_video;
 pub mod get_video_info;
 pub mod hls;
+pub mod jukebox_control;
 pub mod ping;
 pub mod refresh_podcasts;
 pub mod scrobble;
