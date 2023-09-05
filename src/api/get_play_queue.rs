@@ -4,9 +4,7 @@ use crate::{Client, SubsonicError};
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getPlayQueue
     pub async fn get_play_queue(&self) -> Result<Result<PlayQueue, Info>, SubsonicError> {
-        let paras = std::collections::HashMap::new();
-
-        let body = self.request("getPlayQueue", Some(paras), None).await?;
+        let body = self.request("getPlayQueue", None, None).await?;
         match body.data {
             ResponseType::Ping {} => Ok(Err(body.info)),
             ResponseType::PlayQueue { play_queue } => Ok(Ok(play_queue)),

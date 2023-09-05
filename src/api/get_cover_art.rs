@@ -3,7 +3,7 @@ use crate::{Client, SubsonicError};
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getCoverArt
     pub fn get_cover_art_url(&self, id: impl Into<String>, size: Option<i32>) -> String {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
         if let Some(size) = size {
             paras.insert("size", size.to_string());

@@ -5,9 +5,7 @@ use crate::{
 
 impl Client {
     pub async fn get_music_folders(&self) -> Result<MusicFolders, SubsonicError> {
-        let paras = std::collections::HashMap::new();
-
-        let body = self.request("getMusicFolders", Some(paras), None).await?;
+        let body = self.request("getMusicFolders", None, None).await?;
         if let ResponseType::MusicFolders { music_folders } = body.data {
             Ok(music_folders)
         } else {

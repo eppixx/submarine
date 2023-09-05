@@ -8,7 +8,7 @@ impl Client {
         bit_rate: Vec<i32>,
         audio_rate: Option<impl Into<String>>,
     ) -> String {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
         for bit_rate in bit_rate {
             paras.insert("bitRate", bit_rate.to_string());

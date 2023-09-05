@@ -12,7 +12,7 @@ impl Client {
         estimate_content_length: Option<bool>, // restrict length
         converted: Option<bool>,               // video only
     ) -> String {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
         if let Some(bit_rate) = max_bit_rate {
             paras.insert("maxBitRate", bit_rate.to_string());

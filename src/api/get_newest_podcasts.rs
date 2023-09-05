@@ -9,7 +9,7 @@ impl Client {
         &self,
         count: Option<i32>, //defaults to 20
     ) -> Result<Vec<PodcastEpisode>, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         if let Some(count) = count {
             paras.insert("count", count.to_string());
         }

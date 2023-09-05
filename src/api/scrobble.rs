@@ -10,7 +10,7 @@ impl Client {
         id_at_time: Vec<(impl Into<String>, Option<usize>)>,
         submission: Option<bool>, // defaults to true
     ) -> Result<Info, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         for (id, time) in id_at_time {
             paras.insert("id", id.into());
             if let Some(time) = time {

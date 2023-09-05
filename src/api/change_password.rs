@@ -10,7 +10,7 @@ impl Client {
         username: impl Into<String>,
         password: impl Into<String>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("username", username.into());
         paras.insert("password", password.into());
 

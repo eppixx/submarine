@@ -28,7 +28,7 @@ impl Display for Action {
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#jukeboxControl
     pub async fn jukebox_control(&self, action: Action) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("action", action.to_string());
 
         let body = self.request("jukeboxControl", Some(paras), None).await?;
@@ -43,7 +43,7 @@ impl Client {
 
     /// reference: http://www.subsonic.org/pages/api.jsp#jukeboxControl
     pub async fn jukebox_control_get(&self) -> Result<JukeboxPlaylist, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("action", String::from("get"));
 
         let body = self.request("jukeboxControl", Some(paras), None).await?;
@@ -61,7 +61,7 @@ impl Client {
         &self,
         id: Vec<impl Into<String>>,
     ) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("action", String::from("set"));
         for id in id {
             paras.insert("id", id.into());
@@ -83,7 +83,7 @@ impl Client {
         index: i32,
         offset: Option<i32>,
     ) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("action", String::from("skip"));
         paras.insert("index", index.to_string());
         if let Some(offset) = offset {
@@ -105,7 +105,7 @@ impl Client {
         &self,
         id: Vec<impl Into<String>>,
     ) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("action", String::from("add"));
         for id in id {
             paras.insert("id", id.into());
@@ -123,7 +123,7 @@ impl Client {
 
     /// reference: http://www.subsonic.org/pages/api.jsp#jukeboxControl
     pub async fn jukebox_control_remove(&self, index: i32) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("action", String::from("remove"));
         paras.insert("index", index.to_string());
 
@@ -142,7 +142,7 @@ impl Client {
         &self,
         gain: f32,
     ) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("action", String::from("setGain"));
         paras.insert("gain", gain.to_string());
 

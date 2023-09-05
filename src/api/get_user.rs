@@ -6,7 +6,7 @@ use crate::{
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getUser
     pub async fn get_user(&self, username: impl Into<String>) -> Result<User, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("username", username.into());
 
         let body = self.request("getUser", Some(paras), None).await?;

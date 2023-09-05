@@ -5,9 +5,7 @@ use crate::{
 
 impl Client {
     pub async fn get_license(&self) -> Result<License, SubsonicError> {
-        let paras = std::collections::HashMap::new();
-
-        let body = self.request("getLicense", Some(paras), None).await?;
+        let body = self.request("getLicense", None, None).await?;
         if let ResponseType::License { license } = body.data {
             Ok(license)
         } else {

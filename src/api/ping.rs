@@ -1,16 +1,19 @@
-use log::info;
-
-use crate::{data::Info, Client, SubsonicError};
+use crate::{
+    data::{Info, ResponseType},
+    Client, SubsonicError,
+};
 
 impl Client {
     /// pings server and sends its [Info]
     pub async fn ping(&self) -> Result<Info, SubsonicError> {
-        info!(
-            "ping {}, {}, {}, {}",
-            self.server_url, self.auth.user, self.auth.hash, self.auth.salt
-        );
         let body = self.request("ping", None, None).await?;
-        Ok(body.info)
+        if let ResponseType::Ping {} = body.data {
+            Ok(body.info)
+        } else {
+            Err(SubsonicError::Submarine(String::from(
+                "expected type Ping but found wrong type",
+            )))
+        }
     }
 }
 

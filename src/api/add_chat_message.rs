@@ -9,7 +9,7 @@ impl Client {
         &self,
         message: impl Into<String>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("message", message.into());
 
         let body = self.request("addChatMessage", Some(paras), None).await?;

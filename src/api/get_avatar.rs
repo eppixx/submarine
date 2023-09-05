@@ -3,7 +3,7 @@ use crate::{Client, SubsonicError};
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getAvatar
     pub fn get_avatar_url(&self, username: impl Into<String>) -> String {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("username", username.into());
 
         let mut url: String = self.server_url.clone() + "/rest/getAvatar?";

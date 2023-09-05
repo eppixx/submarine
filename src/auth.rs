@@ -72,17 +72,13 @@ impl Auth {
             .take(size)
             .collect()
     }
-}
 
-impl From<Auth> for HashMap<&str, String> {
-    fn from(auth: Auth) -> Self {
-        let mut params = HashMap::new();
-        params.insert("u", auth.user.clone());
-        params.insert("v", auth.version.clone());
-        params.insert("c", auth.client_name.clone());
-        params.insert("t", auth.hash.clone());
-        params.insert("s", auth.salt);
-        params.insert("f", "json".into());
-        params
+    pub(crate) fn add_parameter(&self, paras: &mut HashMap<&str, String>) {
+        paras.insert("u", self.user.clone());
+        paras.insert("v", self.version.clone());
+        paras.insert("c", self.client_name.clone());
+        paras.insert("t", self.hash.clone());
+        paras.insert("s", self.salt.clone());
+        paras.insert("f", String::from("json"));
     }
 }

@@ -6,9 +6,7 @@ use crate::{
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getBookmarks
     pub async fn get_bookmarks(&self) -> Result<Vec<Bookmark>, SubsonicError> {
-        let paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
-
-        let body = self.request("getBookmarks", Some(paras), None).await?;
+        let body = self.request("getBookmarks", None, None).await?;
         if let ResponseType::Bookmarks { bookmarks } = body.data {
             Ok(bookmarks.bookmark)
         } else {

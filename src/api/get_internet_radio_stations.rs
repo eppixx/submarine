@@ -8,11 +8,7 @@ impl Client {
     pub async fn get_internet_radio_stations(
         &self,
     ) -> Result<Vec<InternetRadioStation>, SubsonicError> {
-        let paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
-
-        let body = self
-            .request("getInternetRadioStations", Some(paras), None)
-            .await?;
+        let body = self.request("getInternetRadioStations", None, None).await?;
         if let ResponseType::InternetRadionStations {
             internet_radio_stations,
         } = body.data

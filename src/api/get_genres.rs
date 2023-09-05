@@ -6,9 +6,7 @@ use crate::{
 impl Client {
     /// http://www.subsonic.org/pages/api.jsp#getGenres
     pub async fn get_genres(&self) -> Result<Vec<Genre>, SubsonicError> {
-        let paras = std::collections::HashMap::new();
-
-        let body = self.request("getGenres", Some(paras), None).await?;
+        let body = self.request("getGenres", None, None).await?;
         if let ResponseType::Genres { genres } = body.data {
             Ok(genres.genre)
         } else {

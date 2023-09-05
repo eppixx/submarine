@@ -11,7 +11,7 @@ impl Client {
         album_id: Vec<impl Into<String>>,
         artist_id: Vec<impl Into<String>>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         for id in id {
             paras.insert("id", id.into());
         }

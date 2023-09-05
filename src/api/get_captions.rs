@@ -3,7 +3,7 @@ use crate::Client;
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getCatptions
     pub fn get_captions(&self, id: impl Into<String>, format: Option<impl Into<String>>) -> String {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
         if let Some(format) = format {
             paras.insert("format", format.into());

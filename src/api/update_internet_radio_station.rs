@@ -12,7 +12,7 @@ impl Client {
         name: impl Into<String>,
         homepage_url: Option<impl Into<String>>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
         paras.insert("streamUrl", stream_url.into());
         paras.insert("name", name.into());

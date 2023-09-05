@@ -9,7 +9,7 @@ impl Client {
         &self,
         since: Option<i64>,
     ) -> Result<Vec<ChatMessage>, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         if let Some(since) = since {
             paras.insert("since", since.to_string());
         }

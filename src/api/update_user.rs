@@ -26,7 +26,7 @@ impl Client {
         music_folder_id: Option<impl Into<String>>,
         max_bit_rate: Option<i16>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("username", username.into());
         if let Some(password) = password {
             paras.insert("password", password.into());

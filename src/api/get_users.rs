@@ -6,9 +6,7 @@ use crate::{
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getUsers
     pub async fn get_users(&self) -> Result<Vec<User>, SubsonicError> {
-        let paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
-
-        let body = self.request("getUsers", Some(paras), None).await?;
+        let body = self.request("getUsers", None, None).await?;
         if let ResponseType::Users { users } = body.data {
             Ok(users.user)
         } else {

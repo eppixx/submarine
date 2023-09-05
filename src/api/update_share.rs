@@ -11,7 +11,7 @@ impl Client {
         description: Option<impl Into<String>>,
         expires: Option<usize>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
         if let Some(desc) = description {
             paras.insert("description", desc.into());

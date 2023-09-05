@@ -16,7 +16,7 @@ impl Client {
             )));
         }
 
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
         paras.insert("rating", rating.to_string());
 

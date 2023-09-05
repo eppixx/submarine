@@ -10,7 +10,7 @@ impl Client {
         include_episodes: Option<bool>,
         id: Option<impl Into<String>>,
     ) -> Result<Vec<PodcastChannel>, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         if let Some(episodes) = include_episodes {
             paras.insert("includeEpisodes", episodes.to_string());
         }

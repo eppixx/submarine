@@ -67,13 +67,9 @@ impl Client {
         parameter: Option<HashMap<&str, String>>,
         headers: Option<reqwest::header::HeaderMap>,
     ) -> Result<data::Response, SubsonicError> {
-        let parameter = parameter.unwrap_or_default();
+        let mut paras = parameter.unwrap_or_default();
+        self.auth.add_parameter(&mut paras);
         let headers = headers.unwrap_or_default();
-
-        let mut paras: HashMap<&str, String> = self.auth.clone().into();
-        parameter
-            .iter()
-            .for_each(|p| _ = paras.insert(p.0, p.1.into()));
 
         let request = self
             .client

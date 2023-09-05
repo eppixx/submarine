@@ -9,7 +9,7 @@ impl Client {
         &self,
         id: impl Into<String>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras: std::collections::HashMap<&str, String> = self.auth.clone().into();
+        let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
 
         let body = self
