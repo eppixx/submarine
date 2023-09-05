@@ -1,5 +1,6 @@
 pub mod add_chat_message;
 pub mod change_password;
+pub mod create_bookmark;
 pub mod create_internet_radio_station;
 pub mod create_playlist;
 pub mod create_podcast_channel;
