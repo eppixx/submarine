@@ -3,7 +3,9 @@ use crate::{Client, SubsonicError};
 
 impl Client {
     pub async fn get_scan_status(&self) -> Result<ScanStatus, SubsonicError> {
-        let body = self.request("getScanStatus", None, None).await?;
+        let paras = std::collections::HashMap::new();
+
+        let body = self.request("getScanStatus", Some(paras), None).await?;
         if let ResponseType::ScanStatus { scan_status } = body.data {
             Ok(scan_status)
         } else {
@@ -40,7 +42,7 @@ mod tests {
             .inner;
         if let ResponseType::ScanStatus { scan_status } = response.data {
             assert_eq!(scan_status.scanning, false);
-            assert_eq!(scan_status.count, 18352);
+            assert_eq!(scan_status.count, Some(18352));
         } else {
             panic!("wrong type: {response:?}");
         }

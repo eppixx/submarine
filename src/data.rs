@@ -192,9 +192,9 @@ pub enum ResponseType {
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ScanStatus {
     pub scanning: bool,
-    pub count: usize,
-    pub folder_count: Option<usize>,
-    pub last_scan: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
+    pub count: Option<i64>,
+    pub folder_count: Option<usize>, //navidrome specific
+    pub last_scan: Option<chrono::DateTime<chrono::offset::FixedOffset>>, // navidrome specific
 }
 
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
