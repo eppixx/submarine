@@ -181,6 +181,10 @@ pub enum ResponseType {
     Bookmarks {
         bookmarks: Bookmarks,
     },
+    #[serde(rename_all = "camelCase")]
+    PlayQueue {
+        play_queue: PlayQueue,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -256,6 +260,7 @@ pub struct Child {
     pub id: String,
     pub parent: Option<String>,
     pub is_dir: bool,
+    #[serde(default)] // navidrome specific
     pub title: String,
     pub album: Option<String>,
     pub artist: Option<String>,
@@ -814,6 +819,18 @@ pub struct Bookmark {
     pub comment: Option<String>,
     pub created: chrono::DateTime<chrono::offset::FixedOffset>,
     pub changed: chrono::DateTime<chrono::offset::FixedOffset>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct PlayQueue {
+    #[serde(default)]
+    pub entry: Vec<Child>,
+    pub current: Option<String>, // current playing track, TODO check if reference is wrong
+    pub position: Option<i64>,   // in ms
+    pub username: String,
+    pub changed: chrono::DateTime<chrono::offset::FixedOffset>,
+    pub changed_by: String, // client name
 }
 
 mod option_user_rating {
