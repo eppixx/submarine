@@ -11,7 +11,7 @@ impl Client {
             Ok(bookmarks.bookmark)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "expected type Bookmark but found wrong type",
+                "expected type Bookmarks but found wrong type",
             )))
         }
     }

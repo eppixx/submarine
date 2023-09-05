@@ -12,7 +12,7 @@ impl Client {
             Ok(*song)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "expected type Album but found wrong type",
+                "expected type Song but found wrong type",
             )))
         }
     }

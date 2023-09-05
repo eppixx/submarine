@@ -11,7 +11,7 @@ impl Client {
             Ok(license)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type License but found wrong type",
             )))
         }
     }

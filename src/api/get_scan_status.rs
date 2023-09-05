@@ -9,7 +9,7 @@ impl Client {
             Ok(scan_status)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type ScanStatus but found wrong type",
             )))
         }
     }

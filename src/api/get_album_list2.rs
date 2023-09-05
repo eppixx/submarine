@@ -21,7 +21,7 @@ impl Client {
             Ok(album_list.album)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type AlbumList but found wrong type",
             )))
         }
     }
@@ -49,7 +49,7 @@ impl Client {
             Ok(album_list.album)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type AlbumList but found wrong type",
             )))
         }
     }
@@ -71,7 +71,7 @@ impl Client {
             Ok(album_list.album)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "got send wrong type; submarine fault?",
+                "expected type AlbumList but found wrong type",
             )))
         }
     }
