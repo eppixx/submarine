@@ -2,6 +2,7 @@ use crate::data::{ResponseType, ScanStatus};
 use crate::{Client, SubsonicError};
 
 impl Client {
+    /// reference: http://www.subsonic.org/pages/api.jsp#getScanStatus
     pub async fn get_scan_status(&self) -> Result<ScanStatus, SubsonicError> {
         let paras = std::collections::HashMap::new();
 
