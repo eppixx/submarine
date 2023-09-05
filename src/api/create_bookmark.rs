@@ -32,7 +32,7 @@ mod tests {
     use crate::data::{OuterResponse, ResponseType};
 
     #[test]
-    fn conversion_get_song() {
+    fn conversion_create_bookmark() {
         let response_body = r##"
 {
   "subsonic-response": {
