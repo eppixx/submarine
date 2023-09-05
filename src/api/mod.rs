@@ -64,3 +64,4 @@ pub mod unstar;
 pub mod update_internet_radio_station;
 pub mod update_playlist;
 pub mod update_share;
+pub mod update_user;
