@@ -3,10 +3,7 @@ use crate::{Client, SubsonicError};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#deleteBookmark
-    pub async fn delete_bookmark(
-        &self,
-        id: impl Into<String>,
-    ) -> Result<Info, SubsonicError> {
+    pub async fn delete_bookmark(&self, id: impl Into<String>) -> Result<Info, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("id", id.into());
 
