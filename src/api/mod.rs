@@ -2,6 +2,7 @@ pub mod create_internet_radio_station;
 pub mod create_playlist;
 pub mod create_podcast_channel;
 pub mod get_chat_messages;
+pub mod add_chat_message;
 pub mod create_share;
 pub mod delete_internet_radio_station;
 pub mod delete_playlist;
