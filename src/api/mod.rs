@@ -60,6 +60,7 @@ pub mod hls;
 pub mod jukebox_control;
 pub mod ping;
 pub mod refresh_podcasts;
+pub mod save_play_queue;
 pub mod scrobble;
 pub mod search2;
 pub mod search3;
