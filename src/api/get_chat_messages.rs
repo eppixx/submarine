@@ -14,9 +14,7 @@ impl Client {
             paras.insert("since", since.to_string());
         }
 
-        let body = self
-            .request("getChatMessages", Some(paras), None)
-            .await?;
+        let body = self.request("getChatMessages", Some(paras), None).await?;
         if let ResponseType::ChatMessages { chat_messages } = body.data {
             Ok(chat_messages.chat_message)
         } else {

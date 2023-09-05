@@ -172,6 +172,9 @@ pub enum ResponseType {
     ChatMessages {
         chat_messages: ChatMessages,
     },
+    User {
+        user: User,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -777,6 +780,29 @@ pub struct ChatMessage {
     pub username: String,
     pub time: i64,
     pub message: String,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct User {
+    #[serde(default)]
+    pub folder: Vec<i32>,
+    pub username: String,
+    pub email: Option<String>,
+    pub scrobbling_enabled: bool,
+    pub max_bit_rate: Option<i32>,
+    pub admin_role: bool,
+    pub settings_role: bool,
+    pub download_role: bool,
+    pub upload_role: bool,
+    pub playlist_role: bool,
+    pub cover_art_role: bool,
+    pub comment_role: bool,
+    pub podcast_role: bool,
+    pub stream_role: bool,
+    pub jukebox_role: bool,
+    pub video_conversion_role: bool,
+    pub avatar_last_changed: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
 }
 
 mod option_user_rating {
