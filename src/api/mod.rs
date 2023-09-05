@@ -55,5 +55,6 @@ pub mod set_rating;
 pub mod star;
 pub mod stream;
 pub mod unstar;
+pub mod update_internet_radio_station;
 pub mod update_playlist;
 pub mod update_share;
