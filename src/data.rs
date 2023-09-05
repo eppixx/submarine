@@ -327,7 +327,7 @@ pub struct PlaylistWithSongs {
     #[serde(flatten)]
     pub base: Playlist,
     #[serde(default)]
-    pub songs: Vec<Child>,
+    pub entry: Vec<Child>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq)]

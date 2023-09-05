@@ -52,7 +52,7 @@ mod tests {
     use crate::data::{OuterResponse, ResponseType};
 
     #[test]
-    fn conversion_get_album() {
+    fn conversion_create_playlist() {
         let response_body = r##"
             {
               "subsonic-response": {
@@ -77,7 +77,67 @@ mod tests {
             .unwrap()
             .inner;
         if let ResponseType::PlaylistWithSongs { playlist } = response.data {
-            assert_eq!(playlist.songs.len(), 0);
+            assert_eq!(playlist.entry.len(), 0);
+            assert_eq!(playlist.base.duration, 0);
+        } else {
+            panic!("wrong type: {response:?}");
+        }
+    }
+
+    #[test]
+    fn conversion_overwrite_playlist() {
+        let response_body = r##"
+{
+  "subsonic-response": {
+    "status": "ok",
+    "version": "1.16.1",
+    "type": "navidrome",
+    "serverVersion": "0.49.3 (8b93962f)",
+    "playlist": {
+      "id": "0ffa92dd-7927-43df-b97d-5352cbd50aa8",
+      "name": "test",
+      "songCount": 1,
+      "duration": 140,
+      "public": false,
+      "owner": "eppixx",
+      "created": "2023-09-01T12:51:08.099027452Z",
+      "changed": "2023-09-05T23:16:58Z",
+      "coverArt": "pl-0ffa92dd-7927-43df-b97d-5352cbd50aa8_64f7b6ea",
+      "entry": [
+        {
+          "id": "7f4afc229780891f5a8aa2b9415a7e0f",
+          "parent": "70d4e438ad35fb648ed673875f1dc09a",
+          "isDir": false,
+          "title": "Santa Claus Is Coming to Town",
+          "album": "Rock Christmas",
+          "artist": "Ella Fitzgerald",
+          "track": 13,
+          "year": 1991,
+          "coverArt": "mf-7f4afc229780891f5a8aa2b9415a7e0f_61151f62",
+          "size": 3617603,
+          "contentType": "audio/mpeg",
+          "suffix": "mp3",
+          "duration": 140,
+          "bitRate": 200,
+          "path": "Various Artists/Rock Christmas/13 - Santa Claus Is Coming to Town.mp3",
+          "playCount": 3,
+          "played": "2022-12-05T15:54:34Z",
+          "discNumber": 1,
+          "created": "2021-08-12T13:33:57.283852964Z",
+          "albumId": "70d4e438ad35fb648ed673875f1dc09a",
+          "type": "music",
+          "isVideo": false
+        }
+      ]
+    }
+  }
+}"##;
+        let response = serde_json::from_str::<OuterResponse>(response_body)
+            .unwrap()
+            .inner;
+        if let ResponseType::PlaylistWithSongs { playlist } = response.data {
+            assert_eq!(playlist.entry.len(), 1);
+            assert_eq!(playlist.entry.first().unwrap().bit_rate, Some(200));
         } else {
             panic!("wrong type: {response:?}");
         }
