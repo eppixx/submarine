@@ -66,6 +66,7 @@ pub mod search2;
 pub mod search3;
 pub mod set_rating;
 pub mod star;
+pub mod start_scan;
 pub mod stream;
 pub mod unstar;
 pub mod update_internet_radio_station;
