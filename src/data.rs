@@ -168,6 +168,10 @@ pub enum ResponseType {
     InternetRadionStations {
         internet_radio_stations: InternetRadioStations,
     },
+    #[serde(rename_all = "camelCase")]
+    ChatMessages {
+        chat_messages: ChatMessages,
+    },
     // order is important or it will allways be matched to ping
     Ping {},
 }
@@ -758,6 +762,21 @@ pub struct InternetRadioStation {
     pub name: String,
     pub stream_url: String,
     pub home_page_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct ChatMessages {
+    #[serde(default)]
+    pub chat_message: Vec<ChatMessage>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "camelCase")]
+pub struct ChatMessage {
+    pub username: String,
+    pub time: i64,
+    pub message: String,
 }
 
 mod option_user_rating {
