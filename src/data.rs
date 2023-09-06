@@ -22,8 +22,8 @@ pub(crate) struct Response {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Info {
-    /// either "ok" or "failed"
-    pub status: String,
+    #[serde(default, with = "status")]
+    pub status: Status,
 
     /// protocol version
     pub version: String,
@@ -837,6 +837,30 @@ pub struct PlayQueue {
     pub username: String,
     pub changed: chrono::DateTime<chrono::offset::FixedOffset>,
     pub changed_by: String, // client name
+}
+
+#[derive(Debug, Default, PartialEq, Eq)]
+pub enum Status {
+    Ok,
+    #[default]
+    Error,
+}
+
+mod status {
+    use super::Status;
+    use serde::{self, Deserialize, Deserializer};
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Status, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s: Option<&str> = Option::deserialize(deserializer)?;
+        match s {
+            Some("ok") => Ok(Status::Ok),
+            Some("failed") => Ok(Status::Error),
+            _ => Ok(Status::Error),
+        }
+    }
 }
 
 mod option_user_rating {

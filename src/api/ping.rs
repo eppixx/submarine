@@ -20,7 +20,7 @@ impl Client {
 
 #[cfg(test)]
 mod tests {
-    use crate::data::{OuterResponse, ResponseType};
+    use crate::data::{OuterResponse, ResponseType, Status};
 
     #[test]
     fn ping_convert() {
@@ -37,7 +37,7 @@ mod tests {
             .unwrap()
             .inner
             .info;
-        assert_eq!(info.status, String::from("ok"));
+        assert_eq!(info.status, Status::Ok);
         assert_eq!(info.version, String::from("1.16.1"));
         assert_eq!(info.r#type, Some(String::from("navidrome")));
     }
@@ -60,7 +60,8 @@ mod tests {
         let response = serde_json::from_str::<OuterResponse>(response_txt)
             .unwrap()
             .inner;
-        assert_eq!(response.info.status, String::from("failed"));
+
+        assert_eq!(response.info.status, Status::Error);
         assert_eq!(response.info.version, String::from("1.16.1"));
         if let ResponseType::Error { error } = response.data {
             assert_eq!(error.code, 40);
