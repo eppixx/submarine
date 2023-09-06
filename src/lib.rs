@@ -9,6 +9,7 @@ pub mod auth;
 pub mod data;
 
 use log::{info, trace, warn};
+use reqwest::StatusCode;
 use thiserror::Error;
 
 use std::collections::HashMap;
@@ -50,6 +51,8 @@ pub enum SubsonicError {
     Submarine(String),
     #[error("Submarine invalid arguments: {0}")]
     InvalidArgs(String),
+    #[error("Route not implemented on server: {0}")]
+    ServerRouteNotImplemented(String),
 }
 
 impl Client {
@@ -73,20 +76,29 @@ impl Client {
         self.auth.add_parameter(&mut paras);
         let headers = headers.unwrap_or_default();
 
+        trace!("request from server: {}, para: {:?}, header: {:?}", path, paras, headers);
         let request = self
             .client
             .post(self.server_url.clone() + "/rest/" + path)
             .headers(headers)
             .form(&paras);
 
-        trace!("request from server: {}, para: {:?}", path, paras);
         let body: String = match request.send().await {
             Ok(body) => {
-                if body.status() != 200 {
-                    warn!("Could not fetch previous request to {}", path);
-                    return Err(SubsonicError::NoServerFound);
+                match body.status() {
+                    StatusCode::OK => body.text().await?,
+                    StatusCode::GONE
+                        if body.text().await? == "This endpoint will not be implemented" =>
+                    {
+                        return Err(SubsonicError::ServerRouteNotImplemented(String::from(
+                            "navidrome",
+                        )))
+                    }
+                    _ => {
+                        warn!("Could not fetch previous request to {}", path);
+                        return Err(SubsonicError::NoServerFound);
+                    }
                 }
-                body.text().await?
             }
             Err(e) => return Err(SubsonicError::Connection(e)),
         };
