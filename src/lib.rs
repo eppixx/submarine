@@ -52,6 +52,8 @@ pub enum SubsonicError {
     InvalidArgs(String),
     #[error("Route not implemented on server: {0}")]
     ServerRouteNotImplemented(String),
+    #[error("Url parsing error: {0}")]
+    UrlParsing(#[from] url::ParseError),
 }
 
 #[derive(Debug, Serialize, Default, Clone, PartialEq, Eq)]
