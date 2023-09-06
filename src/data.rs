@@ -19,6 +19,17 @@ pub(crate) struct Response {
     pub data: ResponseType,
 }
 
+/// Status of Response from server
+#[derive(Debug, Default, PartialEq, Eq)]
+pub enum Status {
+    Ok,
+    #[default]
+    Error,
+}
+
+/// This is send by every request from server. If a request is 'Status::Ok' the returned
+/// Info will be omitted. Requests that doesn't send something
+/// back this will be returned instead.
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Info {
@@ -837,13 +848,6 @@ pub struct PlayQueue {
     pub username: String,
     pub changed: chrono::DateTime<chrono::offset::FixedOffset>,
     pub changed_by: String, // client name
-}
-
-#[derive(Debug, Default, PartialEq, Eq)]
-pub enum Status {
-    Ok,
-    #[default]
-    Error,
 }
 
 mod status {
