@@ -36,3 +36,5 @@ impl Client {
         Ok(bytes)
     }
 }
+
+//TODO add test

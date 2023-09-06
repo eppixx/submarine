@@ -15,7 +15,6 @@ impl Client {
     }
 }
 
-//TODO add more tests
 #[cfg(test)]
 mod tests {
     use crate::data::{OuterResponse, ResponseType};

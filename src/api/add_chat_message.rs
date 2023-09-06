@@ -22,5 +22,3 @@ impl Client {
         }
     }
 }
-
-//TODO add test

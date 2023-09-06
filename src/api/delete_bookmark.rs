@@ -17,29 +17,3 @@ impl Client {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use crate::data::{OuterResponse, ResponseType};
-
-    #[test]
-    fn conversion_delete_bookmark() {
-        let response_body = r##"
-{
-  "subsonic-response": {
-    "status": "ok",
-    "version": "1.16.1",
-    "type": "navidrome",
-    "serverVersion": "0.49.3 (8b93962f)"
-  }
-}"##;
-        let response = serde_json::from_str::<OuterResponse>(response_body)
-            .unwrap()
-            .inner;
-        if let ResponseType::Ping {} = response.data {
-            assert_eq!(&response.info.status, "ok");
-        } else {
-            panic!("wrong type");
-        }
-    }
-}

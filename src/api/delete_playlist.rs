@@ -19,29 +19,3 @@ impl Client {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use crate::data::{OuterResponse, ResponseType};
-
-    #[test]
-    fn ping_convert() {
-        let response_txt = r##"
-{
-  "subsonic-response": {
-    "status": "ok",
-    "version": "1.16.1",
-    "type": "navidrome",
-    "serverVersion": "0.49.3 (8b93962f)"
-  }
-}"##;
-        let response = serde_json::from_str::<OuterResponse>(response_txt)
-            .unwrap()
-            .inner;
-        if let ResponseType::Ping {} = response.data {
-            assert_eq!(&response.info.status, "ok");
-        } else {
-            panic!("wrong type");
-        }
-    }
-}

@@ -19,7 +19,7 @@ impl Client {
 
 mod tests {
     #[test]
-    fn conversion_get_indexes() {
+    fn conversion_get_genres() {
         let response_body = r##"
             {
                 "subsonic-response": {
