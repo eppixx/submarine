@@ -1,6 +1,6 @@
 use crate::{
     data::{PodcastEpisode, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -9,9 +9,9 @@ impl Client {
         &self,
         count: Option<i32>, //defaults to 20
     ) -> Result<Vec<PodcastEpisode>, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         if let Some(count) = count {
-            paras.insert("count", count.to_string());
+            paras.push("count", count.to_string());
         }
 
         let body = self.request("getNewestPodcasts", Some(paras), None).await?;

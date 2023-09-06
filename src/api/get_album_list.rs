@@ -1,9 +1,8 @@
-use std::collections::HashMap;
 use std::fmt::Display;
 use std::str::FromStr;
 
 use crate::data::{Child, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Order {
@@ -55,16 +54,16 @@ impl Client {
         size: Option<usize>,
         offset: Option<usize>,
         music_folder_id: Option<impl Into<String>>,
-    ) -> HashMap<&'static str, String> {
-        let mut paras = std::collections::HashMap::new();
+    ) -> Parameter {
+        let mut paras = Parameter::new();
         if let Some(size) = size {
-            paras.insert("size", size.to_string()); //500 is maximum
+            paras.push("size", size.to_string()); //500 is maximum
         }
         if let Some(offset) = offset {
-            paras.insert("offset", offset.to_string());
+            paras.push("offset", offset.to_string());
         }
         if let Some(folder_id) = music_folder_id {
-            paras.insert("musicFolderId", folder_id.into());
+            paras.push("musicFolderId", folder_id);
         }
         paras
     }
@@ -78,7 +77,7 @@ impl Client {
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
-        paras.insert("type", order.to_string());
+        paras.push("type", order.to_string());
 
         let body = self.request("getAlbumList", Some(paras), None).await?;
         if let ResponseType::AlbumList { album_list } = body.data {
@@ -100,12 +99,12 @@ impl Client {
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
-        paras.insert("type", String::from("byYear"));
+        paras.push("type", "byYear");
         if let Some(from) = from_year {
-            paras.insert("fromYear", from.to_string());
+            paras.push("fromYear", from.to_string());
         }
         if let Some(to) = to_year {
-            paras.insert("toYear", to.to_string());
+            paras.push("toYear", to.to_string());
         }
 
         let body = self.request("getAlbumList", Some(paras), None).await?;
@@ -127,8 +126,8 @@ impl Client {
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
-        paras.insert("type", String::from("byGenre"));
-        paras.insert("genre", genre.into());
+        paras.push("type", "byGenre");
+        paras.push("genre", genre);
 
         let body = self.request("getAlbumList", Some(paras), None).await?;
         if let ResponseType::AlbumList { album_list } = body.data {

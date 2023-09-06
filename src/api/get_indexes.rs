@@ -1,6 +1,6 @@
 use crate::{
     data::{Indexes, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -10,12 +10,12 @@ impl Client {
         music_folder_id: Option<impl Into<String>>,
         if_modified_since: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     ) -> Result<Indexes, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder.into());
+            paras.push("musicFolderId", folder);
         }
         if let Some(modified_date) = if_modified_since {
-            paras.insert("ifModifiedSince", modified_date.to_string());
+            paras.push("ifModifiedSince", modified_date.to_string());
         }
 
         let body = self.request("getIndexes", Some(paras), None).await?;

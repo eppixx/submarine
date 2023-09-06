@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -16,9 +16,9 @@ impl Client {
             )));
         }
 
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("id", id.into());
-        paras.insert("rating", rating.to_string());
+        let mut paras = Parameter::new();
+        paras.push("id", id);
+        paras.push("rating", rating.to_string());
 
         let body = self.request("star", Some(paras), None).await?;
         if let ResponseType::Ping {} = body.data {

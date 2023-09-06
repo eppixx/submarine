@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -14,22 +14,22 @@ impl Client {
         songs_id_to_add: Vec<impl Into<String>>,
         songs_index_to_remove: Vec<i64>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("playlistId", playlist_id.into());
+        let mut paras = Parameter::new();
+        paras.push("playlistId", playlist_id);
         if let Some(name) = name {
-            paras.insert("name", name.into());
+            paras.push("name", name);
         }
         if let Some(comment) = comment {
-            paras.insert("comment", comment.into());
+            paras.push("comment", comment);
         }
         if let Some(public) = public {
-            paras.insert("public", public.to_string());
+            paras.push("public", public.to_string());
         }
         for id in songs_id_to_add {
-            paras.insert("songIdToAdd", id.into());
+            paras.push("songIdToAdd", id);
         }
         for id in songs_index_to_remove {
-            paras.insert("songIndexToRemove", id.to_string());
+            paras.push("songIndexToRemove", id.to_string());
         }
 
         let body = self.request("createPlaylist", Some(paras), None).await?;

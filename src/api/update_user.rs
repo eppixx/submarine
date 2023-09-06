@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -26,55 +26,55 @@ impl Client {
         music_folder_id: Option<impl Into<String>>,
         max_bit_rate: Option<i16>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("username", username.into());
+        let mut paras = Parameter::new();
+        paras.push("username", username);
         if let Some(password) = password {
-            paras.insert("password", password.into());
+            paras.push("password", password);
         }
         if let Some(email) = email {
-            paras.insert("email", email.into());
+            paras.push("email", email);
         }
         if let Some(ldap) = ldap_authenticated {
-            paras.insert("ldapAuthenticated", ldap.to_string());
+            paras.push("ldapAuthenticated", ldap.to_string());
         }
         if let Some(admin) = admin_role {
-            paras.insert("adminRole", admin.to_string());
+            paras.push("adminRole", admin.to_string());
         }
         if let Some(settings) = settings_role {
-            paras.insert("settingsRole", settings.to_string());
+            paras.push("settingsRole", settings.to_string());
         }
         if let Some(stream) = stream_role {
-            paras.insert("streamRole", stream.to_string());
+            paras.push("streamRole", stream.to_string());
         }
         if let Some(jukebox) = jukebox_role {
-            paras.insert("jukeboxRole", jukebox.to_string());
+            paras.push("jukeboxRole", jukebox.to_string());
         }
         if let Some(download) = download_role {
-            paras.insert("downloadrole", download.to_string());
+            paras.push("downloadrole", download.to_string());
         }
         if let Some(upload) = upload_role {
-            paras.insert("uploadRole", upload.to_string());
+            paras.push("uploadRole", upload.to_string());
         }
         if let Some(playlist) = playlist_role {
-            paras.insert("playlistRole", playlist.to_string());
+            paras.push("playlistRole", playlist.to_string());
         }
         if let Some(cover_art) = cover_art_role {
-            paras.insert("coverArtRole", cover_art.to_string());
+            paras.push("coverArtRole", cover_art.to_string());
         }
         if let Some(comment) = comment_role {
-            paras.insert("commentRole", comment.to_string());
+            paras.push("commentRole", comment.to_string());
         }
         if let Some(podcast) = podcast_role {
-            paras.insert("podcastRole", podcast.to_string());
+            paras.push("podcastRole", podcast.to_string());
         }
         if let Some(share) = share_role {
-            paras.insert("shareRole", share.to_string());
+            paras.push("shareRole", share.to_string());
         }
         if let Some(video_conversion) = video_conversion_role {
-            paras.insert("videoConversionRole", video_conversion.to_string());
+            paras.push("videoConversionRole", video_conversion.to_string());
         }
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder.into());
+            paras.push("musicFolderId", folder);
         }
         if let Some(bit_rate) = max_bit_rate {
             let valid_bit_rates = [
@@ -83,7 +83,7 @@ impl Client {
             if !valid_bit_rates.contains(&bit_rate) {
                 return Err(SubsonicError::InvalidArgs(String::from("max_bit_rate")));
             }
-            paras.insert("maxBitRate", bit_rate.to_string());
+            paras.push("maxBitRate", bit_rate.to_string());
         }
 
         let body = self.request("updateUser", Some(paras), None).await?;

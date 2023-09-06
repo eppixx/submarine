@@ -1,5 +1,5 @@
 use crate::data::{Info, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#createBookmark
@@ -9,11 +9,11 @@ impl Client {
         position: i64, // in ms
         comment: Option<impl Into<String>>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("id", id.into());
-        paras.insert("position", position.to_string());
+        let mut paras = Parameter::new();
+        paras.push("id", id);
+        paras.push("position", position.to_string());
         if let Some(comment) = comment {
-            paras.insert("comment", comment.into());
+            paras.push("comment", comment.into());
         }
 
         let body = self.request("createBookmark", Some(paras), None).await?;

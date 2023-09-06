@@ -1,6 +1,6 @@
 use crate::{
     data::{ResponseType, Share},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -11,13 +11,13 @@ impl Client {
         description: Option<impl Into<String>>,
         expires: Option<usize>,
     ) -> Result<Vec<Share>, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("id", id.into());
+        let mut paras = Parameter::new();
+        paras.push("id", id);
         if let Some(desc) = description {
-            paras.insert("description", desc.into());
+            paras.push("description", desc);
         }
         if let Some(expires) = expires {
-            paras.insert("expires", expires.to_string());
+            paras.push("expires", expires.to_string());
         }
 
         let body = self.request("createShare", Some(paras), None).await?;

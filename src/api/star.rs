@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -11,15 +11,15 @@ impl Client {
         album_id: Vec<impl Into<String>>,
         artist_id: Vec<impl Into<String>>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         for id in id {
-            paras.insert("id", id.into());
+            paras.push("id", id);
         }
         for id in album_id {
-            paras.insert("albumId", id.into());
+            paras.push("albumId", id);
         }
         for id in artist_id {
-            paras.insert("artistId", id.into());
+            paras.push("artistId", id);
         }
 
         let body = self.request("star", Some(paras), None).await?;

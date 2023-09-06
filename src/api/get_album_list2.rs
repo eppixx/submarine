@@ -14,7 +14,7 @@ impl Client {
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
-        paras.insert("type", order.to_string());
+        paras.push("type", order.to_string());
 
         let body = self.request("getAlbumList2", Some(paras), None).await?;
         if let ResponseType::AlbumList { album_list } = body.data {
@@ -36,12 +36,12 @@ impl Client {
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
-        paras.insert("type", String::from("byYear"));
+        paras.push("type", "byYear");
         if let Some(from) = from_year {
-            paras.insert("fromYear", from.to_string());
+            paras.push("fromYear", from.to_string());
         }
         if let Some(to) = to_year {
-            paras.insert("toYear", to.to_string());
+            paras.push("toYear", to.to_string());
         }
 
         let body = self.request("getAlbumList2", Some(paras), None).await?;
@@ -63,8 +63,8 @@ impl Client {
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = Self::create_paras(size, offset, music_folder_id);
-        paras.insert("type", String::from("byGenre"));
-        paras.insert("genre", genre.into());
+        paras.push("type", "byGenre");
+        paras.push("genre", genre);
 
         let body = self.request("getAlbumList2", Some(paras), None).await?;
         if let ResponseType::AlbumList { album_list } = body.data {

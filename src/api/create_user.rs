@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -25,51 +25,51 @@ impl Client {
         video_conversion_role: Option<bool>, // /defaults to false
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("username", username.into());
-        paras.insert("password", password.into());
-        paras.insert("email", email.into());
+        let mut paras = Parameter::new();
+        paras.push("username", username);
+        paras.push("password", password);
+        paras.push("email", email);
         if let Some(ldap) = ldap_authenticated {
-            paras.insert("ldapAuthenticated", ldap.to_string());
+            paras.push("ldapAuthenticated", ldap.to_string());
         }
         if let Some(admin) = admin_role {
-            paras.insert("adminRole", admin.to_string());
+            paras.push("adminRole", admin.to_string());
         }
         if let Some(settings) = settings_role {
-            paras.insert("settingsRole", settings.to_string());
+            paras.push("settingsRole", settings.to_string());
         }
         if let Some(stream) = stream_role {
-            paras.insert("streamRole", stream.to_string());
+            paras.push("streamRole", stream.to_string());
         }
         if let Some(jukebox) = jukebox_role {
-            paras.insert("jukeboxRole", jukebox.to_string());
+            paras.push("jukeboxRole", jukebox.to_string());
         }
         if let Some(download) = download_role {
-            paras.insert("downloadrole", download.to_string());
+            paras.push("downloadrole", download.to_string());
         }
         if let Some(upload) = upload_role {
-            paras.insert("uploadRole", upload.to_string());
+            paras.push("uploadRole", upload.to_string());
         }
         if let Some(playlist) = playlist_role {
-            paras.insert("playlistRole", playlist.to_string());
+            paras.push("playlistRole", playlist.to_string());
         }
         if let Some(cover_art) = cover_art_role {
-            paras.insert("coverArtRole", cover_art.to_string());
+            paras.push("coverArtRole", cover_art.to_string());
         }
         if let Some(comment) = comment_role {
-            paras.insert("commentRole", comment.to_string());
+            paras.push("commentRole", comment.to_string());
         }
         if let Some(podcast) = podcast_role {
-            paras.insert("podcastRole", podcast.to_string());
+            paras.push("podcastRole", podcast.to_string());
         }
         if let Some(share) = share_role {
-            paras.insert("shareRole", share.to_string());
+            paras.push("shareRole", share.to_string());
         }
         if let Some(video_conversion) = video_conversion_role {
-            paras.insert("videoConversionRole", video_conversion.to_string());
+            paras.push("videoConversionRole", video_conversion.to_string());
         }
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder.into());
+            paras.push("musicFolderId", folder);
         }
 
         let body = self.request("createUser", Some(paras), None).await?;

@@ -1,5 +1,5 @@
 use crate::data::{Child, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getTopSongs
@@ -8,10 +8,10 @@ impl Client {
         artist: impl Into<String>,
         count: Option<i32>, //defaults to 50
     ) -> Result<Vec<Child>, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("artist", artist.into());
+        let mut paras = Parameter::new();
+        paras.push("artist", artist);
         if let Some(count) = count {
-            paras.insert("count", count.to_string());
+            paras.push("count", count.to_string());
         }
 
         let body = self.request("getTopSongs", Some(paras), None).await?;

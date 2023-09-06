@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, Parameter, SubsonicError,
 };
 
 impl Client {
@@ -9,8 +9,8 @@ impl Client {
         &self,
         message: impl Into<String>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("message", message.into());
+        let mut paras = Parameter::new();
+        paras.push("message", message);
 
         let body = self.request("addChatMessage", Some(paras), None).await?;
         if let ResponseType::Ping {} = body.data {

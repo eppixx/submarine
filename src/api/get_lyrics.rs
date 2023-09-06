@@ -1,11 +1,11 @@
 use crate::data::{Lyrics, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getLyrics
     pub async fn get_lyrics(&self, id: impl Into<String>) -> Result<Lyrics, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("id", id.into());
+        let mut paras = Parameter::new();
+        paras.push("id", id);
 
         let body = self.request("getLyrics", Some(paras), None).await?;
         if let ResponseType::Lyrics { lyrics } = body.data {

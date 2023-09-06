@@ -1,4 +1,4 @@
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#stream
@@ -12,31 +12,31 @@ impl Client {
         estimate_content_length: Option<bool>, // restrict length
         converted: Option<bool>,               // video only
     ) -> String {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         self.auth.add_parameter(&mut paras);
-        paras.insert("id", id.into());
+        paras.push("id", id);
         if let Some(bit_rate) = max_bit_rate {
-            paras.insert("maxBitRate", bit_rate.to_string());
+            paras.push("maxBitRate", bit_rate.to_string());
         }
         if let Some(format) = format {
-            paras.insert("format", format.into());
+            paras.push("format", format);
         }
         if let Some(offset) = time_offset {
-            paras.insert("timeOffset", offset.to_string());
+            paras.push("timeOffset", offset.to_string());
         }
         if let Some(size) = size {
-            paras.insert("size", size.into());
+            paras.push("size", size);
         }
         if let Some(content_length) = estimate_content_length {
-            paras.insert("estimateContentLength", content_length.to_string());
+            paras.push("estimateContentLength", content_length.to_string());
         }
         if let Some(converted) = converted {
-            paras.insert("converted", converted.to_string());
+            paras.push("converted", converted.to_string());
         }
 
         let mut url: String = self.server_url.clone() + "/rest/stream?";
-        for p in paras {
-            url += &("&".to_owned() + p.0 + "=" + &p.1);
+        for p in paras.0 {
+            url += &("&".to_owned() + &p.0 + "=" + &p.1);
         }
 
         url

@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -10,15 +10,15 @@ impl Client {
         id_at_time: Vec<(impl Into<String>, Option<usize>)>,
         submission: Option<bool>, // defaults to true
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         for (id, time) in id_at_time {
-            paras.insert("id", id.into());
+            paras.push("id", id);
             if let Some(time) = time {
-                paras.insert("time", time.to_string());
+                paras.push("time", time.to_string());
             }
         }
         if let Some(submission) = submission {
-            paras.insert("submission", submission.to_string());
+            paras.push("submission", submission.to_string());
         }
 
         let body = self.request("scrobble", Some(paras), None).await?;

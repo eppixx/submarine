@@ -1,11 +1,11 @@
 use crate::data::{Child, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getSong
     pub async fn get_song(&self, id: impl Into<String>) -> Result<Child, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("id", id.into());
+        let mut paras = Parameter::new();
+        paras.push("id", id);
 
         let body = self.request("getSong", Some(paras), None).await?;
         if let ResponseType::Song { song } = body.data {

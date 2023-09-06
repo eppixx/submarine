@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -12,12 +12,12 @@ impl Client {
         name: impl Into<String>,
         homepage_url: Option<impl Into<String>>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("id", id.into());
-        paras.insert("streamUrl", stream_url.into());
-        paras.insert("name", name.into());
+        let mut paras = Parameter::new();
+        paras.push("id", id);
+        paras.push("streamUrl", stream_url);
+        paras.push("name", name);
         if let Some(url) = homepage_url {
-            paras.insert("homepageUrl", url.into());
+            paras.push("homepageUrl", url);
         }
 
         let body = self

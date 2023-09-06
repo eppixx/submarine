@@ -1,13 +1,13 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#deleteShare
     pub async fn delete_share(&self, id: impl Into<String>) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("id", id.into());
+        let mut paras = Parameter::new();
+        paras.push("id", id);
 
         let body = self.request("deleteShare", Some(paras), None).await?;
         if let ResponseType::Ping {} = body.data {

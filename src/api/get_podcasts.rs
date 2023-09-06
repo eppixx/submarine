@@ -1,6 +1,6 @@
 use crate::{
     data::{PodcastChannel, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -10,12 +10,12 @@ impl Client {
         include_episodes: Option<bool>,
         id: Option<impl Into<String>>,
     ) -> Result<Vec<PodcastChannel>, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         if let Some(episodes) = include_episodes {
-            paras.insert("includeEpisodes", episodes.to_string());
+            paras.push("includeEpisodes", episodes.to_string());
         }
         if let Some(id) = id {
-            paras.insert("id", id.into());
+            paras.push("id", id);
         }
 
         let body = self.request("getPodcasts", Some(paras), None).await?;

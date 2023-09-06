@@ -1,5 +1,5 @@
 use crate::data::{Child, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getRandomSongs
@@ -11,21 +11,21 @@ impl Client {
         to_year: Option<i32>,
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<Vec<Child>, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         if let Some(size) = size {
-            paras.insert("size", size.to_string());
+            paras.push("size", size.to_string());
         }
         if let Some(genre) = genre {
-            paras.insert("genre", genre.into());
+            paras.push("genre", genre);
         }
         if let Some(from_year) = from_year {
-            paras.insert("fromYear", from_year.to_string());
+            paras.push("fromYear", from_year.to_string());
         }
         if let Some(to_year) = to_year {
-            paras.insert("toYear", to_year.to_string());
+            paras.push("toYear", to_year.to_string());
         }
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder.into());
+            paras.push("musicFolderId", folder);
         }
 
         let body = self.request("getRandomSongs", Some(paras), None).await?;

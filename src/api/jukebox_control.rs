@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use crate::{
     data::{JukeboxPlaylist, JukeboxStatus, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 pub enum Action {
@@ -28,8 +28,8 @@ impl Display for Action {
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#jukeboxControl
     pub async fn jukebox_control(&self, action: Action) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("action", action.to_string());
+        let mut paras = Parameter::new();
+        paras.push("action", action.to_string());
 
         let body = self.request("jukeboxControl", Some(paras), None).await?;
         if let ResponseType::JukeboxStatus { jukebox_status } = body.data {
@@ -43,8 +43,8 @@ impl Client {
 
     /// reference: http://www.subsonic.org/pages/api.jsp#jukeboxControl
     pub async fn jukebox_control_get(&self) -> Result<JukeboxPlaylist, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("action", String::from("get"));
+        let mut paras = Parameter::new();
+        paras.push("action", "get");
 
         let body = self.request("jukeboxControl", Some(paras), None).await?;
         if let ResponseType::JukeboxPlaylist { jukebox_playlist } = body.data {
@@ -61,10 +61,10 @@ impl Client {
         &self,
         id: Vec<impl Into<String>>,
     ) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("action", String::from("set"));
+        let mut paras = Parameter::new();
+        paras.push("action", "set");
         for id in id {
-            paras.insert("id", id.into());
+            paras.push("id", id);
         }
 
         let body = self.request("jukeboxControl", Some(paras), None).await?;
@@ -83,11 +83,11 @@ impl Client {
         index: i32,
         offset: Option<i32>,
     ) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("action", String::from("skip"));
-        paras.insert("index", index.to_string());
+        let mut paras = Parameter::new();
+        paras.push("action", "skip");
+        paras.push("index", index.to_string());
         if let Some(offset) = offset {
-            paras.insert("offset", offset.to_string());
+            paras.push("offset", offset.to_string());
         }
 
         let body = self.request("jukeboxControl", Some(paras), None).await?;
@@ -105,10 +105,10 @@ impl Client {
         &self,
         id: Vec<impl Into<String>>,
     ) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("action", String::from("add"));
+        let mut paras = Parameter::new();
+        paras.push("action", "add");
         for id in id {
-            paras.insert("id", id.into());
+            paras.push("id", id);
         }
 
         let body = self.request("jukeboxControl", Some(paras), None).await?;
@@ -123,9 +123,9 @@ impl Client {
 
     /// reference: http://www.subsonic.org/pages/api.jsp#jukeboxControl
     pub async fn jukebox_control_remove(&self, index: i32) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("action", String::from("remove"));
-        paras.insert("index", index.to_string());
+        let mut paras = Parameter::new();
+        paras.push("action", "remove");
+        paras.push("index", index.to_string());
 
         let body = self.request("jukeboxControl", Some(paras), None).await?;
         if let ResponseType::JukeboxStatus { jukebox_status } = body.data {
@@ -142,9 +142,9 @@ impl Client {
         &self,
         gain: f32,
     ) -> Result<JukeboxStatus, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("action", String::from("setGain"));
-        paras.insert("gain", gain.to_string());
+        let mut paras = Parameter::new();
+        paras.push("action", "setGain");
+        paras.push("gain", gain.to_string());
 
         let body = self.request("jukeboxControl", Some(paras), None).await?;
         if let ResponseType::JukeboxStatus { jukebox_status } = body.data {

@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -9,9 +9,9 @@ impl Client {
         &self,
         url: impl Into<String>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("url", url.into());
-
+        let mut paras = Parameter::new();
+        paras.push("url", url);
+        
         let body = self
             .request("createPodcastChannel", Some(paras), None)
             .await?;

@@ -1,14 +1,14 @@
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getAvatar
     pub fn get_avatar_url(&self, username: impl Into<String>) -> String {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("username", username.into());
+        let mut paras = Parameter::new();
+        paras.push("username", username);
 
         let mut url: String = self.server_url.clone() + "/rest/getAvatar?";
-        for p in paras {
-            url += &("&".to_owned() + p.0 + "=" + &p.1);
+        for p in paras.0 {
+            url += &("&".to_owned() + &p.0 + "=" + &p.1);
         }
 
         url

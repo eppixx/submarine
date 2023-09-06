@@ -1,5 +1,5 @@
 use crate::data::{ResponseType, Starred};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getStarred
@@ -7,9 +7,9 @@ impl Client {
         &self,
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<Starred, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder.into());
+            paras.push("musicFolderId", folder);
         }
 
         let body = self.request("getStarred", Some(paras), None).await?;

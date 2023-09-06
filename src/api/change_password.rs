@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError,
+    Client, Parameter, SubsonicError,
 };
 
 impl Client {
@@ -10,9 +10,9 @@ impl Client {
         username: impl Into<String>,
         password: impl Into<String>, // clear or in hex with prefix 'enc:'
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("username", username.into());
-        paras.insert("password", password.into());
+        let mut paras = Parameter::new();
+        paras.push("username", username);
+        paras.push("password", password);
 
         let body = self.request("changePassword", Some(paras), None).await?;
         if let ResponseType::Ping {} = body.data {

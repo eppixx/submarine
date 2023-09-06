@@ -10,9 +10,8 @@ pub mod data;
 
 use log::{info, trace, warn};
 use reqwest::StatusCode;
+use serde::Serialize;
 use thiserror::Error;
-
-use std::collections::HashMap;
 
 use crate::data::ResponseType;
 
@@ -55,6 +54,19 @@ pub enum SubsonicError {
     ServerRouteNotImplemented(String),
 }
 
+#[derive(Debug, Serialize, Default, Clone, PartialEq, Eq)]
+pub struct Parameter(Vec<(String, String)>);
+
+impl Parameter {
+    fn new() -> Self {
+        Self ( vec![] )
+    }
+
+    fn push(&mut self, key: impl Into<String>, value: impl Into<String>) {
+        self.0.push((key.into(), value.into()));
+    }
+}
+
 impl Client {
     pub fn new(server_url: &str, auth: auth::Auth) -> Self {
         let client = Self {
@@ -69,37 +81,40 @@ impl Client {
     pub(crate) async fn request(
         &self,
         path: &str,
-        parameter: Option<HashMap<&str, String>>,
+        parameter: Option<Parameter>,
         headers: Option<reqwest::header::HeaderMap>,
     ) -> Result<data::Response, SubsonicError> {
         let mut paras = parameter.unwrap_or_default();
         self.auth.add_parameter(&mut paras);
         let headers = headers.unwrap_or_default();
 
-        trace!("request from server: {}, para: {:?}, header: {:?}", path, paras, headers);
+        trace!(
+            "request from server: {}, para: {:?}, header: {:?}",
+            path,
+            paras,
+            headers
+        );
         let request = self
             .client
             .post(self.server_url.clone() + "/rest/" + path)
             .headers(headers)
-            .form(&paras);
+            .query(&paras);
 
         let body: String = match request.send().await {
-            Ok(body) => {
-                match body.status() {
-                    StatusCode::OK => body.text().await?,
-                    StatusCode::GONE
-                        if body.text().await? == "This endpoint will not be implemented" =>
-                    {
-                        return Err(SubsonicError::ServerRouteNotImplemented(String::from(
-                            "navidrome",
-                        )))
-                    }
-                    _ => {
-                        warn!("Could not fetch previous request to {}", path);
-                        return Err(SubsonicError::NoServerFound);
-                    }
+            Ok(body) => match body.status() {
+                StatusCode::OK => body.text().await?,
+                StatusCode::GONE
+                    if body.text().await? == "This endpoint will not be implemented" =>
+                {
+                    return Err(SubsonicError::ServerRouteNotImplemented(String::from(
+                        "navidrome",
+                    )))
                 }
-            }
+                _ => {
+                    warn!("Could not fetch previous request to {}", path);
+                    return Err(SubsonicError::NoServerFound);
+                }
+            },
             Err(e) => return Err(SubsonicError::Connection(e)),
         };
 

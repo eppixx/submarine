@@ -1,6 +1,6 @@
 use crate::{
     data::{ChatMessage, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -9,9 +9,9 @@ impl Client {
         &self,
         since: Option<i64>,
     ) -> Result<Vec<ChatMessage>, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         if let Some(since) = since {
-            paras.insert("since", since.to_string());
+            paras.push("since", since.to_string());
         }
 
         let body = self.request("getChatMessages", Some(paras), None).await?;

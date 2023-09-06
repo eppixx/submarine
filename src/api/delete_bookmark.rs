@@ -1,11 +1,11 @@
 use crate::data::{Info, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#deleteBookmark
     pub async fn delete_bookmark(&self, id: impl Into<String>) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("id", id.into());
+        let mut paras = Parameter::new();
+        paras.push("id", id);
 
         let body = self.request("deleteBookmark", Some(paras), None).await?;
         if let ResponseType::Ping {} = body.data {

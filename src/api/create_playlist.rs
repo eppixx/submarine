@@ -1,5 +1,5 @@
 use crate::data::{PlaylistWithSongs, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#createPlaylist
@@ -8,10 +8,10 @@ impl Client {
         name: impl Into<String>,
         song_id: Vec<impl Into<String>>,
     ) -> Result<PlaylistWithSongs, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("name", name.into());
+        let mut paras = Parameter::new();
+        paras.push("name", name);
         for id in song_id {
-            paras.insert("songId", id.into());
+            paras.push("songId", id);
         }
 
         let body = self.request("createPlaylist", Some(paras), None).await?;
@@ -29,10 +29,10 @@ impl Client {
         playlist_id: impl Into<String>,
         song_id: Vec<impl Into<String>>,
     ) -> Result<PlaylistWithSongs, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("playlistId", playlist_id.into());
+        let mut paras = Parameter::new();
+        paras.push("playlistId", playlist_id.into());
         for id in song_id {
-            paras.insert("songId", id.into());
+            paras.push("songId", id.into());
         }
 
         let body = self.request("createPlaylist", Some(paras), None).await?;

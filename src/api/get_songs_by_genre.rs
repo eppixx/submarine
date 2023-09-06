@@ -1,5 +1,5 @@
 use crate::data::{Child, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getSongsByGenre
@@ -10,16 +10,16 @@ impl Client {
         offset: Option<i32>, // defaults to 0
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<Vec<Child>, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("genre", genre.into());
+        let mut paras = Parameter::new();
+        paras.push("genre", genre);
         if let Some(count) = count {
-            paras.insert("count", count.to_string());
+            paras.push("count", count.to_string());
         }
         if let Some(offset) = offset {
-            paras.insert("offset", offset.to_string());
+            paras.push("offset", offset.to_string());
         }
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder.into());
+            paras.push("musicFolderId", folder);
         }
 
         let body = self.request("getSongsByGenre", Some(paras), None).await?;

@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use crate::Parameter;
 
 /// Builder for [Auth]<br>
 /// Example:
@@ -12,15 +12,16 @@ use std::collections::HashMap;
 pub struct AuthBuilder {
     user: String,
     version: String,
+    salt: Option<String>,
     client_name: Option<String>,
 }
 
 impl AuthBuilder {
     /// version should match the one closely matching at feature level
-    pub fn new(user: &str, version: &str) -> Self {
+    pub fn new(user: impl Into<String>, version: impl Into<String>) -> Self {
         Self {
-            user: String::from(user),
-            version: String::from(version),
+            user: user.into(),
+            version: version.into(),
             ..Default::default()
         }
     }
@@ -31,10 +32,22 @@ impl AuthBuilder {
         self
     }
 
+    /// specifiy salt instead of generated
+    /// mostly useful for tests so that the outcome is determinante
+    pub(crate) fn _salt(mut self, salt: impl Into<String>) -> Self {
+        self.salt = Some(salt.into());
+        self
+    }
+
     /// hash plain password for storing and subsequently uses
     /// ; consumes self
     pub fn hashed(self, password: &str) -> Auth {
-        let (salt, hash) = Auth::hash(password);
+        let (hash, salt) = if let Some(salt) = self.salt {
+            (Auth::hash_with_salt(password, &salt), salt)
+        } else {
+            Auth::hash(password)
+        };
+
         Auth {
             user: self.user,
             version: self.version,
@@ -61,6 +74,11 @@ impl Auth {
         (format!("{:x}", hash), salt)
     }
 
+    fn hash_with_salt(password: impl Into<String>, salt: &str) -> String {
+        let hash = md5::compute(password.into() + salt);
+        format!("{:x}", hash)
+    }
+
     fn create_salt(size: usize) -> String {
         use rand::{distributions::Alphanumeric, thread_rng, Rng};
         use std::iter;
@@ -73,12 +91,12 @@ impl Auth {
             .collect()
     }
 
-    pub(crate) fn add_parameter(&self, paras: &mut HashMap<&str, String>) {
-        paras.insert("u", self.user.clone());
-        paras.insert("v", self.version.clone());
-        paras.insert("c", self.client_name.clone());
-        paras.insert("t", self.hash.clone());
-        paras.insert("s", self.salt.clone());
-        paras.insert("f", String::from("json"));
+    pub(crate) fn add_parameter(&self, paras: &mut Parameter) {
+        paras.push("u", &self.user);
+        paras.push("v", &self.version);
+        paras.push("c", &self.client_name);
+        paras.push("t", &self.hash);
+        paras.push("s", &self.salt);
+        paras.push("f", "json");
     }
 }

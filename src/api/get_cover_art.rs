@@ -1,17 +1,17 @@
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getCoverArt
     pub fn get_cover_art_url(&self, id: impl Into<String>, size: Option<i32>) -> String {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("id", id.into());
+        let mut paras = Parameter::new();
+        paras.push("id", id);
         if let Some(size) = size {
-            paras.insert("size", size.to_string());
+            paras.push("size", size.to_string());
         }
 
         let mut url: String = self.server_url.clone() + "/rest/getCoverArt?";
-        for p in paras {
-            url += &("&".to_owned() + p.0 + "=" + &p.1);
+        for p in paras.0 {
+            url += &("&".to_owned() + &p.0 + "=" + &p.1);
         }
 
         url

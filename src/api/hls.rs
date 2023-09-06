@@ -8,14 +8,14 @@ impl Client {
         bit_rate: Vec<i32>,
         audio_rate: Option<impl Into<String>>,
     ) -> String {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         self.auth.add_parameter(&mut paras);
-        paras.insert("id", id.into());
+        paras.push("id", id);
         for bit_rate in bit_rate {
-            paras.insert("bitRate", bit_rate.to_string());
+            paras.push("bitRate", bit_rate.to_string());
         }
         if let Some(audio_rate) = audio_rate {
-            paras.insert("audioRate", audio_rate.into());
+            paras.push("audioRate", audio_rate);
         }
 
         let mut url: String = self.server_url.clone() + "/rest/hls.m3u8?";

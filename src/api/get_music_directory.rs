@@ -1,6 +1,6 @@
 use crate::{
     data::{Directory, ResponseType},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -9,8 +9,8 @@ impl Client {
         &self,
         music_directory_id: impl Into<String>,
     ) -> Result<Directory, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("musicDirectoryId", music_directory_id.into());
+        let mut paras = Parameter::new();
+        paras.push("musicDirectoryId", music_directory_id);
 
         let body = self.request("getMusicDirectory", Some(paras), None).await?;
         if let ResponseType::MusicDirectory { directory } = body.data {

@@ -1,5 +1,5 @@
 use crate::data::{Info, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#savePlayQueue
@@ -9,15 +9,15 @@ impl Client {
         current: Option<impl Into<String>>,
         position: Option<i64>,
     ) -> Result<Info, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         for id in id {
-            paras.insert("id", id.into());
+            paras.push("id", id);
         }
         if let Some(current) = current {
-            paras.insert("current", current.into());
+            paras.push("current", current);
         }
         if let Some(position) = position {
-            paras.insert("position", position.to_string());
+            paras.push("position", position.to_string());
         }
 
         let body = self.request("savePlayQueue", Some(paras), None).await?;

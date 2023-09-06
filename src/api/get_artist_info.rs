@@ -1,5 +1,5 @@
 use crate::data::{ArtistInfo, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getArtistInfo
@@ -9,13 +9,13 @@ impl Client {
         count: Option<i32>, //defaults to 20
         include_not_present: Option<bool>,
     ) -> Result<ArtistInfo, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("id", id.into());
+        let mut paras = Parameter::new();
+        paras.push("id", id);
         if let Some(count) = count {
-            paras.insert("count", count.to_string());
+            paras.push("count", count.to_string());
         }
         if let Some(include) = include_not_present {
-            paras.insert("includeNotPresent", include.to_string());
+            paras.push("includeNotPresent", include.to_string());
         }
 
         let body = self.request("getArtistInfo", Some(paras), None).await?;

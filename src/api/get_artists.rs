@@ -1,5 +1,5 @@
 use crate::data::{IndexId3, ResponseType};
-use crate::{Client, SubsonicError};
+use crate::{Client, SubsonicError, Parameter};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getArtists
@@ -7,9 +7,9 @@ impl Client {
         &self,
         music_folder_id: Option<String>,
     ) -> Result<Vec<IndexId3>, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
+        let mut paras = Parameter::new();
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder);
+            paras.push("musicFolderId", folder);
         }
 
         let body = self.request("getArtists", Some(paras), None).await?;

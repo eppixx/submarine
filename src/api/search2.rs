@@ -1,6 +1,6 @@
 use crate::{
     data::{ResponseType, SearchResult2},
-    Client, SubsonicError,
+    Client, SubsonicError, Parameter,
 };
 
 impl Client {
@@ -16,28 +16,28 @@ impl Client {
         song_offset: Option<i32>,   // defaults to 0
         music_folder_id: Option<impl Into<String>>,
     ) -> Result<SearchResult2, SubsonicError> {
-        let mut paras = std::collections::HashMap::new();
-        paras.insert("query", query.into());
+        let mut paras = Parameter::new();
+        paras.push("query", query);
         if let Some(artist) = artist_count {
-            paras.insert("artistCount", artist.to_string());
+            paras.push("artistCount", artist.to_string());
         }
         if let Some(artist) = artist_offset {
-            paras.insert("artistOffset", artist.to_string());
+            paras.push("artistOffset", artist.to_string());
         }
         if let Some(album) = album_count {
-            paras.insert("albumCount", album.to_string());
+            paras.push("albumCount", album.to_string());
         }
         if let Some(album) = album_offset {
-            paras.insert("albumOffset", album.to_string());
+            paras.push("albumOffset", album.to_string());
         }
         if let Some(song) = song_count {
-            paras.insert("songCount", song.to_string());
+            paras.push("songCount", song.to_string());
         }
         if let Some(song) = song_offset {
-            paras.insert("songOffset", song.to_string());
+            paras.push("songOffset", song.to_string());
         }
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder.into());
+            paras.push("musicFolderId", folder);
         }
 
         let body = self.request("search2", Some(paras), None).await?;
