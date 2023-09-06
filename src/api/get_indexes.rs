@@ -7,12 +7,12 @@ impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getIndexes
     pub async fn get_indexes(
         &self,
-        music_folder_id: Option<String>,
+        music_folder_id: Option<impl Into<String>>,
         if_modified_since: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     ) -> Result<Indexes, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder);
+            paras.insert("musicFolderId", folder.into());
         }
         if let Some(modified_date) = if_modified_since {
             paras.insert("ifModifiedSince", modified_date.to_string());

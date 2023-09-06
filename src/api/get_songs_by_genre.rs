@@ -8,7 +8,7 @@ impl Client {
         genre: impl Into<String>,
         count: Option<i32>,  //defaults to 10
         offset: Option<i32>, // defaults to 0
-        music_folder_id: Option<String>,
+        music_folder_id: Option<impl Into<String>>,
     ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("genre", genre.into());
@@ -19,7 +19,7 @@ impl Client {
             paras.insert("offset", offset.to_string());
         }
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder.to_string());
+            paras.insert("musicFolderId", folder.into());
         }
 
         let body = self.request("getSongsByGenre", Some(paras), None).await?;

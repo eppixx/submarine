@@ -9,7 +9,7 @@ impl Client {
         genre: Option<impl Into<String>>,
         from_year: Option<i32>,
         to_year: Option<i32>,
-        music_folder_id: Option<String>,
+        music_folder_id: Option<impl Into<String>>,
     ) -> Result<Vec<Child>, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         if let Some(size) = size {
@@ -25,7 +25,7 @@ impl Client {
             paras.insert("toYear", to_year.to_string());
         }
         if let Some(folder) = music_folder_id {
-            paras.insert("musicFolderId", folder.to_string());
+            paras.insert("musicFolderId", folder.into());
         }
 
         let body = self.request("getRandomSongs", Some(paras), None).await?;

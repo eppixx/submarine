@@ -8,7 +8,7 @@ impl Client {
     pub async fn change_password(
         &self,
         username: impl Into<String>,
-        password: impl Into<String>,
+        password: impl Into<String>, // clear or in hex with prefix 'enc:'
     ) -> Result<Info, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
         paras.insert("username", username.into());

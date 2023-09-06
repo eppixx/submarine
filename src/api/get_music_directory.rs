@@ -7,10 +7,10 @@ impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getMusicDirectory
     pub async fn get_music_directory(
         &self,
-        music_directory_id: String,
+        music_directory_id: impl Into<String>,
     ) -> Result<Directory, SubsonicError> {
         let mut paras = std::collections::HashMap::new();
-        paras.insert("musicDirectoryId", music_directory_id);
+        paras.insert("musicDirectoryId", music_directory_id.into());
 
         let body = self.request("getMusicDirectory", Some(paras), None).await?;
         if let ResponseType::MusicDirectory { directory } = body.data {
