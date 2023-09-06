@@ -10,7 +10,7 @@ impl Client {
         id: impl Into<String>,
         rating: i8,
     ) -> Result<Info, SubsonicError> {
-        if rating < 0 || rating > 5 {
+        if !(0..=5).contains(&rating) {
             return Err(SubsonicError::InvalidArgs(String::from(
                 "rating must between 0-5",
             )));

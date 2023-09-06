@@ -77,7 +77,7 @@ impl Client {
             paras.insert("musicFolderId", folder.into());
         }
         if let Some(bit_rate) = max_bit_rate {
-            let valid_bit_rates = vec![
+            let valid_bit_rates = [
                 0, 32, 40, 48, 56, 64, 80, 96, 116, 128, 160, 192, 224, 256, 320,
             ];
             if !valid_bit_rates.contains(&bit_rate) {
