@@ -47,7 +47,7 @@ pub struct Info {
 }
 
 /// every data that is dependent on the request
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize)]
 #[serde(untagged)]
 pub enum ResponseType {
     Error {
@@ -226,11 +226,10 @@ pub struct IndexId3 {
 pub struct ArtistId3 {
     pub id: String,
     pub name: String,
-    pub image_url: Option<String>,
+    pub cover_art: Option<String>,
+    pub artist_image_url: Option<String>,
+    pub album_count: i32,
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
-    #[serde(default, with = "option_user_rating")]
-    pub user_rating: Option<UserRating>,
-    // pub average_rating: Option<f64>,
 }
 
 #[derive(Deserialize, Debug, PartialEq, Eq)]
@@ -266,7 +265,7 @@ pub struct AlbumWithSongsId3 {
     pub song: Vec<Child>,
 }
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Child {
     pub id: String,
@@ -290,7 +289,7 @@ pub struct Child {
     pub path: Option<String>,
     pub is_video: Option<bool>,
     pub user_rating: Option<i32>,
-    // pub average_rating: Option<f32>,
+    pub average_rating: Option<f64>,
     pub play_count: Option<i64>,
     pub disc_number: Option<i32>,
     pub created: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
@@ -302,6 +301,13 @@ pub struct Child {
     pub original_width: Option<i32>,
     pub original_height: Option<i32>,
 }
+
+impl PartialEq for Child {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for Child {}
 
 #[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum MediaType {
@@ -407,7 +413,7 @@ cfg_if::cfg_if! {
     }
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Directory {
     #[serde(default)]
@@ -418,9 +424,16 @@ pub struct Directory {
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     #[serde(default, with = "option_user_rating")]
     pub user_rating: Option<UserRating>,
-    // pub average_rating: Option<AverageRating>,
+    pub average_rating: Option<f64>,
     pub play_count: Option<i64>,
 }
+
+impl PartialEq for Directory {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for Directory {}
 
 #[derive(Debug, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
@@ -516,7 +529,7 @@ pub struct ArtistInfo {
     pub similar_artist: Vec<Artist>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Artist {
     pub id: String,
@@ -525,8 +538,15 @@ pub struct Artist {
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     #[serde(default, with = "option_user_rating")]
     pub user_rating: Option<UserRating>,
-    // pub average_rating: Option<AverageRating>,
+    pub average_rating: Option<f64>,
 }
+
+impl PartialEq for Artist {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for Artist {}
 
 cfg_if::cfg_if! {
     if #[cfg(feature = "navidrome")] {
@@ -731,16 +751,16 @@ pub struct PodcastEpisode {
     pub publish_date: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct JukeboxStatus {
     pub current_index: i32,
     pub playing: bool,
-    // gain: f32,
+    pub gain: f32,
     pub position: Option<i32>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct JukeboxPlaylist {
     #[serde(flatten)]

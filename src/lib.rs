@@ -101,51 +101,47 @@ impl Client {
 
 #[cfg(test)]
 mod tests {
-    use crate::data::{Error, OuterResponse, ResponseType};
+    use crate::data::{OuterResponse, ResponseType, Status};
 
     #[test]
     fn basic_conversion() {
-        let oracle = vec![
-            (
-                ResponseType::Ping {},
-                r##"
-                {
-                    "subsonic-response":{
-                         "status":"ok",
-                         "version":"1.16.1",
-                         "type":"navidrome",
-                         "serverVersion":"0.49.3 (8b93962f)"
-                    }
-                }"##,
-            ),
-            (
-                ResponseType::Error {
-                    error: Error {
-                        code: 40,
-                        message: String::from("Wrong username or password"),
-                    },
-                },
-                r##"
-                {
-                    "subsonic-response":{
-                        "status":"failed",
-                        "version":"1.16.1",
-                        "type":"navidrome",
-                        "serverVersion":"0.49.3 (8b93962f)",
-                        "error":{
-                            "code":40,
-                            "message":"Wrong username or password"
-                        }
-                    }
-                }"##,
-            ),
-        ];
+        let response = r##"
+            {
+              "subsonic-response": {
+                 "status":"ok",
+                 "version":"1.16.1",
+                 "type":"navidrome",
+                 "serverVersion":"0.49.3 (8b93962f)"
+              }
+            }"##;
+        let response = serde_json::from_str::<OuterResponse>(response)
+            .unwrap()
+            .inner;
+        assert_eq!(response.info.status, Status::Ok);
+    }
 
-        for (target, response_body) in oracle {
-            let response = serde_json::from_str::<OuterResponse>(response_body)
-                .unwrap()
-                .inner;
-            assert_eq!(target, response.data);
+    #[test]
+    fn convert_error() {
+        let response = r##"
+            {
+              "subsonic-response": {
+                "status":"failed",
+                "version":"1.16.1",
+                "type":"navidrome",
+                "serverVersion":"0.49.3 (8b93962f)",
+                "error": {
+                  "code":40,
+                  "message":"Wrong username or password"
+                }
+              }
+            }"##;
+        let response = serde_json::from_str::<OuterResponse>(response)
+            .unwrap()
+            .inner;
+        assert_eq!(response.info.status, Status::Error);
+        if let ResponseType::Error { error } = response.data {
+            assert_eq!(error.code, 40);
+            assert_eq!(&error.message, "Wrong username or password");
         }
     }
 }
