@@ -56,6 +56,7 @@ pub enum ResponseType {
     Playlists {
         playlists: Playlists,
     },
+    #[serde(rename_all = "camelCase")]
     PlaylistWithSongs {
         playlist: PlaylistWithSongs,
     },
