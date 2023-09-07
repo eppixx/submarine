@@ -11,7 +11,7 @@ impl Client {
         size: Option<impl Into<String>>,       // video only in "widthxheight" format
         estimate_content_length: Option<bool>, // restrict length
         converted: Option<bool>,               // video only
-    ) -> String {
+    ) -> Result<url::Url, url::ParseError> {
         let mut paras = Parameter::new();
         self.auth.add_parameter(&mut paras);
         paras.push("id", id);
@@ -34,12 +34,7 @@ impl Client {
             paras.push("converted", converted.to_string());
         }
 
-        let mut url: String = self.server_url.clone() + "/rest/stream?";
-        for p in paras.0 {
-            url += &("&".to_owned() + &p.0 + "=" + &p.1);
-        }
-
-        url
+        url::Url::parse_with_params(&format!("{}/rest/stream", self.server_url), paras.0)
     }
 
     /// reference: http://www.subsonic.org/pages/api.jsp#stream
@@ -61,7 +56,7 @@ impl Client {
             size,
             estimate_content_length,
             converted,
-        ))
+        )?)
         .await
         {
             Ok(result) => result,
@@ -73,4 +68,20 @@ impl Client {
     }
 }
 
-//TODO add tset
+#[cfg(test)]
+mod tests {
+    use crate::{auth::AuthBuilder, Client};
+
+    #[tokio::test]
+    async fn create_stream_url() {
+        let auth = AuthBuilder::new("peter", "v0.16.1")
+            ._salt("")
+            .hashed("change_me_password");
+        let client = Client::new("https://target.com", auth);
+        let url = client
+            .stream_url("testId", None, None::<&str>, None, None::<&str>, None, None)
+            .unwrap();
+
+        assert_eq!("https://target.com/rest/stream?u=peter&v=v0.16.1&c=submarine-lib&t=d4a5b2db9781fba37ec95f0312ade67a&s=&f=json&id=testId", &url.to_string());
+    }
+}

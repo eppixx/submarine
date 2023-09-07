@@ -32,7 +32,7 @@ mod tests {
             ._salt("")
             .hashed("change_me_password");
         let client = Client::new("https://target.com", auth);
-        let url = client.download_url(String::from("testId")).unwrap();
+        let url = client.download_url("testId").unwrap();
 
         assert_eq!("https://target.com/rest/download?u=peter&v=v0.16.1&c=submarine-lib&t=d4a5b2db9781fba37ec95f0312ade67a&s=&f=json&id=testId", &url.to_string());
     }
