@@ -23,6 +23,21 @@ impl Client {
             paras.0,
         )
     }
+
+    pub async fn hls(
+        &self,
+        id: impl Into<String>,
+        bit_rate: Vec<i32>,
+        audio_rate: Option<impl Into<String>>,
+    ) -> Result<Vec<u8>, SubsonicError> {
+        let result = match reqwest::get(self.hls_url(id, bit_rate, audio_rate)?).await {
+            Ok(result) => result,
+            Err(e) => return Err(SubsonicError::Connection(e)),
+        };
+
+        let bytes = result.bytes().await?.to_vec();
+        Ok(bytes)
+    }
 }
 
 //TODO add function that downloads m3u8 playlist
