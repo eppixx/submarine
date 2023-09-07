@@ -6,19 +6,15 @@ impl Client {
         &self,
         id: impl Into<String>,
         format: Option<impl Into<String>>,
-    ) -> String {
+    ) -> Result<url::Url, url::ParseError> {
         let mut paras = Parameter::new();
+        self.auth.add_parameter(&mut paras);
         paras.push("id", id);
         if let Some(format) = format {
             paras.push("format", format);
         }
 
-        let mut url: String = self.server_url.clone() + "/rest/getCaptions?";
-        for p in paras.0 {
-            url += &("&".to_owned() + &p.0 + "=" + &p.1);
-        }
-
-        url
+        url::Url::parse_with_params(&format!("{}/rest/getCaptions", self.server_url), paras.0)
     }
 
     /// reference: http://www.subsonic.org/pages/api.jsp#getCatptions
@@ -27,7 +23,7 @@ impl Client {
         id: impl Into<String>,
         format: Option<impl Into<String>>,
     ) -> Result<Vec<u8>, SubsonicError> {
-        let result = match reqwest::get(self.get_captions_url(id, format)).await {
+        let result = match reqwest::get(self.get_captions_url(id, format)?).await {
             Ok(result) => result,
             Err(e) => return Err(SubsonicError::Connection(e)),
         };
@@ -37,4 +33,18 @@ impl Client {
     }
 }
 
-//TODO add test
+#[cfg(test)]
+mod tests {
+    use crate::{auth::AuthBuilder, Client};
+
+    #[tokio::test]
+    async fn create_get_captions_url() {
+        let auth = AuthBuilder::new("peter", "v0.16.1")
+            ._salt("")
+            .hashed("change_me_password");
+        let client = Client::new("https://target.com", auth);
+        let url = client.get_captions_url("testId", None::<&str>).unwrap();
+
+        assert_eq!("https://target.com/rest/getCaptions?u=peter&v=v0.16.1&c=submarine-lib&t=d4a5b2db9781fba37ec95f0312ade67a&s=&f=json&id=testId", &url.to_string());
+    }
+}
