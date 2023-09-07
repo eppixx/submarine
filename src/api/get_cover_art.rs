@@ -2,7 +2,11 @@ use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getCoverArt
-    pub fn get_cover_art_url(&self, id: impl Into<String>, size: Option<i32>) -> Result<url::Url, url::ParseError> {
+    pub fn get_cover_art_url(
+        &self,
+        id: impl Into<String>,
+        size: Option<i32>,
+    ) -> Result<url::Url, url::ParseError> {
         let mut paras = Parameter::new();
         self.auth.add_parameter(&mut paras);
         paras.push("id", id);
