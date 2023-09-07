@@ -3,6 +3,8 @@ use crate::{
     Client, Parameter, SubsonicError,
 };
 
+use super::create_user::Roles;
+
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#updateUser
     pub async fn update_user(
@@ -10,19 +12,7 @@ impl Client {
         username: impl Into<String>,
         password: Option<impl Into<String>>, // plain or hex encoded
         email: Option<impl Into<String>>,
-        ldap_authenticated: Option<bool>,
-        admin_role: Option<bool>,
-        settings_role: Option<bool>,
-        stream_role: Option<bool>,
-        jukebox_role: Option<bool>,
-        download_role: Option<bool>,
-        upload_role: Option<bool>,
-        playlist_role: Option<bool>,
-        cover_art_role: Option<bool>,
-        comment_role: Option<bool>,
-        podcast_role: Option<bool>,
-        share_role: Option<bool>,
-        video_conversion_role: Option<bool>,
+        roles: Option<Roles>,
         music_folder_id: Option<impl Into<String>>,
         max_bit_rate: Option<i16>,
     ) -> Result<Info, SubsonicError> {
@@ -34,44 +24,46 @@ impl Client {
         if let Some(email) = email {
             paras.push("email", email);
         }
-        if let Some(ldap) = ldap_authenticated {
-            paras.push("ldapAuthenticated", ldap.to_string());
-        }
-        if let Some(admin) = admin_role {
-            paras.push("adminRole", admin.to_string());
-        }
-        if let Some(settings) = settings_role {
-            paras.push("settingsRole", settings.to_string());
-        }
-        if let Some(stream) = stream_role {
-            paras.push("streamRole", stream.to_string());
-        }
-        if let Some(jukebox) = jukebox_role {
-            paras.push("jukeboxRole", jukebox.to_string());
-        }
-        if let Some(download) = download_role {
-            paras.push("downloadrole", download.to_string());
-        }
-        if let Some(upload) = upload_role {
-            paras.push("uploadRole", upload.to_string());
-        }
-        if let Some(playlist) = playlist_role {
-            paras.push("playlistRole", playlist.to_string());
-        }
-        if let Some(cover_art) = cover_art_role {
-            paras.push("coverArtRole", cover_art.to_string());
-        }
-        if let Some(comment) = comment_role {
-            paras.push("commentRole", comment.to_string());
-        }
-        if let Some(podcast) = podcast_role {
-            paras.push("podcastRole", podcast.to_string());
-        }
-        if let Some(share) = share_role {
-            paras.push("shareRole", share.to_string());
-        }
-        if let Some(video_conversion) = video_conversion_role {
-            paras.push("videoConversionRole", video_conversion.to_string());
+        if let Some(roles) = roles {
+            if let Some(ldap) = roles.ldap_authenticated {
+                paras.push("ldapAuthenticated", ldap.to_string());
+            }
+            if let Some(admin) = roles.admin_role {
+                paras.push("adminRole", admin.to_string());
+            }
+            if let Some(settings) = roles.settings_role {
+                paras.push("settingsRole", settings.to_string());
+            }
+            if let Some(stream) = roles.stream_role {
+                paras.push("streamRole", stream.to_string());
+            }
+            if let Some(jukebox) = roles.jukebox_role {
+                paras.push("jukeboxRole", jukebox.to_string());
+            }
+            if let Some(download) = roles.download_role {
+                paras.push("downloadrole", download.to_string());
+            }
+            if let Some(upload) = roles.upload_role {
+                paras.push("uploadRole", upload.to_string());
+            }
+            if let Some(playlist) = roles.playlist_role {
+                paras.push("playlistRole", playlist.to_string());
+            }
+            if let Some(cover_art) = roles.cover_art_role {
+                paras.push("coverArtRole", cover_art.to_string());
+            }
+            if let Some(comment) = roles.comment_role {
+                paras.push("commentRole", comment.to_string());
+            }
+            if let Some(podcast) = roles.podcast_role {
+                paras.push("podcastRole", podcast.to_string());
+            }
+            if let Some(share) = roles.share_role {
+                paras.push("shareRole", share.to_string());
+            }
+            if let Some(video_conversion) = roles.video_conversion_role {
+                paras.push("videoConversionRole", video_conversion.to_string());
+            }
         }
         if let Some(folder) = music_folder_id {
             paras.push("musicFolderId", folder);
