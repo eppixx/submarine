@@ -61,7 +61,7 @@ pub struct Parameter(Vec<(String, String)>);
 
 impl Parameter {
     fn new() -> Self {
-        Self ( vec![] )
+        Self(vec![])
     }
 
     fn push(&mut self, key: impl Into<String>, value: impl Into<String>) {

@@ -2,7 +2,7 @@ use std::fmt::Display;
 use std::str::FromStr;
 
 use crate::data::{Child, ResponseType};
-use crate::{Client, SubsonicError, Parameter};
+use crate::{Client, Parameter, SubsonicError};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Order {

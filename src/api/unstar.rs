@@ -1,6 +1,6 @@
 use crate::{
     data::{Info, ResponseType},
-    Client, SubsonicError, Parameter,
+    Client, Parameter, SubsonicError,
 };
 
 impl Client {

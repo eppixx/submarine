@@ -1,6 +1,6 @@
 use crate::{
     data::{ResponseType, Share},
-    Client, SubsonicError, Parameter,
+    Client, Parameter, SubsonicError,
 };
 
 impl Client {

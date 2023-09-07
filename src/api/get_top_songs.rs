@@ -1,5 +1,5 @@
 use crate::data::{Child, ResponseType};
-use crate::{Client, SubsonicError, Parameter};
+use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#getTopSongs

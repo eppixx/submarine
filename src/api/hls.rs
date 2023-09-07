@@ -1,4 +1,4 @@
-use crate::{Client, Parameter};
+use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#stream

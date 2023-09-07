@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use crate::{
     data::{JukeboxPlaylist, JukeboxStatus, ResponseType},
-    Client, SubsonicError, Parameter,
+    Client, Parameter, SubsonicError,
 };
 
 pub enum Action {
