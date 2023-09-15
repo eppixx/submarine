@@ -17,11 +17,11 @@ impl Client {
         paras.push("type", order.to_string());
 
         let body = self.request("getAlbumList2", Some(paras), None).await?;
-        if let ResponseType::AlbumList { album_list } = body.data {
-            Ok(album_list.album)
+        if let ResponseType::AlbumList2 { album_list2 } = body.data {
+            Ok(album_list2.album)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "expected type AlbumList but found wrong type",
+                "expected type AlbumList2 but found wrong type",
             )))
         }
     }
@@ -45,11 +45,11 @@ impl Client {
         }
 
         let body = self.request("getAlbumList2", Some(paras), None).await?;
-        if let ResponseType::AlbumList { album_list } = body.data {
-            Ok(album_list.album)
+        if let ResponseType::AlbumList2 { album_list2 } = body.data {
+            Ok(album_list2.album)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "expected type AlbumList but found wrong type",
+                "expected type AlbumList2 but found wrong type",
             )))
         }
     }
@@ -67,11 +67,11 @@ impl Client {
         paras.push("genre", genre);
 
         let body = self.request("getAlbumList2", Some(paras), None).await?;
-        if let ResponseType::AlbumList { album_list } = body.data {
-            Ok(album_list.album)
+        if let ResponseType::AlbumList2 { album_list2 } = body.data {
+            Ok(album_list2.album)
         } else {
             Err(SubsonicError::Submarine(String::from(
-                "expected type AlbumList but found wrong type",
+                "expected type AlbumList2 but found wrong type",
             )))
         }
     }
