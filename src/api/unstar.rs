@@ -22,7 +22,7 @@ impl Client {
             paras.push("artistId", id);
         }
 
-        let body = self.request("star", Some(paras), None).await?;
+        let body = self.request("unstar", Some(paras), None).await?;
         if let ResponseType::Ping {} = body.data {
             Ok(body.info)
         } else {
