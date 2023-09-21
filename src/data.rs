@@ -201,7 +201,7 @@ pub enum ResponseType {
     Ping {},
 }
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct ScanStatus {
     pub scanning: bool,
     pub count: Option<i64>,
@@ -209,19 +209,19 @@ pub struct ScanStatus {
     pub last_scan: Option<chrono::DateTime<chrono::offset::FixedOffset>>, // navidrome specific
 }
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct ArtistsId3 {
     pub index: Vec<IndexId3>,
 }
 
 /// Indexes artists
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct IndexId3 {
     pub name: String,
     pub artist: Vec<ArtistId3>,
 }
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct ArtistId3 {
     pub id: String,
@@ -232,7 +232,14 @@ pub struct ArtistId3 {
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Eq)]
+impl PartialEq for ArtistId3 {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for ArtistId3 {}
+
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ArtistWithAlbumsId3 {
     #[serde(flatten)]
@@ -241,7 +248,7 @@ pub struct ArtistWithAlbumsId3 {
     pub album: Vec<AlbumId3>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub enum UserRating {
     One,
     Two,
@@ -250,13 +257,13 @@ pub enum UserRating {
     Five,
 }
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct AlbumList {
     pub album: Vec<Child>,
 }
 
-#[derive(Deserialize, Debug, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct AlbumWithSongsId3 {
     #[serde(flatten)]
@@ -265,7 +272,7 @@ pub struct AlbumWithSongsId3 {
     pub song: Vec<Child>,
 }
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Child {
     pub id: String,
@@ -309,7 +316,7 @@ impl PartialEq for Child {
 }
 impl Eq for Child {}
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub enum MediaType {
     Music,
     Podcast,
@@ -317,13 +324,13 @@ pub enum MediaType {
     Video,
 }
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct Playlists {
     #[serde(default)]
     pub playlist: Vec<Playlist>,
 }
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Playlist {
     pub allowed_user: Option<Vec<String>>,
@@ -339,7 +346,14 @@ pub struct Playlist {
     pub cover_art: Option<String>,
 }
 
-#[derive(Deserialize, Debug, Clone, PartialEq, Eq)]
+impl PartialEq for Playlist {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for Playlist {}
+
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct PlaylistWithSongs {
     #[serde(flatten)]
@@ -348,7 +362,7 @@ pub struct PlaylistWithSongs {
     pub entry: Vec<Child>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct Error {
     pub code: i32,
     pub message: String,
@@ -360,7 +374,7 @@ impl std::fmt::Display for Error {
     }
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct License {
     pub valid: bool,
@@ -369,29 +383,36 @@ pub struct License {
     pub trial_expires: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct MusicFolders {
     pub music_folder: Vec<MusicFolder>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct MusicFolder {
     pub id: i32,
     pub name: Option<String>,
 }
 
+impl PartialEq for MusicFolder {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for MusicFolder {}
+
 cfg_if::cfg_if! {
     if #[cfg(feature = "navidrome")] {
-        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
         #[serde(rename_all = "camelCase")]
         pub struct Indexes {
             #[serde(default)]
             pub index: Vec<IndexId3>,
         }
     } else {
-        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
         #[serde(rename_all = "camelCase")]
         pub struct Indexes {
             #[serde(default)]
@@ -404,7 +425,7 @@ cfg_if::cfg_if! {
             pub ignore_articles: String,
         }
 
-        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
         #[serde(rename_all = "camelCase")]
         pub struct Index {
             pub name: String,
@@ -413,7 +434,7 @@ cfg_if::cfg_if! {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Directory {
     #[serde(default)]
@@ -435,13 +456,13 @@ impl PartialEq for Directory {
 }
 impl Eq for Directory {}
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Genres {
     pub genre: Vec<Genre>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Genre {
     pub value: String, // TODO check other implementations if it exists there as well
@@ -449,12 +470,12 @@ pub struct Genre {
     pub album_count: Option<i32>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 pub struct Videos {
     pub video: Vec<Child>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct VideoInfo {
     pub id: String,
@@ -466,13 +487,27 @@ pub struct VideoInfo {
     pub conversion: Vec<VideoConversion>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+impl PartialEq for VideoInfo {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for VideoInfo {}
+
+#[derive(Debug, Deserialize, Clone)]
 pub struct Captions {
     pub id: String,
     pub name: Option<String>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+impl PartialEq for Captions {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for Captions {}
+
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct AudioTrack {
     pub id: String,
@@ -480,7 +515,14 @@ pub struct AudioTrack {
     pub language_code: Option<String>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+impl PartialEq for AudioTrack {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for AudioTrack {}
+
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct VideoConversion {
     pub id: String,
@@ -488,9 +530,16 @@ pub struct VideoConversion {
     pub audio_track_id: Option<i32>,
 }
 
+impl PartialEq for VideoConversion {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for VideoConversion {}
+
 cfg_if::cfg_if! {
     if #[cfg(feature = "navidrome")] {
-        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
         #[serde(rename_all = "camelCase")]
         pub struct ArtistInfoBase {
             pub biography: Option<String>,
@@ -501,7 +550,7 @@ cfg_if::cfg_if! {
             pub large_image_url: Option<String>,
         }
     } else {
-        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
         #[serde(rename_all = "camelCase")]
         pub struct ArtistInfoBase {
             #[serde(default)]
@@ -520,7 +569,7 @@ cfg_if::cfg_if! {
     }
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ArtistInfo {
     #[serde(flatten)]
@@ -529,7 +578,7 @@ pub struct ArtistInfo {
     pub similar_artist: Vec<Artist>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Artist {
     pub id: String,
@@ -550,7 +599,7 @@ impl Eq for Artist {}
 
 cfg_if::cfg_if! {
     if #[cfg(feature = "navidrome")] {
-        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
         #[serde(rename_all = "camelCase")]
         pub struct AlbumInfo {
             pub notes: Option<String>,
@@ -561,7 +610,7 @@ cfg_if::cfg_if! {
             pub large_image_url: Option<String>,
         }
     } else {
-        #[derive(Debug, Deserialize, PartialEq, Eq)]
+        #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
         #[serde(rename_all = "camelCase")]
         pub struct AlbumInfo {
             #[serde(default)]
@@ -580,35 +629,35 @@ cfg_if::cfg_if! {
     }
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct SimilarSongs {
     #[serde(default)]
     pub song: Vec<Child>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct TopSongs {
     #[serde(default)]
     pub song: Vec<Child>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Songs {
     #[serde(default)]
     pub song: Vec<Child>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct NowPlaying {
     #[serde(default)]
     pub entry: Vec<NowPlayingEntry>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct NowPlayingEntry {
     #[serde(flatten)]
@@ -619,7 +668,7 @@ pub struct NowPlayingEntry {
     pub player_name: Option<String>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Starred {
     #[serde(default)]
@@ -630,7 +679,7 @@ pub struct Starred {
     pub song: Vec<Child>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Starred2 {
     #[serde(default)]
@@ -641,7 +690,7 @@ pub struct Starred2 {
     pub song: Vec<Child>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct AlbumId3 {
     pub id: String,
@@ -658,7 +707,14 @@ pub struct AlbumId3 {
     pub genre: Option<String>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+impl PartialEq for AlbumId3 {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for AlbumId3 {}
+
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct SearchResult2 {
     #[serde(default)]
@@ -669,7 +725,7 @@ pub struct SearchResult2 {
     pub song: Vec<Child>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct SearchResult3 {
     #[serde(default)]
@@ -680,7 +736,7 @@ pub struct SearchResult3 {
     pub song: Vec<Child>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Lyrics {
     pub artist: Option<String>,
@@ -688,14 +744,14 @@ pub struct Lyrics {
     pub value: Option<String>, // maybe navidrome only?
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Shares {
     #[serde(default)]
     pub share: Vec<Share>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Share {
     #[serde(default)]
@@ -710,14 +766,21 @@ pub struct Share {
     pub visit_count: i32,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+impl PartialEq for Share {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for Share {}
+
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Podcasts {
     #[serde(default)]
     pub channel: Vec<PodcastChannel>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct PodcastChannel {
     #[serde(default)]
@@ -732,14 +795,21 @@ pub struct PodcastChannel {
     pub error_message: Option<String>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+impl PartialEq for PodcastChannel {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for PodcastChannel {}
+
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct NewestPodcasts {
     #[serde(default)]
     pub episode: Vec<PodcastEpisode>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct PodcastEpisode {
     #[serde(flatten)]
@@ -751,7 +821,7 @@ pub struct PodcastEpisode {
     pub publish_date: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct JukeboxStatus {
     pub current_index: i32,
@@ -760,7 +830,7 @@ pub struct JukeboxStatus {
     pub position: Option<i32>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct JukeboxPlaylist {
     #[serde(flatten)]
@@ -769,7 +839,7 @@ pub struct JukeboxPlaylist {
     pub entry: Vec<Child>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub enum PodcastStatus {
     New,
@@ -780,14 +850,14 @@ pub enum PodcastStatus {
     Skipped,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct InternetRadioStations {
     #[serde(default)]
     pub internet_radio_station: Vec<InternetRadioStation>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct InternetRadioStation {
     pub id: String,
@@ -796,14 +866,21 @@ pub struct InternetRadioStation {
     pub home_page_url: Option<String>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+impl PartialEq for InternetRadioStation {
+    fn eq(&self, other: &Self) -> bool {
+        self.id == other.id
+    }
+}
+impl Eq for InternetRadioStation {}
+
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ChatMessages {
     #[serde(default)]
     pub chat_message: Vec<ChatMessage>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct ChatMessage {
     pub username: String,
@@ -811,14 +888,14 @@ pub struct ChatMessage {
     pub message: String,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Users {
     #[serde(default)]
     pub user: Vec<User>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct User {
     #[serde(default)]
@@ -841,14 +918,14 @@ pub struct User {
     pub avatar_last_changed: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Bookmarks {
     #[serde(default)]
     pub bookmark: Vec<Bookmark>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct Bookmark {
     pub entry: Child,
@@ -859,7 +936,7 @@ pub struct Bookmark {
     pub changed: chrono::DateTime<chrono::offset::FixedOffset>,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
 pub struct PlayQueue {
     #[serde(default)]
