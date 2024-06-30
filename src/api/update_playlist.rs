@@ -32,7 +32,7 @@ impl Client {
             paras.push("songIndexToRemove", id.to_string());
         }
 
-        let body = self.request("createPlaylist", Some(paras), None).await?;
+        let body = self.request("updatePlaylist", Some(paras), None).await?;
         if let ResponseType::Ping {} = body.data {
             Ok(body.info)
         } else {
