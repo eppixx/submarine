@@ -9,7 +9,7 @@ impl Client {
         let mut paras = Parameter::new();
         paras.push("id", id);
 
-        let body = self.request("createPlaylist", Some(paras), None).await?;
+        let body = self.request("deletePlaylist", Some(paras), None).await?;
         if let ResponseType::Ping {} = body.data {
             Ok(body.info)
         } else {
