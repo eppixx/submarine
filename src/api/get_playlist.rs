@@ -105,6 +105,8 @@ mod tests {
             .inner;
         println!("{response:?}");
         if let ResponseType::PlaylistWithSongs { playlist } = response.data {
+            assert_eq!(playlist.entry.len(), 2);
+            assert_eq!(playlist.entry[0].track, Some(17));
             assert_eq!(playlist.base.song_count, 2);
         } else {
             panic!("wrong type");
