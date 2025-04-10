@@ -17,10 +17,7 @@ impl Client {
                 paras.push("time", time.to_string());
             }
         }
-        if let Some(submission) = submission {
-            paras.push("submission", submission.to_string());
-        }
-
+        paras.push("submission", submission.unwrap_or(true).to_string());
         let body = self.request("scrobble", Some(paras), None).await?;
         if let ResponseType::Ping {} = body.data {
             Ok(body.info)
