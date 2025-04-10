@@ -277,9 +277,12 @@ pub struct AlbumWithSongsId3 {
 pub struct Child {
     pub id: String,
     pub parent: Option<String>,
-    pub is_dir: bool,
+    #[serde(default)]
+    pub is_dir: Option<bool>,
     #[serde(default)] // navidrome specific
     pub title: String,
+    #[serde(default)]
+    pub name: String,
     pub album: Option<String>,
     pub artist: Option<String>,
     pub track: Option<i32>,
