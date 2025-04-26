@@ -708,6 +708,8 @@ pub struct AlbumId3 {
     pub starred: Option<chrono::DateTime<chrono::offset::FixedOffset>>,
     pub year: Option<i32>,
     pub genre: Option<String>,
+    #[serde(default)]
+    pub genres: Vec<std::collections::HashMap<String, String>>,
 }
 
 impl PartialEq for AlbumId3 {
