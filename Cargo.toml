@@ -7,7 +7,8 @@ authors = ["Thomas Eppers"]
 description = "A library for connecting with a subsonic server"
 readme = "Readme.md"
 repository = "https://github.com/eppixx/submarine"
-license-file = "License.md"
+documentation = "https://docs.rs/submarine"
+license-file = "MIT"
 keywords = ["subsonic", "api", "music", "streaming", "REST"]
 categories = ["api-bindings", "multimedia::audio", "network-programming"]
 
