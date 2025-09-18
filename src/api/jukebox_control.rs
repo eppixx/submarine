@@ -19,7 +19,7 @@ impl Display for Action {
             Self::Status => write!(f, "status"),
             Self::Start => write!(f, "start"),
             Self::Stop => write!(f, "stop"),
-            Self::Clear => write!(f, "lcear"),
+            Self::Clear => write!(f, "clear"),
             Self::Shuffle => write!(f, "shuffle"),
         }
     }
