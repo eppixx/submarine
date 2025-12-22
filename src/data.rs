@@ -310,6 +310,12 @@ pub struct Child {
     pub bookmark_position: Option<i64>,
     pub original_width: Option<i32>,
     pub original_height: Option<i32>,
+
+    // Navidrome fields
+    #[cfg(feature = "navidrome")]
+    pub music_brainz_id: Option<String>,
+    #[cfg(feature = "navidrome")]
+    pub isrc: Vec<String>,
 }
 
 impl PartialEq for Child {
