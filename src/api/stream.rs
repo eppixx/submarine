@@ -48,23 +48,31 @@ impl Client {
         estimate_content_length: Option<bool>, // restrict length
         converted: Option<bool>,               // video only
     ) -> Result<Vec<u8>, SubsonicError> {
-        let result = match reqwest::get(self.stream_url(
-            id,
-            max_bit_rate,
-            format,
-            time_offset,
-            size,
-            estimate_content_length,
-            converted,
-        )?)
-        .await
+        match reqwest::ClientBuilder::new()
+            .timeout(std::time::Duration::from_secs(30))
+            .build()
+            .expect("could not build reqwest client with timeout")
+            .get(self.stream_url(
+                id,
+                max_bit_rate,
+                format,
+                time_offset,
+                size,
+                estimate_content_length,
+                converted,
+            )?)
+            .send()
+            .await
         {
-            Ok(result) => result,
-            Err(e) => return Err(SubsonicError::Connection(e)),
-        };
-
-        let bytes = result.bytes().await?.to_vec();
-        Ok(bytes)
+            Err(e) => Err(SubsonicError::Connection(e)),
+            Ok(result) => match result.error_for_status() {
+                Ok(result) => {
+                    let bytes = result.bytes().await?.to_vec();
+                    Ok(bytes)
+                },
+                Err(e) => Err(SubsonicError::Connection(e)),
+            }
+        }
     }
 }
 
