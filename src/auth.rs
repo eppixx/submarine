@@ -80,10 +80,10 @@ impl Auth {
     }
 
     fn create_salt(size: usize) -> String {
-        use rand::{distributions::Alphanumeric, thread_rng, Rng};
+        use rand::{distr::Alphanumeric, Rng};
         use std::iter;
 
-        let mut rng = thread_rng();
+        let mut rng = rand::rng();
         iter::repeat(())
             .map(|()| rng.sample(Alphanumeric))
             .map(char::from)
