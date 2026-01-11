@@ -18,16 +18,16 @@ categories = ["api-bindings", "multimedia::audio", "network-programming"]
 navidrome = []
 
 [dependencies]
-log = "0.4.17"
-serde = { version = "1.0.152", features = ["derive"] }
-serde_json = "1.0.93"
-reqwest = { version = "0.11.14", default-features = false, features = ["json", "rustls-tls", "multipart", "stream"] }
-md5 = "0.7.0"
-chrono = { version = "0.4.23", features = ["std", "serde"] }
-rand = "0.8.5" # for creating salt
-thiserror = "1.0.38"
-cfg-if = "1.0.0"
-url = "2.4.1"
+log = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.13", default-features = false, features = ["json", "rustls", "multipart", "stream", "query"] }
+md5 = "0.8"
+chrono = { version = "0.4", features = ["std", "serde"] }
+rand = "0.9" # for creating salt
+thiserror = "2.0"
+cfg-if = "1.0"
+url = "2.5"
 
 [dev-dependencies]
 tokio = { version = "1.32.0" , features = ["full"] }
