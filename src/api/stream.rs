@@ -80,8 +80,8 @@ impl Client {
 mod tests {
     use crate::{auth::AuthBuilder, Client};
 
-    #[tokio::test]
-    async fn create_stream_url() {
+    #[test]
+    fn create_stream_url() {
         let auth = AuthBuilder::new("peter", "v0.16.1")
             ._salt("")
             .hashed("change_me_password");
@@ -91,5 +91,65 @@ mod tests {
             .unwrap();
 
         assert_eq!("https://target.com/rest/stream?u=peter&v=v0.16.1&c=submarine-lib&t=d4a5b2db9781fba37ec95f0312ade67a&s=&f=json&id=testId", &url.to_string());
+    }
+
+    #[tokio::test]
+    async fn assert_timeout() {
+        let (tx, mut rx) = tokio::sync::oneshot::channel();
+
+        // start a mock server we control which accepts everything but sends nothing,
+        // making sure our stream request times out
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:58491").await.expect("could not open listener");
+        tokio::spawn(async move {
+            let mut hanging_sockets = Vec::new();
+            loop {
+                tokio::select! {
+                    biased;
+
+                    res = listener.accept() => match res {
+                        Ok((sock, addr)) => {
+                            hanging_sockets.push((sock, addr));
+                        },
+                        Err(e) => eprintln!("error accepting client: {e}"),
+
+                    },
+
+                    _ = tokio::time::sleep(std::time::Duration::from_secs(10)) => {},
+                }
+
+                if matches!(rx.try_recv(), Ok(()) | Err(tokio::sync::oneshot::error::TryRecvError::Closed)) {
+                    break;
+                }
+            }
+        });
+
+        // actually make the stream request
+        let auth = AuthBuilder::new("peter", "v0.16.1")
+            ._salt("")
+            .hashed("change_me_password");
+        let client = Client::new("http://127.0.0.1:58491", auth);
+
+        let before = std::time::SystemTime::now();
+        let res = client.stream(
+            "",
+            None,
+            None::<String>,
+            None,
+            None::<String>,
+            None,
+            None
+        )
+            .await;
+        let delta = before.elapsed().expect("could not calculate duration: unstable system clock");
+        tx.send(()).expect("server stopped?"); // stop the mock server
+
+        assert!(res.is_err());
+        let err = res.expect_err("not an error after check?");
+        assert!(matches!(err, crate::SubsonicError::Connection(_)));
+        let crate::SubsonicError::Connection(inner) = err else {
+            panic!("not a subsonic error after check?");
+        };
+        assert!(inner.is_timeout());
+        assert!(delta.as_secs() >= 30 && delta.as_secs() <= 31); // 1s of "grace"
     }
 }
