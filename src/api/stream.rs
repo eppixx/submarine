@@ -1,5 +1,11 @@
 use crate::{Client, Parameter, SubsonicError};
 
+// in tests the duration for waiting for a request ist limited
+#[cfg(not(test))]
+const REQUEST_TIMEOUT_DURATION: std::time::Duration = std::time::Duration::from_secs(30);
+#[cfg(test)]
+const REQUEST_TIMEOUT_DURATION: std::time::Duration = std::time::Duration::from_secs(2);
+
 impl Client {
     /// reference: http://www.subsonic.org/pages/api.jsp#stream
     pub fn stream_url(
@@ -49,7 +55,7 @@ impl Client {
         converted: Option<bool>,               // video only
     ) -> Result<Vec<u8>, SubsonicError> {
         match reqwest::ClientBuilder::new()
-            .timeout(std::time::Duration::from_secs(30))
+            .timeout(REQUEST_TIMEOUT_DURATION)
             .build()
             .expect("could not build reqwest client with timeout")
             .get(self.stream_url(
@@ -69,16 +75,16 @@ impl Client {
                 Ok(result) => {
                     let bytes = result.bytes().await?.to_vec();
                     Ok(bytes)
-                },
+                }
                 Err(e) => Err(SubsonicError::Connection(e)),
-            }
+            },
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{auth::AuthBuilder, Client};
+    use crate::{api::stream::REQUEST_TIMEOUT_DURATION, auth::AuthBuilder, Client};
 
     #[test]
     fn create_stream_url() {
@@ -99,7 +105,9 @@ mod tests {
 
         // start a mock server we control which accepts everything but sends nothing,
         // making sure our stream request times out
-        let listener = tokio::net::TcpListener::bind("127.0.0.1:58491").await.expect("could not open listener");
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:58491")
+            .await
+            .expect("could not open listener");
         tokio::spawn(async move {
             let mut hanging_sockets = Vec::new();
             loop {
@@ -117,7 +125,11 @@ mod tests {
                     _ = tokio::time::sleep(std::time::Duration::from_secs(10)) => {},
                 }
 
-                if matches!(rx.try_recv(), Ok(()) | Err(tokio::sync::oneshot::error::TryRecvError::Closed)) {
+                // close mock server on any msg
+                if matches!(
+                    rx.try_recv(),
+                    Ok(()) | Err(tokio::sync::oneshot::error::TryRecvError::Closed)
+                ) {
                     break;
                 }
             }
@@ -130,17 +142,12 @@ mod tests {
         let client = Client::new("http://127.0.0.1:58491", auth);
 
         let before = std::time::SystemTime::now();
-        let res = client.stream(
-            "",
-            None,
-            None::<String>,
-            None,
-            None::<String>,
-            None,
-            None
-        )
+        let res = client
+            .stream("", None, None::<String>, None, None::<String>, None, None)
             .await;
-        let delta = before.elapsed().expect("could not calculate duration: unstable system clock");
+        let delta = before
+            .elapsed()
+            .expect("could not calculate duration: unstable system clock");
         tx.send(()).expect("server stopped?"); // stop the mock server
 
         assert!(res.is_err());
@@ -150,6 +157,9 @@ mod tests {
             panic!("not a subsonic error after check?");
         };
         assert!(inner.is_timeout());
-        assert!(delta.as_secs() >= 30 && delta.as_secs() <= 31); // 1s of "grace"
+        assert!(
+            delta >= REQUEST_TIMEOUT_DURATION
+                && delta <= REQUEST_TIMEOUT_DURATION + std::time::Duration::from_secs(1)
+        ); // 1s of "grace"
     }
 }
