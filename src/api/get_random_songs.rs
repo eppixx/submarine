@@ -2,7 +2,7 @@ use crate::data::{Child, ResponseType};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getRandomSongs
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getRandomSongs>
     pub async fn get_random_songs(
         &self,
         size: Option<i32>, //defaults to 10

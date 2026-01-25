@@ -6,7 +6,7 @@ use crate::{
 use super::create_user::Roles;
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#updateUser
+    /// reference: <http://www.subsonic.org/pages/api.jsp#updateUser>
     pub async fn update_user(
         &self,
         username: impl Into<String>,

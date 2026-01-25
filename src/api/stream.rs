@@ -7,7 +7,7 @@ const REQUEST_TIMEOUT_DURATION: std::time::Duration = std::time::Duration::from_
 const REQUEST_TIMEOUT_DURATION: std::time::Duration = std::time::Duration::from_secs(2);
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#stream
+    /// reference: <http://www.subsonic.org/pages/api.jsp#stream>
     pub fn stream_url(
         &self,
         id: impl Into<String>,
@@ -43,7 +43,7 @@ impl Client {
         url::Url::parse_with_params(&format!("{}/rest/stream", self.server_url), paras.0)
     }
 
-    /// reference: http://www.subsonic.org/pages/api.jsp#stream
+    /// reference: <http://www.subsonic.org/pages/api.jsp#stream>
     pub async fn stream(
         &self,
         id: impl Into<String>,

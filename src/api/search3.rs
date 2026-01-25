@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#search3
+    /// reference: <http://www.subsonic.org/pages/api.jsp#search3>
     pub async fn search3(
         &self,
         query: impl Into<String>,

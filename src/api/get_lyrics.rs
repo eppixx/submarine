@@ -2,7 +2,7 @@ use crate::data::{Lyrics, ResponseType};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getLyrics
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getLyrics>
     pub async fn get_lyrics(&self, id: impl Into<String>) -> Result<Lyrics, SubsonicError> {
         let mut paras = Parameter::new();
         paras.push("id", id);

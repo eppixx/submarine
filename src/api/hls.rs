@@ -1,7 +1,9 @@
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#stream
+    /// this creates a url to the id of hls media
+    ///
+    /// reference: <http://www.subsonic.org/pages/api.jsp#hls>
     pub fn hls_url(
         &self,
         id: impl Into<String>,
@@ -24,6 +26,7 @@ impl Client {
         )
     }
 
+    /// reference: <http://www.subsonic.org/pages/api.jsp#hls>
     pub async fn hls(
         &self,
         id: impl Into<String>,

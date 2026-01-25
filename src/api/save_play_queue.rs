@@ -2,7 +2,7 @@ use crate::data::{Info, ResponseType};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#savePlayQueue
+    /// reference: <http://www.subsonic.org/pages/api.jsp#savePlayQueue>
     pub async fn save_play_queue(
         &self,
         id: Vec<impl Into<String>>,

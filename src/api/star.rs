@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#star
+    /// reference: <http://www.subsonic.org/pages/api.jsp#star>
     pub async fn star(
         &self,
         id: Vec<impl Into<String>>,

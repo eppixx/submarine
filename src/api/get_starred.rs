@@ -2,7 +2,7 @@ use crate::data::{ResponseType, Starred};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getStarred
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getStarred>
     pub async fn get_starred(
         &self,
         music_folder_id: Option<impl Into<String>>,

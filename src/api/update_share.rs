@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#updateShare
+    /// reference: <http://www.subsonic.org/pages/api.jsp#updateShare>
     pub async fn update_share(
         &self,
         id: impl Into<String>,

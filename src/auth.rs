@@ -1,6 +1,6 @@
 use crate::Parameter;
 
-/// Builder for [Auth]
+/// Builder for [`Auth`]
 ///
 /// Example:
 /// ```
@@ -34,14 +34,15 @@ impl AuthBuilder {
     }
 
     /// specifiy salt instead of generated
-    /// mostly useful for tests so that the outcome is determinante
+    /// mostly useful for tests so that the outcome is deterministic
     pub(crate) fn _salt(mut self, salt: impl Into<String>) -> Self {
         self.salt = Some(salt.into());
         self
     }
 
     /// hash plain password for storing and subsequently uses
-    /// ; consumes self
+    ///
+    /// this consumes the Builder and returns [`Auth`]
     pub fn hashed(self, password: &str) -> Auth {
         let (hash, salt) = if let Some(salt) = self.salt {
             (Auth::hash_with_salt(password, &salt), salt)
@@ -59,7 +60,7 @@ impl AuthBuilder {
     }
 }
 
-/// Needed for authenticating a [Client](crate::Client). Create it by using [AuthBuilder].
+/// Needed for authenticating a [`Client`](crate::Client). Create it by using [`AuthBuilder`].
 #[derive(Clone, Debug)]
 pub struct Auth {
     pub user: String,

@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getUser
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getUser>
     pub async fn get_user(&self, username: impl Into<String>) -> Result<User, SubsonicError> {
         let mut paras = Parameter::new();
         paras.push("username", username);

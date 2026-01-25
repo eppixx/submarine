@@ -1,7 +1,9 @@
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getAvatar
+    /// creates a url to the avatar of the given user
+    ///
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getAvatar>
     pub fn get_avatar_url(&self, username: impl Into<String>) -> Result<url::Url, url::ParseError> {
         let mut paras = Parameter::new();
         self.auth.add_parameter(&mut paras);
@@ -10,7 +12,7 @@ impl Client {
         url::Url::parse_with_params(&format!("{}/rest/getAvatar", self.server_url), paras.0)
     }
 
-    /// reference: http://www.subsonic.org/pages/api.jsp#getAvatar
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getAvatar>
     pub async fn get_avatar(&self, username: impl Into<String>) -> Result<Vec<u8>, SubsonicError> {
         let result = match reqwest::get(self.get_avatar_url(username)?).await {
             Ok(result) => result,

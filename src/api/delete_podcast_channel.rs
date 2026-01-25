@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#deletePodcastChannel
+    /// reference: <http://www.subsonic.org/pages/api.jsp#deletePodcastChannel>
     pub async fn delete_podcast_channel(
         &self,
         id: impl Into<String>,

@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getUsers
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getUsers>
     pub async fn get_users(&self) -> Result<Vec<User>, SubsonicError> {
         let body = self.request("getUsers", None, None).await?;
         if let ResponseType::Users { users } = body.data {

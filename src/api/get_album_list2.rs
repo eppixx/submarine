@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getAlbumList2
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getAlbumList2>
     pub async fn get_album_list2(
         &self,
         order: Order,
@@ -27,7 +27,7 @@ impl Client {
         }
     }
 
-    /// reference: http://www.subsonic.org/pages/api.jsp#getAlbumList2
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getAlbumList2>
     pub async fn get_album_list2_by_year(
         &self,
         from_year: Option<usize>,
@@ -55,7 +55,7 @@ impl Client {
         }
     }
 
-    /// reference: http://www.subsonic.org/pages/api.jsp#getAlbumList2
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getAlbumList2>
     pub async fn get_album_list2_by_genre(
         &self,
         genre: impl Into<String>,

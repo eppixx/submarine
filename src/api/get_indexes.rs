@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getIndexes
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getIndexes>
     pub async fn get_indexes(
         &self,
         music_folder_id: Option<impl Into<String>>,

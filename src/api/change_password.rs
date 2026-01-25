@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#changePassword
+    /// reference: <http://www.subsonic.org/pages/api.jsp#changePassword>
     pub async fn change_password(
         &self,
         username: impl Into<String>,

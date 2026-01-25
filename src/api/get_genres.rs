@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// http://www.subsonic.org/pages/api.jsp#getGenres
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getGenres>
     pub async fn get_genres(&self) -> Result<Vec<Genre>, SubsonicError> {
         let body = self.request("getGenres", None, None).await?;
         if let ResponseType::Genres { genres } = body.data {

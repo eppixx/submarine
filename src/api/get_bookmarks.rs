@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getBookmarks
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getBookmarks>
     pub async fn get_bookmarks(&self) -> Result<Vec<Bookmark>, SubsonicError> {
         let body = self.request("getBookmarks", None, None).await?;
         if let ResponseType::Bookmarks { bookmarks } = body.data {

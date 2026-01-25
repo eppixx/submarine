@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#updatePlaylist
+    /// reference: <http://www.subsonic.org/pages/api.jsp#updatePlaylist>
     pub async fn update_playlist(
         &self,
         playlist_id: impl Into<String>,

@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#deleteUser
+    /// reference: <http://www.subsonic.org/pages/api.jsp#deleteUser>
     pub async fn delete_user(&self, username: impl Into<String>) -> Result<Info, SubsonicError> {
         let mut paras = Parameter::new();
         paras.push("username", username);

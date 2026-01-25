@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#updateInternetRadioStation
+    /// reference: <http://www.subsonic.org/pages/api.jsp#updateInternetRadioStation>
     pub async fn update_internet_radio_station(
         &self,
         id: impl Into<String>,

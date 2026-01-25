@@ -1,7 +1,9 @@
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getCatptions
+    /// this creates a url to the given captions id
+    ///
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getCatptions>
     pub fn get_captions_url(
         &self,
         id: impl Into<String>,
@@ -17,7 +19,7 @@ impl Client {
         url::Url::parse_with_params(&format!("{}/rest/getCaptions", self.server_url), paras.0)
     }
 
-    /// reference: http://www.subsonic.org/pages/api.jsp#getCatptions
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getCatptions>
     pub async fn get_captions(
         &self,
         id: impl Into<String>,

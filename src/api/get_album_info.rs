@@ -2,7 +2,7 @@ use crate::data::{AlbumInfo, ResponseType};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getAlbumInfo
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getAlbumInfo>
     pub async fn get_album_info(&self, id: impl Into<String>) -> Result<AlbumInfo, SubsonicError> {
         let mut paras = Parameter::new();
         paras.push("id", id);

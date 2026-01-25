@@ -1,7 +1,9 @@
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getCoverArt
+    /// this returns a url to the given id of cover art
+    ///
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getCoverArt>
     pub fn get_cover_art_url(
         &self,
         id: impl Into<String>,
@@ -17,7 +19,7 @@ impl Client {
         url::Url::parse_with_params(&format!("{}/rest/getCoverArt", self.server_url), paras.0)
     }
 
-    /// reference: http://www.subsonic.org/pages/api.jsp#getCoverArt
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getCoverArt>
     pub async fn get_cover_art(
         &self,
         id: impl Into<String>,

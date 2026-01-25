@@ -2,7 +2,7 @@ use crate::data::{ResponseType, VideoInfo};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getVideoInfo
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getVideoInfo>
     pub async fn get_video_info(&self, id: impl Into<String>) -> Result<VideoInfo, SubsonicError> {
         let mut paras = Parameter::new();
         paras.push("id", id);

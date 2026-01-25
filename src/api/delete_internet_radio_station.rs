@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#deleteInternetRadioStation
+    /// reference: <http://www.subsonic.org/pages/api.jsp#deleteInternetRadioStation>
     pub async fn delete_internet_radio_station(
         &self,
         id: impl Into<String>,

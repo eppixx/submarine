@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getInternetRadioStations
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getInternetRadioStations>
     pub async fn get_internet_radio_stations(
         &self,
     ) -> Result<Vec<InternetRadioStation>, SubsonicError> {

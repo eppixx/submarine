@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getChatMessages
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getChatMessages>
     pub async fn get_chat_messages(
         &self,
         since: Option<i64>,

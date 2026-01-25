@@ -1,7 +1,9 @@
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#download
+    /// this creates a url to id for download purpuses
+    ///
+    /// reference: <http://www.subsonic.org/pages/api.jsp#download>
     pub fn download_url(&self, id: impl Into<String>) -> Result<url::Url, url::ParseError> {
         let mut paras = Parameter::new();
         self.auth.add_parameter(&mut paras);
@@ -10,7 +12,7 @@ impl Client {
         url::Url::parse_with_params(&format!("{}/rest/download", self.server_url), paras.0)
     }
 
-    /// reference: http://www.subsonic.org/pages/api.jsp#download
+    /// reference: <http://www.subsonic.org/pages/api.jsp#download>
     pub async fn download(&self, id: impl Into<String>) -> Result<Vec<u8>, SubsonicError> {
         let result = match reqwest::get(self.download_url(id)?).await {
             Ok(result) => result,

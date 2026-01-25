@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#scrobble
+    /// reference: <http://www.subsonic.org/pages/api.jsp#scrobble>
     pub async fn scrobble(
         &self,
         id_at_time: Vec<(impl Into<String>, Option<usize>)>,

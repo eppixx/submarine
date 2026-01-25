@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#addChatMessage
+    /// reference: <http://www.subsonic.org/pages/api.jsp#addChatMessage>
     pub async fn add_chat_messages(
         &self,
         message: impl Into<String>,

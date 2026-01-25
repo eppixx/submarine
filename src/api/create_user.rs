@@ -75,7 +75,7 @@ impl Roles {
 }
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#createUser
+    /// reference: <http://www.subsonic.org/pages/api.jsp#createUser>
     pub async fn create_user(
         &self,
         username: impl Into<String>,

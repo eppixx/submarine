@@ -2,7 +2,7 @@ use crate::data::{PlaylistWithSongs, ResponseType};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getPlaylist
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getPlaylist>
     pub async fn get_playlist(
         &self,
         id: impl Into<String>,

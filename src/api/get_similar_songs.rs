@@ -2,7 +2,7 @@ use crate::data::{Child, ResponseType};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getSimilarSongs
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getSimilarSongs>
     pub async fn get_similar_songs(
         &self,
         id: impl Into<String>,

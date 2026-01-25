@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#setRating
+    /// reference: <http://www.subsonic.org/pages/api.jsp#setRating>
     pub async fn set_rating(
         &self,
         id: impl Into<String>,

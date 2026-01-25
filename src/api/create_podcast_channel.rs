@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#createPodcastChannel
+    /// reference: <http://www.subsonic.org/pages/api.jsp#createPodcastChannel>
     pub async fn create_podcast_channel(
         &self,
         url: impl Into<String>,

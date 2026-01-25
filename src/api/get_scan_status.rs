@@ -2,7 +2,7 @@ use crate::data::{ResponseType, ScanStatus};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getScanStatus
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getScanStatus>
     pub async fn get_scan_status(&self) -> Result<ScanStatus, SubsonicError> {
         let body = self.request("getScanStatus", None, None).await?;
         if let ResponseType::ScanStatus { scan_status } = body.data {

@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#downloadPodcastEpisode
+    /// reference: <http://www.subsonic.org/pages/api.jsp#downloadPodcastEpisode>
     pub async fn download_podcast_episode(
         &self,
         id: impl Into<String>,

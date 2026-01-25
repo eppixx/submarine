@@ -2,7 +2,7 @@ use crate::data::{Info, ResponseType};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#deleteBookmark
+    /// reference: <http://www.subsonic.org/pages/api.jsp#deleteBookmark>
     pub async fn delete_bookmark(&self, id: impl Into<String>) -> Result<Info, SubsonicError> {
         let mut paras = Parameter::new();
         paras.push("id", id);

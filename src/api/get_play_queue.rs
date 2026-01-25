@@ -2,7 +2,7 @@ use crate::data::{Info, PlayQueue, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getPlayQueue
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getPlayQueue>
     pub async fn get_play_queue(&self) -> Result<Result<PlayQueue, Info>, SubsonicError> {
         let body = self.request("getPlayQueue", None, None).await?;
         match body.data {

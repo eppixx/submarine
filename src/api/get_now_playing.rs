@@ -2,7 +2,7 @@ use crate::data::{NowPlaying, ResponseType};
 use crate::{Client, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getNowPlaying
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getNowPlaying>
     pub async fn get_now_playing(&self) -> Result<NowPlaying, SubsonicError> {
         let body = self.request("getNowPlaying", None, None).await?;
         if let ResponseType::NowPlaying { now_playing } = body.data {

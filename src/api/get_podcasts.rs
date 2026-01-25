@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getPodcasts
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getPodcasts>
     pub async fn get_podcasts(
         &self,
         include_episodes: Option<bool>,

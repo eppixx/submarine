@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#deletePlaylist
+    /// reference: <http://www.subsonic.org/pages/api.jsp#deletePlaylist>
     pub async fn delete_playlist(&self, id: impl Into<String>) -> Result<Info, SubsonicError> {
         let mut paras = Parameter::new();
         paras.push("id", id);

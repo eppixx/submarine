@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getMusicFolders
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getMusicFolders>
     pub async fn get_music_folders(&self) -> Result<MusicFolders, SubsonicError> {
         let body = self.request("getMusicFolders", None, None).await?;
         if let ResponseType::MusicFolders { music_folders } = body.data {

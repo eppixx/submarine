@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getNewestPodcasts
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getNewestPodcasts>
     pub async fn get_newest_podcasts(
         &self,
         count: Option<i32>, //defaults to 20

@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getLicense
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getLicense>
     pub async fn get_license(&self) -> Result<License, SubsonicError> {
         let body = self.request("getLicense", None, None).await?;
         if let ResponseType::License { license } = body.data {

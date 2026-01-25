@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getMusicDirectory
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getMusicDirectory>
     pub async fn get_music_directory(
         &self,
         music_directory_id: impl Into<String>,

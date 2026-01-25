@@ -2,7 +2,7 @@ use crate::data::{Child, ResponseType};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#getSong
+    /// reference: <http://www.subsonic.org/pages/api.jsp#getSong>
     pub async fn get_song(&self, id: impl Into<String>) -> Result<Child, SubsonicError> {
         let mut paras = Parameter::new();
         paras.push("id", id);

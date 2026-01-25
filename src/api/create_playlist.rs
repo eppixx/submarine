@@ -2,7 +2,7 @@ use crate::data::{PlaylistWithSongs, ResponseType};
 use crate::{Client, Parameter, SubsonicError};
 
 impl Client {
-    /// reference: http://www.subsonic.org/pages/api.jsp#createPlaylist
+    /// reference: <http://www.subsonic.org/pages/api.jsp#createPlaylist>
     pub async fn create_playlist(
         &self,
         name: impl Into<String>,
@@ -24,6 +24,9 @@ impl Client {
         }
     }
 
+    /// this uses the `createPlaylist` API call
+    ///
+    /// reference: <http://www.subsonic.org/pages/api.jsp#createPlaylist>
     pub async fn overwrite_playlist(
         &self,
         playlist_id: impl Into<String>,
