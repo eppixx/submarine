@@ -57,7 +57,7 @@ pub enum SubsonicError {
 }
 
 #[derive(Debug, Serialize, Default, Clone, PartialEq, Eq)]
-pub struct Parameter(Vec<(String, String)>);
+pub(crate) struct Parameter(Vec<(String, String)>);
 
 impl Parameter {
     fn new() -> Self {
