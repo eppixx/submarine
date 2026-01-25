@@ -33,9 +33,9 @@ mod tests {
         let auth = AuthBuilder::new("peter", "v0.16.1")
             ._salt("")
             .hashed("change_me_password");
-        let client = Client::new("https://target.com", auth);
+        let client = Client::new("https://subsonic.example", auth);
         let url = client.get_avatar_url("name").unwrap();
 
-        assert_eq!("https://target.com/rest/getAvatar?u=peter&v=v0.16.1&c=submarine-lib&t=d4a5b2db9781fba37ec95f0312ade67a&s=&f=json&username=name", &url.to_string());
+        assert_eq!("https://subsonic.example/rest/getAvatar?u=peter&v=v0.16.1&c=submarine-lib&t=d4a5b2db9781fba37ec95f0312ade67a&s=&f=json&username=name", &url.to_string());
     }
 }

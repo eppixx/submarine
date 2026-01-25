@@ -54,11 +54,11 @@ mod tests {
         let auth = AuthBuilder::new("peter", "v0.16.1")
             ._salt("")
             .hashed("change_me_password");
-        let client = Client::new("https://target.com", auth);
+        let client = Client::new("https://subsonic.example", auth);
         let url = client
             .hls_url(String::from("testId"), vec![128, 196], None::<&str>)
             .unwrap();
 
-        assert_eq!("https://target.com/rest/hls.m3u8?u=peter&v=v0.16.1&c=submarine-lib&t=d4a5b2db9781fba37ec95f0312ade67a&s=&f=json&id=testId&bitRate=128&bitRate=196", &url.to_string());
+        assert_eq!("https://subsonic.example/rest/hls.m3u8?u=peter&v=v0.16.1&c=submarine-lib&t=d4a5b2db9781fba37ec95f0312ade67a&s=&f=json&id=testId&bitRate=128&bitRate=196", &url.to_string());
     }
 }
