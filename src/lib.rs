@@ -4,7 +4,7 @@
 //! xsd schema: <http://www.subsonic.org/pages/inc/api/schema/subsonic-rest-api-1.16.1.xsd><br>
 //! This implements everything up to version v1.16.1.
 
-pub mod api;
+pub(crate) mod api;
 pub mod auth;
 pub mod data;
 
