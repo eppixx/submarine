@@ -4,8 +4,11 @@
 //! xsd schema: <http://www.subsonic.org/pages/inc/api/schema/subsonic-rest-api-1.16.1.xsd><br>
 //! This implements everything up to version v1.16.1.
 
+/// Contains definition of API calls
 pub(crate) mod api;
+/// Constains structs for authenticating with a subsonic server
 pub mod auth;
+/// Contains definitions of return types of the subsonic REST API
 pub mod data;
 
 use log::{info, trace, warn};
@@ -15,18 +18,19 @@ use thiserror::Error;
 
 use crate::data::ResponseType;
 
-/// A client which all requests are send through.<br>
-/// Example
+/// A client which all requests are send through
+///
+/// Example:
 /// ```no_run
+/// use submarine::{auth::AuthBuilder, Client};
+///
 /// #[tokio::main]
 /// async fn main() {
-///     use submarine::{auth::AuthBuilder, Client};
-///
-///     let auth = AuthBuilder::new("peter", "v0.16.1")
-///         .client_name("my_music_app")
-///         .hashed("change_me_password");
-///     let client = Client::new("https://target.com", auth);
-///     client.ping().await.unwrap();
+///     let auth = AuthBuilder::new("peter", "v0.16.1") // username and target version
+///         .client_name("my_music_app")   // how your client will show up on the server
+///         .hashed("change_me_password"); // create a hash from plain password
+///     let client = Client::new("https://subsonic.example", auth); // creating a client
+///     client.ping().await.unwrap();      // sending requests
 /// }
 /// ```
 #[derive(Debug, Clone)]
@@ -36,6 +40,7 @@ pub struct Client {
     client: reqwest::Client,
 }
 
+/// Errors which can occur while using subsonic
 #[derive(Error, Debug)]
 pub enum SubsonicError {
     #[error("Connection error")]
@@ -70,6 +75,7 @@ impl Parameter {
 }
 
 impl Client {
+    /// Creating a new client
     pub fn new(server_url: &str, auth: auth::Auth) -> Self {
         let client = Self {
             server_url: String::from(server_url),

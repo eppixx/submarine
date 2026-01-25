@@ -1,6 +1,7 @@
 use crate::Parameter;
 
-/// Builder for [Auth]<br>
+/// Builder for [Auth]
+///
 /// Example:
 /// ```
 /// use submarine::auth::AuthBuilder;
@@ -58,6 +59,7 @@ impl AuthBuilder {
     }
 }
 
+/// Needed for authenticating a [Client](crate::Client). Create it by using [AuthBuilder].
 #[derive(Clone, Debug)]
 pub struct Auth {
     pub user: String,
