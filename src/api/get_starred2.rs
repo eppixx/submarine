@@ -12,7 +12,7 @@ impl Client {
             paras.push("musicFolderId", folder);
         }
 
-        let body = self.request("getStarred", Some(paras), None).await?;
+        let body = self.request("getStarred2", Some(paras), None).await?;
         if let ResponseType::Starred { starred } = body.data {
             Ok(starred)
         } else {
